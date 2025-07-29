@@ -413,6 +413,30 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
             <Label htmlFor="isBusy">This place was busy/crowded</Label>
           </div>
 
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="hasFreeParkingAvailable"
+                checked={formData.hasFreeParkingAvailable}
+                onCheckedChange={(checked) => setFormData(prev => ({ ...prev, hasFreeParkingAvailable: checked as boolean }))}
+              />
+              <Label htmlFor="hasFreeParkingAvailable">🅿️ Free parking available</Label>
+            </div>
+
+            {!formData.hasFreeParkingAvailable && (
+              <div className="ml-6 space-y-2">
+                <Label htmlFor="parkingCost">💰 Parking cost</Label>
+                <Input
+                  id="parkingCost"
+                  value={formData.parkingCost}
+                  onChange={(e) => setFormData(prev => ({ ...prev, parkingCost: e.target.value }))}
+                  placeholder="e.g., £5 per hour, £15 all day"
+                  className="max-w-xs"
+                />
+              </div>
+            )}
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Would you return?</Label>
