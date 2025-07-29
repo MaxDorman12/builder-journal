@@ -80,6 +80,8 @@ export function initializeSampleData() {
       areaType: 'mountain',
       wouldReturnReason: 'We definitely want to complete the summit! Next time we\'ll plan for better weather and maybe split it into a two-day adventure with proper camping gear.',
       wouldReturn: true,
+      hasFreeParkingAvailable: true,
+      parkingCost: '',
       author: 'Charlotte',
       likes: 15,
       comments: [
