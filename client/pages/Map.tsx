@@ -112,7 +112,23 @@ export default function Map() {
   };
 
   const handleZoomIn = () => {
-    setZoom(prev => Math.min(prev * 1.5, 4));
+    const container = mapContainerRef.current;
+    if (!container) {
+      setZoom(prev => Math.min(prev * 1.5, 4));
+      return;
+    }
+
+    const rect = container.getBoundingClientRect();
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const newZoom = Math.min(zoom * 1.5, 4);
+    const zoomChange = newZoom / zoom;
+    const newPanX = centerX - (centerX - pan.x) * zoomChange;
+    const newPanY = centerY - (centerY - pan.y) * zoomChange;
+
+    setZoom(newZoom);
+    setPan({ x: newPanX, y: newPanY });
   };
 
   const handleZoomOut = () => {
