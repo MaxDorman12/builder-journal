@@ -238,7 +238,7 @@ export default function Map() {
                   ref={mapImageRef}
                   src="https://cdn.builder.io/api/v1/image/assets%2Fcfcab9c7e41c4c598843808fb9cdccfb%2F352f46e4d03e44daab35503198480309?format=webp&width=800"
                   alt="Detailed map of Scotland"
-                  className="w-full h-auto min-h-96 object-contain"
+                  className="w-full h-auto min-h-full object-contain"
                   onClick={handleMapClick}
                   draggable={false}
                   onLoad={() => {
