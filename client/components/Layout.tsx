@@ -38,9 +38,12 @@ export function Layout({ children }: LayoutProps) {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-8">
               <Link to="/" className="flex items-center space-x-2">
-                <Heart className="h-8 w-8 text-primary fill-primary" />
-                <span className="text-xl font-bold text-foreground">
-                  Dorman Family Adventures
+                <div className="relative">
+                  <Heart className="h-8 w-8 text-pink-500 fill-pink-500 bouncy" />
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-pulse"></div>
+                </div>
+                <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  ✨ Dorman Family Adventures ✨
                 </span>
               </Link>
               
@@ -51,10 +54,10 @@ export function Layout({ children }: LayoutProps) {
                     <Link
                       key={item.name}
                       to={item.href}
-                      className={`flex items-center space-x-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      className={`flex items-center space-x-1 px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                         isActive(item.href)
-                          ? 'bg-primary text-primary-foreground'
-                          : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                          ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-gradient-to-r hover:from-purple-100 hover:to-pink-100 hover:scale-105'
                       }`}
                     >
                       <Icon className="h-4 w-4" />
@@ -68,21 +71,24 @@ export function Layout({ children }: LayoutProps) {
             <div className="flex items-center space-x-4">
               {isAuthenticated && isFamilyMember ? (
                 <div className="flex items-center space-x-3">
-                  <Badge variant="secondary" className="flex items-center space-x-1">
-                    <Camera className="h-3 w-3" />
-                    <span>Family Member: {currentUser}</span>
-                  </Badge>
-                  <Button variant="outline" size="sm" onClick={logout}>
-                    <LogOut className="h-4 w-4 mr-1" />
-                    Logout
-                  </Button>
+                  <div className="bg-gradient-to-r from-green-200 to-blue-200 px-3 py-1 rounded-full flex items-center space-x-1 shadow-md">
+                    <Camera className="h-3 w-3 text-green-700" />
+                    <span className="text-green-800 font-medium text-sm">👨‍👩‍👧‍👦 {currentUser}</span>
+                  </div>
+                  <button
+                    onClick={logout}
+                    className="bg-gradient-to-r from-orange-300 to-red-300 hover:from-orange-400 hover:to-red-400 text-orange-800 font-medium py-1 px-3 rounded-full text-sm transform hover:scale-105 transition-all duration-200 shadow-md flex items-center space-x-1"
+                  >
+                    <LogOut className="h-3 w-3" />
+                    <span>Logout</span>
+                  </button>
                 </div>
               ) : (
                 <Link to="/login">
-                  <Button variant="outline" size="sm">
-                    <LogIn className="h-4 w-4 mr-1" />
-                    Family Login
-                  </Button>
+                  <button className="bg-gradient-to-r from-purple-300 to-pink-300 hover:from-purple-400 hover:to-pink-400 text-purple-800 font-medium py-2 px-4 rounded-full text-sm transform hover:scale-105 transition-all duration-200 shadow-md flex items-center space-x-1">
+                    <LogIn className="h-4 w-4" />
+                    <span>🔐 Family Login</span>
+                  </button>
                 </Link>
               )}
             </div>
