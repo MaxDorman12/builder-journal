@@ -147,8 +147,24 @@ export default function Map() {
 
   const handleWheel = (e: React.WheelEvent) => {
     e.preventDefault();
+
+    const container = mapContainerRef.current;
+    if (!container) return;
+
+    const rect = container.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
     const delta = e.deltaY > 0 ? 0.9 : 1.1;
-    setZoom(prev => Math.max(0.5, Math.min(4, prev * delta)));
+    const newZoom = Math.max(0.5, Math.min(4, zoom * delta));
+
+    // Calculate new pan to keep the mouse position centered
+    const zoomChange = newZoom / zoom;
+    const newPanX = mouseX - (mouseX - pan.x) * zoomChange;
+    const newPanY = mouseY - (mouseY - pan.y) * zoomChange;
+
+    setZoom(newZoom);
+    setPan({ x: newPanX, y: newPanY });
   };
 
   const getMoodColor = (rating: number) => {
