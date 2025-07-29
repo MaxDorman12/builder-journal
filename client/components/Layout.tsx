@@ -40,7 +40,7 @@ export function Layout({ children }: LayoutProps) {
               <Link to="/" className="flex items-center space-x-2">
                 <Heart className="h-8 w-8 text-primary fill-primary" />
                 <span className="text-xl font-bold text-foreground">
-                  MacLeod Family Adventures
+                  Dorman Family Adventures
                 </span>
               </Link>
               
@@ -123,7 +123,7 @@ export function Layout({ children }: LayoutProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center text-muted-foreground">
             <p className="text-sm">
-              Made with ❤️ for the MacLeod Family Adventures
+              Made with ❤️ for the Dorman Family Adventures
             </p>
             <p className="text-xs mt-2">
               Private family journal - For family eyes only 👨‍👩‍👧‍👦
