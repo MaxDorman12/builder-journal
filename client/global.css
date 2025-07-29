@@ -9,35 +9,35 @@
    * A different format will require also updating the theme in tailwind.config.ts.
   */
   :root {
-    --background: 210 40% 98%;
-    --foreground: 213 27% 12%;
+    --background: 320 100% 99%;
+    --foreground: 320 20% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 213 27% 12%;
+    --card-foreground: 320 20% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 213 27% 12%;
+    --popover-foreground: 320 20% 15%;
 
-    --primary: 200 98% 39%;
+    --primary: 280 100% 70%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 213 27% 12%;
+    --secondary: 200 100% 95%;
+    --secondary-foreground: 320 20% 15%;
 
-    --muted: 220 14% 96%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 200 100% 95%;
+    --muted-foreground: 320 15% 55%;
 
-    --accent: 162 76% 36%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 160 100% 75%;
+    --accent-foreground: 320 20% 15%;
 
-    --destructive: 0 72% 51%;
+    --destructive: 0 85% 70%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 200 98% 39%;
+    --border: 200 50% 88%;
+    --input: 200 50% 88%;
+    --ring: 280 100% 70%;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -57,33 +57,33 @@
   }
 
   .dark {
-    --background: 213 27% 8%;
-    --foreground: 210 40% 98%;
+    --background: 280 30% 8%;
+    --foreground: 320 50% 95%;
 
-    --card: 213 27% 12%;
-    --card-foreground: 210 40% 98%;
+    --card: 280 30% 12%;
+    --card-foreground: 320 50% 95%;
 
-    --popover: 213 27% 12%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 280 30% 12%;
+    --popover-foreground: 320 50% 95%;
 
-    --primary: 200 98% 39%;
+    --primary: 280 100% 70%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 213 27% 16%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 280 20% 18%;
+    --secondary-foreground: 320 50% 95%;
 
-    --muted: 213 27% 16%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 280 20% 18%;
+    --muted-foreground: 320 30% 70%;
 
-    --accent: 162 76% 36%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 160 80% 60%;
+    --accent-foreground: 280 30% 8%;
 
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 85% 70%;
+    --destructive-foreground: 320 50% 95%;
 
-    --border: 213 27% 16%;
-    --input: 213 27% 16%;
-    --ring: 200 98% 39%;
+    --border: 280 20% 18%;
+    --input: 280 20% 18%;
+    --ring: 280 100% 70%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -107,14 +107,47 @@
 
 @layer components {
   .family-gradient {
-    @apply bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50;
+    @apply bg-gradient-to-br from-pink-100 via-purple-100 via-blue-100 to-green-100;
+    background-size: 400% 400%;
+    animation: gradient-shift 8s ease-in-out infinite;
   }
 
   .family-card {
-    @apply bg-white/80 backdrop-blur-sm border border-white/20 shadow-lg shadow-blue-100/50 rounded-xl;
+    @apply bg-white/90 backdrop-blur-md border border-white/40 shadow-xl shadow-purple-200/30 rounded-2xl;
+    background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.8) 100%);
   }
 
   .mood-rating {
     @apply inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium;
+  }
+
+  .fun-button {
+    @apply bg-gradient-to-r from-purple-400 to-pink-400 hover:from-purple-500 hover:to-pink-500 text-white font-semibold py-2 px-6 rounded-full transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl;
+  }
+
+  .pastel-stat-card {
+    @apply bg-gradient-to-br rounded-2xl p-4 shadow-lg transform hover:scale-105 transition-all duration-200;
+  }
+
+  .bouncy {
+    animation: bounce-gentle 2s ease-in-out infinite;
+  }
+}
+
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes bounce-gentle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
   }
 }
