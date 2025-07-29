@@ -74,6 +74,8 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
         greatFor: formData.greatFor,
         images: formData.images,
         videos: formData.videos,
+        hasFreeParkingAvailable: formData.hasFreeParkingAvailable,
+        parkingCost: formData.parkingCost.trim(),
         author: currentUser || 'Family Member',
         likes: 0,
         comments: [],
