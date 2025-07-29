@@ -26,6 +26,8 @@ export function initializeSampleData() {
       areaType: 'loch',
       wouldReturnReason: 'Absolutely! The scenery is stunning and there are so many activities for the whole family. We definitely want to try camping here next time.',
       wouldReturn: true,
+      hasFreeParkingAvailable: true,
+      parkingCost: '',
       author: 'Charlotte',
       likes: 12,
       comments: [
