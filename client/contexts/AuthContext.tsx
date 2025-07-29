@@ -2,13 +2,13 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { AuthState } from '@shared/api';
 
 interface AuthContextType extends AuthState {
-  login: (password: string, username: string) => boolean;
+  login: (password: string) => boolean;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const FAMILY_PASSWORD = 'ScotlandAdventures2024'; // In production, this would be more secure
+const FAMILY_PASSWORD = 'Summer07max'; // In production, this would be more secure
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [authState, setAuthState] = useState<AuthState>(() => {
@@ -24,12 +24,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('familyAuth', JSON.stringify(authState));
   }, [authState]);
 
-  const login = (password: string, username: string): boolean => {
+  const login = (password: string): boolean => {
     if (password === FAMILY_PASSWORD) {
       const newAuthState = {
         isAuthenticated: true,
         isFamilyMember: true,
-        currentUser: username
+        currentUser: 'Family Member'
       };
       setAuthState(newAuthState);
       return true;
