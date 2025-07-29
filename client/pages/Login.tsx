@@ -124,10 +124,13 @@ export default function Login() {
 
           <div className="mt-6 p-4 bg-muted/50 rounded-lg">
             <h4 className="font-medium text-sm mb-2">For Family Members:</h4>
-            <p className="text-xs text-muted-foreground">
-              Once logged in, you'll be able to create new journal entries, 
-              upload photos and videos, add pins to the map, and manage all 
+            <p className="text-xs text-muted-foreground mb-2">
+              Once logged in, you'll be able to create new journal entries,
+              upload photos and videos, add pins to the map, and manage all
               family content.
+            </p>
+            <p className="text-xs text-muted-foreground font-mono bg-muted p-2 rounded">
+              Demo password: ScotlandAdventures2024
             </p>
           </div>
 
