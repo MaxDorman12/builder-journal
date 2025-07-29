@@ -106,10 +106,13 @@ export default function Map() {
   };
 
   const getPinPosition = (pin: MapPin) => {
-    // Convert lat/lng back to SVG coordinates (simplified)
-    const x = ((pin.lng + 8) / 10) * 100;
-    const y = ((60.5 - pin.lat) / 7) * 100;
-    return { x: Math.max(5, Math.min(95, x)), y: Math.max(5, Math.min(95, y)) };
+    // Convert lat/lng back to SVG coordinates for detailed Scotland map
+    const x = ((pin.lng + 8.2) / 10) * 400; // Convert longitude to x position
+    const y = ((60.9 - pin.lat) / 6.3) * 600; // Convert latitude to y position
+    return {
+      x: Math.max(20, Math.min(380, x)),
+      y: Math.max(20, Math.min(580, y))
+    };
   };
 
   const getMoodColor = (rating: number) => {
