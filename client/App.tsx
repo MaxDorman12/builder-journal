@@ -11,6 +11,8 @@ import { Layout } from "@/components/Layout";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Journal from "./pages/Journal";
+import Map from "./pages/Map";
+import Calendar from "./pages/Calendar";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,18 +38,12 @@ const App = () => (
             } />
             <Route path="/map" element={
               <Layout>
-                <div className="text-center py-16">
-                  <h1 className="text-2xl font-bold mb-4">Map Coming Soon</h1>
-                  <p className="text-muted-foreground">This page will show the interactive Scotland map</p>
-                </div>
+                <Map />
               </Layout>
             } />
             <Route path="/calendar" element={
               <Layout>
-                <div className="text-center py-16">
-                  <h1 className="text-2xl font-bold mb-4">Calendar Coming Soon</h1>
-                  <p className="text-muted-foreground">This page will show journal entries by date</p>
-                </div>
+                <Calendar />
               </Layout>
             } />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
