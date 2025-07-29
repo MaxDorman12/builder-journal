@@ -323,6 +323,12 @@ export function JournalEntryCard({ entry, onLike, isFamilyMember }: JournalEntry
                 <div>
                   <strong>Busy Level:</strong> {entry.isBusy ? 'Busy' : 'Not Busy'}
                 </div>
+                <div>
+                  <strong>Parking:</strong> {entry.hasFreeParkingAvailable ? '🅿️ Free parking' : '💰 Paid parking'}
+                  {!entry.hasFreeParkingAvailable && entry.parkingCost && (
+                    <span className="ml-1">({entry.parkingCost})</span>
+                  )}
+                </div>
               </div>
 
               {entry.greatFor.length > 0 && (
