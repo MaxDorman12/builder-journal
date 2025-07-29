@@ -38,6 +38,12 @@ export default function Map() {
     lat: 0,
     lng: 0
   });
+  const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const mapImageRef = useRef<HTMLImageElement>(null);
 
   // Scotland regions with approximate coordinates (simplified)
   const scotlandRegions = [
