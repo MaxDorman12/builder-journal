@@ -1,31 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { LocalStorage } from '@/lib/storage';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { 
-  Search, 
-  Plus, 
-  Heart, 
-  MessageCircle, 
-  Calendar, 
+import React, { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { LocalStorage } from "@/lib/storage";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Search,
+  Plus,
+  Heart,
+  MessageCircle,
+  Calendar,
   MapPin,
   Camera,
   Video,
-  Filter
-} from 'lucide-react';
-import { JournalEntry, MOOD_RATINGS, AREA_TYPES } from '@shared/api';
-import { JournalEntryCard } from '@/components/JournalEntryCard';
-import { CreateEntryForm } from '@/components/CreateEntryForm';
+  Filter,
+} from "lucide-react";
+import { JournalEntry, MOOD_RATINGS, AREA_TYPES } from "@shared/api";
+import { JournalEntryCard } from "@/components/JournalEntryCard";
+import { CreateEntryForm } from "@/components/CreateEntryForm";
 
 export default function Journal() {
   const { isFamilyMember } = useAuth();
   const [entries, setEntries] = useState<JournalEntry[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterAreaType, setFilterAreaType] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterAreaType, setFilterAreaType] = useState<string>("");
   const [filterMoodRating, setFilterMoodRating] = useState<number | null>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
@@ -35,17 +41,25 @@ export default function Journal() {
 
   const loadEntries = () => {
     const allEntries = LocalStorage.getJournalEntries();
-    setEntries(allEntries.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
+    setEntries(
+      allEntries.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      ),
+    );
   };
 
-  const filteredEntries = entries.filter(entry => {
-    const matchesSearch = entry.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         entry.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         entry.location.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesAreaType = !filterAreaType || entry.areaType === filterAreaType;
-    const matchesMoodRating = filterMoodRating === null || entry.moodRating === filterMoodRating;
-    
+  const filteredEntries = entries.filter((entry) => {
+    const matchesSearch =
+      entry.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      entry.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      entry.location.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesAreaType =
+      !filterAreaType || entry.areaType === filterAreaType;
+    const matchesMoodRating =
+      filterMoodRating === null || entry.moodRating === filterMoodRating;
+
     return matchesSearch && matchesAreaType && matchesMoodRating;
   });
 
@@ -69,9 +83,12 @@ export default function Journal() {
             {entries.length} adventures documented and counting!
           </p>
         </div>
-        
+
         {isFamilyMember && (
-          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+          <Dialog
+            open={isCreateDialogOpen}
+            onOpenChange={setIsCreateDialogOpen}
+          >
             <DialogTrigger asChild>
               <Button size="lg" className="flex items-center space-x-2">
                 <Plus className="h-5 w-5" />
@@ -103,7 +120,7 @@ export default function Journal() {
                 />
               </div>
             </div>
-            
+
             <div className="flex gap-2">
               <select
                 value={filterAreaType}
@@ -111,20 +128,24 @@ export default function Journal() {
                 className="px-3 py-2 border border-input bg-background rounded-md text-sm"
               >
                 <option value="">All Areas</option>
-                {AREA_TYPES.map(type => (
+                {AREA_TYPES.map((type) => (
                   <option key={type.value} value={type.value}>
                     {type.label}
                   </option>
                 ))}
               </select>
-              
+
               <select
-                value={filterMoodRating || ''}
-                onChange={(e) => setFilterMoodRating(e.target.value ? Number(e.target.value) : null)}
+                value={filterMoodRating || ""}
+                onChange={(e) =>
+                  setFilterMoodRating(
+                    e.target.value ? Number(e.target.value) : null,
+                  )
+                }
                 className="px-3 py-2 border border-input bg-background rounded-md text-sm"
               >
                 <option value="">All Ratings</option>
-                {MOOD_RATINGS.map(rating => (
+                {MOOD_RATINGS.map((rating) => (
                   <option key={rating.value} value={rating.value}>
                     {rating.emoji} {rating.label}
                   </option>
@@ -132,7 +153,7 @@ export default function Journal() {
               </select>
             </div>
           </div>
-          
+
           {(searchTerm || filterAreaType || filterMoodRating) && (
             <div className="flex items-center gap-2 mt-3">
               <span className="text-sm text-muted-foreground">Filters:</span>
@@ -141,20 +162,24 @@ export default function Journal() {
               )}
               {filterAreaType && (
                 <Badge variant="secondary">
-                  {AREA_TYPES.find(t => t.value === filterAreaType)?.label}
+                  {AREA_TYPES.find((t) => t.value === filterAreaType)?.label}
                 </Badge>
               )}
               {filterMoodRating && (
                 <Badge variant="secondary">
-                  {MOOD_RATINGS.find(r => r.value === filterMoodRating)?.emoji} Rating: {filterMoodRating}
+                  {
+                    MOOD_RATINGS.find((r) => r.value === filterMoodRating)
+                      ?.emoji
+                  }{" "}
+                  Rating: {filterMoodRating}
                 </Badge>
               )}
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => {
-                  setSearchTerm('');
-                  setFilterAreaType('');
+                  setSearchTerm("");
+                  setFilterAreaType("");
                   setFilterMoodRating(null);
                 }}
               >
@@ -186,7 +211,10 @@ export default function Journal() {
             </div>
             <div>
               <p className="text-lg font-bold">
-                {filteredEntries.reduce((sum, entry) => sum + entry.images.length, 0)}
+                {filteredEntries.reduce(
+                  (sum, entry) => sum + entry.images.length,
+                  0,
+                )}
               </p>
               <p className="text-xs text-muted-foreground">Photos</p>
             </div>
@@ -200,7 +228,10 @@ export default function Journal() {
             </div>
             <div>
               <p className="text-lg font-bold">
-                {filteredEntries.reduce((sum, entry) => sum + entry.videos.length, 0)}
+                {filteredEntries.reduce(
+                  (sum, entry) => sum + entry.videos.length,
+                  0,
+                )}
               </p>
               <p className="text-xs text-muted-foreground">Videos</p>
             </div>
@@ -229,7 +260,9 @@ export default function Journal() {
             {entries.length === 0 ? (
               <>
                 <Camera className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">No Journal Entries Yet</h3>
+                <h3 className="text-lg font-semibold mb-2">
+                  No Journal Entries Yet
+                </h3>
                 <p className="text-muted-foreground mb-4">
                   Start documenting your family adventures!
                 </p>
@@ -242,7 +275,9 @@ export default function Journal() {
             ) : (
               <>
                 <Filter className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">No Entries Match Your Filters</h3>
+                <h3 className="text-lg font-semibold mb-2">
+                  No Entries Match Your Filters
+                </h3>
                 <p className="text-muted-foreground">
                   Try adjusting your search terms or filters
                 </p>

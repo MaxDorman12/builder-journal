@@ -26,32 +26,47 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<Login />} />
-            <Route path="/" element={
-              <Layout>
-                <Index />
-              </Layout>
-            } />
-            <Route path="/journal" element={
-              <Layout>
-                <Journal />
-              </Layout>
-            } />
-            <Route path="/map" element={
-              <Layout>
-                <Map />
-              </Layout>
-            } />
-            <Route path="/calendar" element={
-              <Layout>
-                <Calendar />
-              </Layout>
-            } />
+            <Route
+              path="/"
+              element={
+                <Layout>
+                  <Index />
+                </Layout>
+              }
+            />
+            <Route
+              path="/journal"
+              element={
+                <Layout>
+                  <Journal />
+                </Layout>
+              }
+            />
+            <Route
+              path="/map"
+              element={
+                <Layout>
+                  <Map />
+                </Layout>
+              }
+            />
+            <Route
+              path="/calendar"
+              element={
+                <Layout>
+                  <Calendar />
+                </Layout>
+              }
+            />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={
-              <Layout>
-                <NotFound />
-              </Layout>
-            } />
+            <Route
+              path="*"
+              element={
+                <Layout>
+                  <NotFound />
+                </Layout>
+              }
+            />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>

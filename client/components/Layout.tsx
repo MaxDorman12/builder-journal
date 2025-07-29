@@ -1,18 +1,18 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { 
-  Home, 
-  BookOpen, 
-  Map, 
-  LogOut, 
-  LogIn, 
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Home,
+  BookOpen,
+  Map,
+  LogOut,
+  LogIn,
   Heart,
   Camera,
-  Calendar
-} from 'lucide-react';
+  Calendar,
+} from "lucide-react";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -23,10 +23,10 @@ export function Layout({ children }: LayoutProps) {
   const location = useLocation();
 
   const navigation = [
-    { name: 'Home', href: '/', icon: Home },
-    { name: 'Journal', href: '/journal', icon: BookOpen },
-    { name: 'Map', href: '/map', icon: Map },
-    { name: 'Calendar', href: '/calendar', icon: Calendar }
+    { name: "Home", href: "/", icon: Home },
+    { name: "Journal", href: "/journal", icon: BookOpen },
+    { name: "Map", href: "/map", icon: Map },
+    { name: "Calendar", href: "/calendar", icon: Calendar },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -46,7 +46,7 @@ export function Layout({ children }: LayoutProps) {
                   ✨ Dorman Family Adventures ✨
                 </span>
               </Link>
-              
+
               <nav className="hidden md:flex space-x-6">
                 {navigation.map((item) => {
                   const Icon = item.icon;
@@ -56,8 +56,8 @@ export function Layout({ children }: LayoutProps) {
                       to={item.href}
                       className={`flex items-center space-x-1 px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                         isActive(item.href)
-                          ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
-                          : 'text-muted-foreground hover:text-foreground hover:bg-gradient-to-r hover:from-purple-100 hover:to-pink-100 hover:scale-105'
+                          ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
+                          : "text-muted-foreground hover:text-foreground hover:bg-gradient-to-r hover:from-purple-100 hover:to-pink-100 hover:scale-105"
                       }`}
                     >
                       <Icon className="h-4 w-4" />
@@ -73,7 +73,9 @@ export function Layout({ children }: LayoutProps) {
                 <div className="flex items-center space-x-3">
                   <div className="bg-gradient-to-r from-green-200 to-blue-200 px-3 py-1 rounded-full flex items-center space-x-1 shadow-md">
                     <Camera className="h-3 w-3 text-green-700" />
-                    <span className="text-green-800 font-medium text-sm">👨‍👩‍👧‍👦 {currentUser}</span>
+                    <span className="text-green-800 font-medium text-sm">
+                      👨‍👩‍👧‍👦 {currentUser}
+                    </span>
                   </div>
                   <button
                     onClick={logout}
@@ -107,8 +109,8 @@ export function Layout({ children }: LayoutProps) {
                     to={item.href}
                     className={`flex flex-col items-center space-y-1 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
                       isActive(item.href)
-                        ? 'text-primary'
-                        : 'text-muted-foreground hover:text-foreground'
+                        ? "text-primary"
+                        : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
                     <Icon className="h-5 w-5" />

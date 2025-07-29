@@ -114,7 +114,11 @@
 
   .family-card {
     @apply bg-white/90 backdrop-blur-md border border-white/40 shadow-xl shadow-purple-200/30 rounded-2xl;
-    background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.8) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(255, 255, 255, 0.8) 100%
+    );
   }
 
   .mood-rating {
@@ -135,7 +139,8 @@
 }
 
 @keyframes gradient-shift {
-  0%, 100% {
+  0%,
+  100% {
     background-position: 0% 50%;
   }
   50% {
@@ -144,7 +149,8 @@
 }
 
 @keyframes bounce-gentle {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {

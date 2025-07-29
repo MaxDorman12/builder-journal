@@ -1,24 +1,29 @@
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Textarea } from '@/components/ui/textarea';
-import { 
-  Heart, 
-  MessageCircle, 
-  Calendar, 
-  MapPin, 
-  Camera, 
+import React, { useState } from "react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Heart,
+  MessageCircle,
+  Calendar,
+  MapPin,
+  Camera,
   Video,
   Clock,
   User,
   ChevronLeft,
   ChevronRight,
-  Play
-} from 'lucide-react';
-import { JournalEntry, MOOD_RATINGS, AREA_TYPES, Comment } from '@shared/api';
-import { LocalStorage } from '@/lib/storage';
+  Play,
+} from "lucide-react";
+import { JournalEntry, MOOD_RATINGS, AREA_TYPES, Comment } from "@shared/api";
+import { LocalStorage } from "@/lib/storage";
 
 interface JournalEntryCardProps {
   entry: JournalEntry;
@@ -26,54 +31,58 @@ interface JournalEntryCardProps {
   isFamilyMember: boolean;
 }
 
-export function JournalEntryCard({ entry, onLike, isFamilyMember }: JournalEntryCardProps) {
+export function JournalEntryCard({
+  entry,
+  onLike,
+  isFamilyMember,
+}: JournalEntryCardProps) {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [newComment, setNewComment] = useState('');
+  const [newComment, setNewComment] = useState("");
   const [showComments, setShowComments] = useState(false);
 
-  const moodData = MOOD_RATINGS.find(r => r.value === entry.moodRating);
-  const areaData = AREA_TYPES.find(t => t.value === entry.areaType);
+  const moodData = MOOD_RATINGS.find((r) => r.value === entry.moodRating);
+  const areaData = AREA_TYPES.find((t) => t.value === entry.areaType);
 
   const handleAddComment = () => {
     if (!newComment.trim()) return;
-    
+
     const comment: Comment = {
       id: Date.now().toString(),
       content: newComment.trim(),
-      author: 'Family Member', // In a real app, this would be the current user
+      author: "Family Member", // In a real app, this would be the current user
       createdAt: new Date().toISOString(),
-      likes: 0
+      likes: 0,
     };
 
     LocalStorage.addComment(entry.id, comment);
-    setNewComment('');
+    setNewComment("");
     // Refresh the entry data would happen here in a real app
   };
 
   const nextImage = () => {
-    setCurrentImageIndex((prev) => 
-      prev === entry.images.length - 1 ? 0 : prev + 1
+    setCurrentImageIndex((prev) =>
+      prev === entry.images.length - 1 ? 0 : prev + 1,
     );
   };
 
   const prevImage = () => {
-    setCurrentImageIndex((prev) => 
-      prev === 0 ? entry.images.length - 1 : prev - 1
+    setCurrentImageIndex((prev) =>
+      prev === 0 ? entry.images.length - 1 : prev - 1,
     );
   };
 
   return (
     <>
       <Card className="family-card overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
-        <div 
+        <div
           className="aspect-video bg-gradient-to-br from-blue-50 to-purple-50 relative overflow-hidden"
           onClick={() => setIsDetailOpen(true)}
         >
           {entry.images.length > 0 ? (
             <>
-              <img 
-                src={entry.images[0]} 
+              <img
+                src={entry.images[0]}
                 alt={entry.title}
                 className="w-full h-full object-cover"
               />
@@ -89,7 +98,7 @@ export function JournalEntryCard({ entry, onLike, isFamilyMember }: JournalEntry
               <Camera className="h-12 w-12 text-muted-foreground" />
             </div>
           )}
-          
+
           {entry.videos.length > 0 && (
             <Badge className="absolute top-2 left-2 bg-red-600 text-white">
               <Video className="h-3 w-3 mr-1" />
@@ -100,7 +109,9 @@ export function JournalEntryCard({ entry, onLike, isFamilyMember }: JournalEntry
 
         <CardContent className="p-4">
           <div className="flex items-start justify-between mb-2">
-            <h3 className="font-semibold text-lg line-clamp-2">{entry.title}</h3>
+            <h3 className="font-semibold text-lg line-clamp-2">
+              {entry.title}
+            </h3>
             {moodData && (
               <span className="text-2xl ml-2">{moodData.emoji}</span>
             )}
@@ -124,7 +135,7 @@ export function JournalEntryCard({ entry, onLike, isFamilyMember }: JournalEntry
           <div className="flex flex-wrap gap-1 mb-3">
             {areaData && (
               <Badge variant="outline" className="text-xs">
-                {areaData.emoji} {areaData.label.split(' ')[1]}
+                {areaData.emoji} {areaData.label.split(" ")[1]}
               </Badge>
             )}
             {entry.isBusy && (
@@ -146,7 +157,7 @@ export function JournalEntryCard({ entry, onLike, isFamilyMember }: JournalEntry
 
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center space-x-3">
-              <button 
+              <button
                 onClick={(e) => {
                   e.stopPropagation();
                   onLike(entry.id);
@@ -156,8 +167,8 @@ export function JournalEntryCard({ entry, onLike, isFamilyMember }: JournalEntry
                 <Heart className="h-4 w-4" />
                 <span>{entry.likes}</span>
               </button>
-              
-              <button 
+
+              <button
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowComments(!showComments);
@@ -168,7 +179,7 @@ export function JournalEntryCard({ entry, onLike, isFamilyMember }: JournalEntry
                 <span>{entry.comments.length}</span>
               </button>
             </div>
-            
+
             <div className="flex items-center space-x-1 text-muted-foreground">
               <User className="h-3 w-3" />
               <span>{entry.author}</span>
@@ -179,7 +190,10 @@ export function JournalEntryCard({ entry, onLike, isFamilyMember }: JournalEntry
             <div className="mt-4 pt-4 border-t">
               <div className="space-y-2 max-h-32 overflow-y-auto">
                 {entry.comments.map((comment) => (
-                  <div key={comment.id} className="text-xs bg-muted/50 rounded p-2">
+                  <div
+                    key={comment.id}
+                    className="text-xs bg-muted/50 rounded p-2"
+                  >
                     <div className="flex items-center justify-between mb-1">
                       <span className="font-medium">{comment.author}</span>
                       <span className="text-muted-foreground">
@@ -190,7 +204,7 @@ export function JournalEntryCard({ entry, onLike, isFamilyMember }: JournalEntry
                   </div>
                 ))}
               </div>
-              
+
               {isFamilyMember && (
                 <div className="flex gap-2 mt-2">
                   <Textarea
@@ -229,12 +243,12 @@ export function JournalEntryCard({ entry, onLike, isFamilyMember }: JournalEntry
             {entry.images.length > 0 && (
               <div className="space-y-4">
                 <div className="relative aspect-video bg-gray-100 rounded-lg overflow-hidden">
-                  <img 
+                  <img
                     src={entry.images[currentImageIndex]}
                     alt={`${entry.title} - Image ${currentImageIndex + 1}`}
                     className="w-full h-full object-cover"
                   />
-                  
+
                   {entry.images.length > 1 && (
                     <>
                       <Button
@@ -253,14 +267,14 @@ export function JournalEntryCard({ entry, onLike, isFamilyMember }: JournalEntry
                       >
                         <ChevronRight className="h-4 w-4" />
                       </Button>
-                      
+
                       <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-2 py-1 rounded text-sm">
                         {currentImageIndex + 1} / {entry.images.length}
                       </div>
                     </>
                   )}
                 </div>
-                
+
                 {entry.images.length > 1 && (
                   <div className="flex space-x-2 overflow-x-auto">
                     {entry.images.map((image, index) => (
@@ -268,10 +282,12 @@ export function JournalEntryCard({ entry, onLike, isFamilyMember }: JournalEntry
                         key={index}
                         onClick={() => setCurrentImageIndex(index)}
                         className={`flex-shrink-0 w-16 h-16 rounded border-2 overflow-hidden ${
-                          index === currentImageIndex ? 'border-primary' : 'border-transparent'
+                          index === currentImageIndex
+                            ? "border-primary"
+                            : "border-transparent"
                         }`}
                       >
-                        <img 
+                        <img
                           src={image}
                           alt={`Thumbnail ${index + 1}`}
                           className="w-full h-full object-cover"
@@ -292,10 +308,15 @@ export function JournalEntryCard({ entry, onLike, isFamilyMember }: JournalEntry
                 </h4>
                 <div className="grid gap-4">
                   {entry.videos.map((video, index) => (
-                    <div key={index} className="aspect-video bg-gray-100 rounded-lg flex items-center justify-center">
+                    <div
+                      key={index}
+                      className="aspect-video bg-gray-100 rounded-lg flex items-center justify-center"
+                    >
                       <div className="text-center">
                         <Play className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
-                        <p className="text-sm text-muted-foreground">Video {index + 1}</p>
+                        <p className="text-sm text-muted-foreground">
+                          Video {index + 1}
+                        </p>
                         <p className="text-xs text-muted-foreground">{video}</p>
                       </div>
                     </div>
@@ -315,16 +336,21 @@ export function JournalEntryCard({ entry, onLike, isFamilyMember }: JournalEntry
                   <strong>Location:</strong> {entry.location}
                 </div>
                 <div>
-                  <strong>Date:</strong> {new Date(entry.date).toLocaleDateString()}
+                  <strong>Date:</strong>{" "}
+                  {new Date(entry.date).toLocaleDateString()}
                 </div>
                 <div>
                   <strong>Area Type:</strong> {areaData?.label}
                 </div>
                 <div>
-                  <strong>Busy Level:</strong> {entry.isBusy ? 'Busy' : 'Not Busy'}
+                  <strong>Busy Level:</strong>{" "}
+                  {entry.isBusy ? "Busy" : "Not Busy"}
                 </div>
                 <div>
-                  <strong>Parking:</strong> {entry.hasFreeParkingAvailable ? '🅿️ Free parking' : '💰 Paid parking'}
+                  <strong>Parking:</strong>{" "}
+                  {entry.hasFreeParkingAvailable
+                    ? "🅿️ Free parking"
+                    : "💰 Paid parking"}
                   {!entry.hasFreeParkingAvailable && entry.parkingCost && (
                     <span className="ml-1">({entry.parkingCost})</span>
                   )}
@@ -347,7 +373,7 @@ export function JournalEntryCard({ entry, onLike, isFamilyMember }: JournalEntry
               {entry.wouldReturnReason && (
                 <div>
                   <strong className="text-sm">
-                    Would {entry.wouldReturn ? 'Return' : 'Not Return'}:
+                    Would {entry.wouldReturn ? "Return" : "Not Return"}:
                   </strong>
                   <p className="text-sm text-muted-foreground mt-1">
                     {entry.wouldReturnReason}

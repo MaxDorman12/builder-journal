@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
-import { LocalStorage } from '@/lib/storage';
-import { initializeSampleData } from '@/lib/sampleData';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { 
-  Heart, 
-  MapPin, 
-  Calendar, 
-  BookOpen, 
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { LocalStorage } from "@/lib/storage";
+import { initializeSampleData } from "@/lib/sampleData";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Heart,
+  MapPin,
+  Calendar,
+  BookOpen,
   Youtube,
   Camera,
   Compass,
   Users,
   Mountain,
-  Waves
-} from 'lucide-react';
-import { MOOD_RATINGS, JournalEntry, MapPin as MapPinType } from '@shared/api';
+  Waves,
+} from "lucide-react";
+import { MOOD_RATINGS, JournalEntry, MapPin as MapPinType } from "@shared/api";
 
 export default function Index() {
   const { isAuthenticated, isFamilyMember } = useAuth();
@@ -34,13 +34,19 @@ export default function Index() {
   }, []);
 
   const recentEntries = entries
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    )
     .slice(0, 3);
 
   const totalTrips = pins.length;
-  const averageMood = pins.length > 0 
-    ? Math.round(pins.reduce((sum, pin) => sum + pin.moodRating, 0) / pins.length)
-    : 0;
+  const averageMood =
+    pins.length > 0
+      ? Math.round(
+          pins.reduce((sum, pin) => sum + pin.moodRating, 0) / pins.length,
+        )
+      : 0;
 
   return (
     <div className="space-y-12">
@@ -48,17 +54,20 @@ export default function Index() {
       <section className="text-center space-y-6">
         <div className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-pink-200 to-purple-200 rounded-full shadow-lg bouncy">
           <Heart className="h-5 w-5 text-purple-600 fill-purple-600" />
-          <span className="text-purple-700 font-medium">✨ Welcome to our magical adventures! ✨</span>
+          <span className="text-purple-700 font-medium">
+            ✨ Welcome to our magical adventures! ✨
+          </span>
         </div>
-        
+
         <h1 className="text-4xl md:text-6xl font-bold text-foreground leading-tight">
           The Dorman Family
           <span className="block text-primary">Scottish Adventures</span>
         </h1>
-        
+
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-          Follow Max, Charlotte, Oscar, Rose, and Lola as they explore the beautiful landscapes 
-          of Scotland, creating memories and sharing their amazing journeys together.
+          Follow Max, Charlotte, Oscar, Rose, and Lola as they explore the
+          beautiful landscapes of Scotland, creating memories and sharing their
+          amazing journeys together.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -98,7 +107,9 @@ export default function Index() {
               <BookOpen className="h-6 w-6 text-purple-700" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-purple-800">{entries.length}</p>
+              <p className="text-2xl font-bold text-purple-800">
+                {entries.length}
+              </p>
               <p className="text-sm text-purple-600">📚 Journal Entries</p>
             </div>
           </div>
@@ -120,11 +131,15 @@ export default function Index() {
           <div className="flex items-center space-x-3">
             <div className="p-3 bg-white/60 rounded-full">
               <span className="text-2xl bouncy">
-                {averageMood > 0 ? MOOD_RATINGS.find(r => r.value === averageMood)?.emoji : '😊'}
+                {averageMood > 0
+                  ? MOOD_RATINGS.find((r) => r.value === averageMood)?.emoji
+                  : "😊"}
               </span>
             </div>
             <div>
-              <p className="text-2xl font-bold text-green-800">{averageMood > 0 ? `${averageMood}/5` : 'N/A'}</p>
+              <p className="text-2xl font-bold text-green-800">
+                {averageMood > 0 ? `${averageMood}/5` : "N/A"}
+              </p>
               <p className="text-sm text-green-600">⭐ Average Trip Rating</p>
             </div>
           </div>
@@ -134,41 +149,54 @@ export default function Index() {
       {/* About Section */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
         <div className="space-y-6">
-          <h2 className="text-3xl font-bold text-foreground">About Our Family</h2>
+          <h2 className="text-3xl font-bold text-foreground">
+            About Our Family
+          </h2>
           <div className="prose prose-lg max-w-none text-muted-foreground">
             <p>
-              We're the Dorman family - Max and Charlotte, along with our three wonderful 
-              children Oscar, Rose, and Lola. Living in beautiful Scotland, we're passionate 
-              about exploring our homeland's incredible landscapes, from the mysterious lochs 
-              to the towering Munros.
+              We're the Dorman family - Max and Charlotte, along with our three
+              wonderful children Oscar, Rose, and Lola. Living in beautiful
+              Scotland, we're passionate about exploring our homeland's
+              incredible landscapes, from the mysterious lochs to the towering
+              Munros.
             </p>
             <p>
-              This journal captures our adventures as we discover hidden gems, bustling cities, 
-              peaceful villages, and breathtaking natural wonders across Scotland. Each trip 
-              brings new memories, challenges, and stories to share.
+              This journal captures our adventures as we discover hidden gems,
+              bustling cities, peaceful villages, and breathtaking natural
+              wonders across Scotland. Each trip brings new memories,
+              challenges, and stories to share.
             </p>
             <p>
-              Join us as we document our journeys, rate our experiences, and build a treasure 
-              trove of family memories that we'll cherish forever.
+              Join us as we document our journeys, rate our experiences, and
+              build a treasure trove of family memories that we'll cherish
+              forever.
             </p>
           </div>
 
           <div className="flex flex-wrap gap-3">
             <div className="bg-gradient-to-r from-orange-200 to-red-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
               <Mountain className="h-3 w-3 text-orange-700" />
-              <span className="text-orange-800 font-medium">🏔️ Highland Hikers</span>
+              <span className="text-orange-800 font-medium">
+                🏔️ Highland Hikers
+              </span>
             </div>
             <div className="bg-gradient-to-r from-blue-200 to-cyan-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
               <Waves className="h-3 w-3 text-blue-700" />
-              <span className="text-blue-800 font-medium">🌊 Loch Explorers</span>
+              <span className="text-blue-800 font-medium">
+                🌊 Loch Explorers
+              </span>
             </div>
             <div className="bg-gradient-to-r from-pink-200 to-purple-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
               <Camera className="h-3 w-3 text-pink-700" />
-              <span className="text-pink-800 font-medium">📸 Memory Makers</span>
+              <span className="text-pink-800 font-medium">
+                📸 Memory Makers
+              </span>
             </div>
             <div className="bg-gradient-to-r from-green-200 to-teal-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
               <Compass className="h-3 w-3 text-green-700" />
-              <span className="text-green-800 font-medium">🧭 Adventure Seekers</span>
+              <span className="text-green-800 font-medium">
+                🧭 Adventure Seekers
+              </span>
             </div>
           </div>
         </div>
@@ -182,15 +210,17 @@ export default function Index() {
           </CardHeader>
           <CardContent>
             <div className="aspect-video bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg flex items-center justify-center">
-              <a 
-                href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" 
-                target="_blank" 
+              <a
+                href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="flex flex-col items-center space-y-2 text-center p-6 hover:scale-105 transition-transform"
               >
                 <Youtube className="h-12 w-12 text-red-500" />
                 <p className="font-medium">Watch Our Latest Adventure</p>
-                <p className="text-sm text-muted-foreground">Click to open in YouTube</p>
+                <p className="text-sm text-muted-foreground">
+                  Click to open in YouTube
+                </p>
               </a>
             </div>
           </CardContent>
@@ -201,7 +231,9 @@ export default function Index() {
       {recentEntries.length > 0 && (
         <section className="space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-3xl font-bold text-foreground">Recent Adventures</h2>
+            <h2 className="text-3xl font-bold text-foreground">
+              Recent Adventures
+            </h2>
             <Link to="/journal">
               <Button variant="outline">View All Entries</Button>
             </Link>
@@ -209,13 +241,15 @@ export default function Index() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {recentEntries.map((entry) => {
-              const moodData = MOOD_RATINGS.find(r => r.value === entry.moodRating);
+              const moodData = MOOD_RATINGS.find(
+                (r) => r.value === entry.moodRating,
+              );
               return (
                 <Card key={entry.id} className="family-card overflow-hidden">
                   <div className="aspect-video bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center">
                     {entry.images.length > 0 ? (
-                      <img 
-                        src={entry.images[0]} 
+                      <img
+                        src={entry.images[0]}
                         alt={entry.title}
                         className="w-full h-full object-cover"
                       />
@@ -253,8 +287,9 @@ export default function Index() {
             <CardContent className="p-8">
               <h2 className="text-2xl font-bold mb-4">Join Our Adventure</h2>
               <p className="text-muted-foreground mb-6">
-                You're viewing our family journal as a visitor. Family members can log in to 
-                add new entries, upload photos and videos, and update our adventure map!
+                You're viewing our family journal as a visitor. Family members
+                can log in to add new entries, upload photos and videos, and
+                update our adventure map!
               </p>
               <Link to="/login">
                 <Button size="lg">Family Member Login</Button>

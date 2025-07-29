@@ -1,26 +1,32 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Heart, Lock, User } from 'lucide-react';
-import { FAMILY_MEMBERS } from '@shared/api';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Heart, Lock, User } from "lucide-react";
+import { FAMILY_MEMBERS } from "@shared/api";
 
 export default function Login() {
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   React.useEffect(() => {
     if (isAuthenticated) {
-      navigate('/');
+      navigate("/");
     }
   }, [isAuthenticated, navigate]);
 
@@ -28,19 +34,19 @@ export default function Login() {
     e.preventDefault();
 
     if (!password) {
-      setError('Please enter the family password');
+      setError("Please enter the family password");
       return;
     }
 
     setIsLoading(true);
-    setError('');
+    setError("");
 
     const success = login(password);
 
     if (success) {
-      navigate('/');
+      navigate("/");
     } else {
-      setError('Incorrect password. Please try again.');
+      setError("Incorrect password. Please try again.");
     }
 
     setIsLoading(false);
@@ -92,16 +98,18 @@ export default function Login() {
               className="w-full fun-button disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isLoading}
             >
-              {isLoading ? '✨ Logging in...' : '🎆 Enter Family Portal!'}
+              {isLoading ? "✨ Logging in..." : "🎆 Enter Family Portal!"}
             </button>
           </form>
 
           <div className="mt-6 p-4 bg-gradient-to-r from-blue-100 to-purple-100 rounded-2xl shadow-inner">
-            <h4 className="font-medium text-sm mb-2 text-purple-800">🌈 For Family Members:</h4>
+            <h4 className="font-medium text-sm mb-2 text-purple-800">
+              🌈 For Family Members:
+            </h4>
             <p className="text-xs text-purple-700 mb-2">
-              Once logged in, you'll unlock magical powers to create journal entries,
-              upload photos and videos, add pins to the map, and manage all
-              our wonderful family memories! 💫
+              Once logged in, you'll unlock magical powers to create journal
+              entries, upload photos and videos, add pins to the map, and manage
+              all our wonderful family memories! 💫
             </p>
             <div className="bg-gradient-to-r from-yellow-200 to-orange-200 p-3 rounded-xl shadow-md">
               <p className="text-xs text-orange-800 font-mono font-bold">
@@ -112,7 +120,7 @@ export default function Login() {
 
           <div className="mt-4 text-center">
             <button
-              onClick={() => navigate('/')}
+              onClick={() => navigate("/")}
               className="text-purple-600 hover:text-purple-800 font-medium text-sm hover:underline transition-colors"
             >
               👀 Continue as Visitor (view-only)

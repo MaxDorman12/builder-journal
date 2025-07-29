@@ -1,26 +1,32 @@
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { 
-  Upload, 
-  X, 
-  Calendar, 
-  MapPin, 
-  Camera, 
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Upload,
+  X,
+  Calendar,
+  MapPin,
+  Camera,
   Video,
   Plus,
-  Star
-} from 'lucide-react';
-import { JournalEntry, AREA_TYPES, MOOD_RATINGS } from '@shared/api';
-import { LocalStorage } from '@/lib/storage';
-import { useAuth } from '@/contexts/AuthContext';
+  Star,
+} from "lucide-react";
+import { JournalEntry, AREA_TYPES, MOOD_RATINGS } from "@shared/api";
+import { LocalStorage } from "@/lib/storage";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface CreateEntryFormProps {
   onEntryCreated: () => void;
@@ -29,35 +35,39 @@ interface CreateEntryFormProps {
 export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
   const { currentUser } = useAuth();
   const [formData, setFormData] = useState({
-    title: '',
-    content: '',
-    location: '',
-    date: new Date().toISOString().split('T')[0],
+    title: "",
+    content: "",
+    location: "",
+    date: new Date().toISOString().split("T")[0],
     moodRating: 3 as 1 | 2 | 3 | 4 | 5,
-    areaType: 'town' as any,
+    areaType: "town" as any,
     isBusy: false,
     wouldReturn: true,
-    wouldReturnReason: '',
+    wouldReturnReason: "",
     greatFor: [] as string[],
     images: [] as string[],
     videos: [] as string[],
     hasFreeParkingAvailable: true,
-    parkingCost: ''
+    parkingCost: "",
   });
-  const [newActivity, setNewActivity] = useState('');
+  const [newActivity, setNewActivity] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.title.trim() || !formData.content.trim() || !formData.location.trim()) {
-      setError('Please fill in all required fields');
+
+    if (
+      !formData.title.trim() ||
+      !formData.content.trim() ||
+      !formData.location.trim()
+    ) {
+      setError("Please fill in all required fields");
       return;
     }
 
     setIsSubmitting(true);
-    setError('');
+    setError("");
 
     try {
       const entry: JournalEntry = {
@@ -76,18 +86,18 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
         videos: formData.videos,
         hasFreeParkingAvailable: formData.hasFreeParkingAvailable,
         parkingCost: formData.parkingCost.trim(),
-        author: currentUser || 'Family Member',
+        author: currentUser || "Family Member",
         likes: 0,
         comments: [],
         tags: [],
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       };
 
       LocalStorage.saveJournalEntry(entry);
       onEntryCreated();
     } catch (err) {
-      setError('Failed to create journal entry. Please try again.');
+      setError("Failed to create journal entry. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -95,30 +105,30 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
 
   const addActivity = () => {
     if (newActivity.trim() && !formData.greatFor.includes(newActivity.trim())) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        greatFor: [...prev.greatFor, newActivity.trim()]
+        greatFor: [...prev.greatFor, newActivity.trim()],
       }));
-      setNewActivity('');
+      setNewActivity("");
     }
   };
 
   const removeActivity = (activity: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      greatFor: prev.greatFor.filter(a => a !== activity)
+      greatFor: prev.greatFor.filter((a) => a !== activity),
     }));
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    files.forEach(file => {
+    files.forEach((file) => {
       const reader = new FileReader();
       reader.onload = (event) => {
         if (event.target?.result) {
-          setFormData(prev => ({
+          setFormData((prev) => ({
             ...prev,
-            images: [...prev.images, event.target!.result as string]
+            images: [...prev.images, event.target!.result as string],
           }));
         }
       };
@@ -128,13 +138,13 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
 
   const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    files.forEach(file => {
+    files.forEach((file) => {
       const reader = new FileReader();
       reader.onload = (event) => {
         if (event.target?.result) {
-          setFormData(prev => ({
+          setFormData((prev) => ({
             ...prev,
-            videos: [...prev.videos, event.target!.result as string]
+            videos: [...prev.videos, event.target!.result as string],
           }));
         }
       };
@@ -143,20 +153,20 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
   };
 
   const removeImage = (index: number) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      images: prev.images.filter((_, i) => i !== index)
+      images: prev.images.filter((_, i) => i !== index),
     }));
   };
 
   const removeVideo = (index: number) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      videos: prev.videos.filter((_, i) => i !== index)
+      videos: prev.videos.filter((_, i) => i !== index),
     }));
   };
 
-  const moodData = MOOD_RATINGS.find(r => r.value === formData.moodRating);
+  const moodData = MOOD_RATINGS.find((r) => r.value === formData.moodRating);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -181,18 +191,22 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
               <Input
                 id="title"
                 value={formData.title}
-                onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, title: e.target.value }))
+                }
                 placeholder="e.g., Exploring Loch Katrine"
                 required
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="location">Location *</Label>
               <Input
                 id="location"
                 value={formData.location}
-                onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, location: e.target.value }))
+                }
                 placeholder="e.g., Loch Katrine, Trossachs"
                 required
               />
@@ -206,22 +220,26 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
                 id="date"
                 type="date"
                 value={formData.date}
-                onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, date: e.target.value }))
+                }
                 required
               />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="areaType">Area Type</Label>
-              <Select 
-                value={formData.areaType} 
-                onValueChange={(value) => setFormData(prev => ({ ...prev, areaType: value as any }))}
+              <Select
+                value={formData.areaType}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, areaType: value as any }))
+                }
               >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {AREA_TYPES.map(type => (
+                  {AREA_TYPES.map((type) => (
                     <SelectItem key={type.value} value={type.value}>
                       {type.label}
                     </SelectItem>
@@ -237,11 +255,16 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
                   <button
                     key={rating.value}
                     type="button"
-                    onClick={() => setFormData(prev => ({ ...prev, moodRating: rating.value as any }))}
+                    onClick={() =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        moodRating: rating.value as any,
+                      }))
+                    }
                     className={`text-2xl p-2 rounded-lg transition-colors ${
-                      formData.moodRating === rating.value 
-                        ? 'bg-primary/20 ring-2 ring-primary' 
-                        : 'hover:bg-muted'
+                      formData.moodRating === rating.value
+                        ? "bg-primary/20 ring-2 ring-primary"
+                        : "hover:bg-muted"
                     }`}
                   >
                     {rating.emoji}
@@ -261,7 +284,9 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
             <Textarea
               id="content"
               value={formData.content}
-              onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, content: e.target.value }))
+              }
               placeholder="Tell us about your adventure! What did you see? What did you do? How was the experience?"
               rows={6}
               required
@@ -327,8 +352,15 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
               <Label>Uploaded Photos ({formData.images.length})</Label>
               <div className="grid grid-cols-4 gap-2">
                 {formData.images.map((image, index) => (
-                  <div key={index} className="relative aspect-square bg-gray-100 rounded overflow-hidden">
-                    <img src={image} alt={`Upload ${index + 1}`} className="w-full h-full object-cover" />
+                  <div
+                    key={index}
+                    className="relative aspect-square bg-gray-100 rounded overflow-hidden"
+                  >
+                    <img
+                      src={image}
+                      alt={`Upload ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
                     <button
                       type="button"
                       onClick={() => removeImage(index)}
@@ -347,7 +379,10 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
               <Label>Uploaded Videos ({formData.videos.length})</Label>
               <div className="space-y-2">
                 {formData.videos.map((video, index) => (
-                  <div key={index} className="flex items-center justify-between bg-muted p-2 rounded">
+                  <div
+                    key={index}
+                    className="flex items-center justify-between bg-muted p-2 rounded"
+                  >
                     <span className="text-sm">Video {index + 1}</span>
                     <button
                       type="button"
@@ -380,7 +415,9 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
                 value={newActivity}
                 onChange={(e) => setNewActivity(e.target.value)}
                 placeholder="e.g., hiking, photography, picnics"
-                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addActivity())}
+                onKeyPress={(e) =>
+                  e.key === "Enter" && (e.preventDefault(), addActivity())
+                }
               />
               <Button type="button" onClick={addActivity} variant="outline">
                 <Plus className="h-4 w-4" />
@@ -389,7 +426,11 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
             {formData.greatFor.length > 0 && (
               <div className="flex flex-wrap gap-1">
                 {formData.greatFor.map((activity, index) => (
-                  <Badge key={index} variant="secondary" className="flex items-center space-x-1">
+                  <Badge
+                    key={index}
+                    variant="secondary"
+                    className="flex items-center space-x-1"
+                  >
                     <span>{activity}</span>
                     <button
                       type="button"
@@ -408,7 +449,9 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
             <Checkbox
               id="isBusy"
               checked={formData.isBusy}
-              onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isBusy: checked as boolean }))}
+              onCheckedChange={(checked) =>
+                setFormData((prev) => ({ ...prev, isBusy: checked as boolean }))
+              }
             />
             <Label htmlFor="isBusy">This place was busy/crowded</Label>
           </div>
@@ -418,9 +461,16 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
               <Checkbox
                 id="hasFreeParkingAvailable"
                 checked={formData.hasFreeParkingAvailable}
-                onCheckedChange={(checked) => setFormData(prev => ({ ...prev, hasFreeParkingAvailable: checked as boolean }))}
+                onCheckedChange={(checked) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    hasFreeParkingAvailable: checked as boolean,
+                  }))
+                }
               />
-              <Label htmlFor="hasFreeParkingAvailable">🅿️ Free parking available</Label>
+              <Label htmlFor="hasFreeParkingAvailable">
+                🅿️ Free parking available
+              </Label>
             </div>
 
             {!formData.hasFreeParkingAvailable && (
@@ -429,7 +479,12 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
                 <Input
                   id="parkingCost"
                   value={formData.parkingCost}
-                  onChange={(e) => setFormData(prev => ({ ...prev, parkingCost: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      parkingCost: e.target.value,
+                    }))
+                  }
                   placeholder="e.g., £5 per hour, £15 all day"
                   className="max-w-xs"
                 />
@@ -446,7 +501,9 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
                     type="radio"
                     name="wouldReturn"
                     checked={formData.wouldReturn === true}
-                    onChange={() => setFormData(prev => ({ ...prev, wouldReturn: true }))}
+                    onChange={() =>
+                      setFormData((prev) => ({ ...prev, wouldReturn: true }))
+                    }
                   />
                   <span>Yes</span>
                 </label>
@@ -455,7 +512,9 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
                     type="radio"
                     name="wouldReturn"
                     checked={formData.wouldReturn === false}
-                    onChange={() => setFormData(prev => ({ ...prev, wouldReturn: false }))}
+                    onChange={() =>
+                      setFormData((prev) => ({ ...prev, wouldReturn: false }))
+                    }
                   />
                   <span>No</span>
                 </label>
@@ -465,15 +524,21 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
 
           <div className="space-y-2">
             <Label htmlFor="wouldReturnReason">
-              Why {formData.wouldReturn ? 'would' : 'wouldn\'t'} you return?
+              Why {formData.wouldReturn ? "would" : "wouldn't"} you return?
             </Label>
             <Textarea
               id="wouldReturnReason"
               value={formData.wouldReturnReason}
-              onChange={(e) => setFormData(prev => ({ ...prev, wouldReturnReason: e.target.value }))}
-              placeholder={formData.wouldReturn 
-                ? "What made this place special? What would you do differently next time?"
-                : "What didn't work well? What would put you off returning?"
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  wouldReturnReason: e.target.value,
+                }))
+              }
+              placeholder={
+                formData.wouldReturn
+                  ? "What made this place special? What would you do differently next time?"
+                  : "What didn't work well? What would put you off returning?"
               }
               rows={3}
             />
@@ -484,7 +549,7 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
       {/* Submit */}
       <div className="flex justify-end space-x-4">
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Creating Entry...' : 'Create Journal Entry'}
+          {isSubmitting ? "Creating Entry..." : "Create Journal Entry"}
         </Button>
       </div>
     </form>

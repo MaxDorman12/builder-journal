@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { AuthState } from '@shared/api';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { AuthState } from "@shared/api";
 
 interface AuthContextType extends AuthState {
   login: (password: string) => boolean;
@@ -8,20 +8,22 @@ interface AuthContextType extends AuthState {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const FAMILY_PASSWORD = 'Summer07max'; // In production, this would be more secure
+const FAMILY_PASSWORD = "Summer07max"; // In production, this would be more secure
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [authState, setAuthState] = useState<AuthState>(() => {
-    const saved = localStorage.getItem('familyAuth');
-    return saved ? JSON.parse(saved) : {
-      isAuthenticated: false,
-      isFamilyMember: false,
-      currentUser: null
-    };
+    const saved = localStorage.getItem("familyAuth");
+    return saved
+      ? JSON.parse(saved)
+      : {
+          isAuthenticated: false,
+          isFamilyMember: false,
+          currentUser: null,
+        };
   });
 
   useEffect(() => {
-    localStorage.setItem('familyAuth', JSON.stringify(authState));
+    localStorage.setItem("familyAuth", JSON.stringify(authState));
   }, [authState]);
 
   const login = (password: string): boolean => {
@@ -29,7 +31,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const newAuthState = {
         isAuthenticated: true,
         isFamilyMember: true,
-        currentUser: 'Family Member'
+        currentUser: "Family Member",
       };
       setAuthState(newAuthState);
       return true;
@@ -41,7 +43,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const newAuthState = {
       isAuthenticated: false,
       isFamilyMember: false,
-      currentUser: null
+      currentUser: null,
     };
     setAuthState(newAuthState);
   };
@@ -56,7 +58,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }

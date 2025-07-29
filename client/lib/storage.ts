@@ -1,4 +1,4 @@
-import { JournalEntry, MapPin, Comment } from '@shared/api';
+import { JournalEntry, MapPin, Comment } from "@shared/api";
 
 export class LocalStorage {
   private static getKey(key: string): string {
@@ -6,55 +6,55 @@ export class LocalStorage {
   }
 
   static getJournalEntries(): JournalEntry[] {
-    const data = localStorage.getItem(this.getKey('entries'));
+    const data = localStorage.getItem(this.getKey("entries"));
     return data ? JSON.parse(data) : [];
   }
 
   static saveJournalEntry(entry: JournalEntry): void {
     const entries = this.getJournalEntries();
-    const existingIndex = entries.findIndex(e => e.id === entry.id);
-    
+    const existingIndex = entries.findIndex((e) => e.id === entry.id);
+
     if (existingIndex >= 0) {
       entries[existingIndex] = entry;
     } else {
       entries.push(entry);
     }
-    
-    localStorage.setItem(this.getKey('entries'), JSON.stringify(entries));
+
+    localStorage.setItem(this.getKey("entries"), JSON.stringify(entries));
   }
 
   static deleteJournalEntry(id: string): void {
-    const entries = this.getJournalEntries().filter(e => e.id !== id);
-    localStorage.setItem(this.getKey('entries'), JSON.stringify(entries));
+    const entries = this.getJournalEntries().filter((e) => e.id !== id);
+    localStorage.setItem(this.getKey("entries"), JSON.stringify(entries));
   }
 
   static getMapPins(): MapPin[] {
-    const data = localStorage.getItem(this.getKey('map_pins'));
+    const data = localStorage.getItem(this.getKey("map_pins"));
     return data ? JSON.parse(data) : [];
   }
 
   static saveMapPin(pin: MapPin): void {
     const pins = this.getMapPins();
-    const existingIndex = pins.findIndex(p => p.id === pin.id);
-    
+    const existingIndex = pins.findIndex((p) => p.id === pin.id);
+
     if (existingIndex >= 0) {
       pins[existingIndex] = pin;
     } else {
       pins.push(pin);
     }
-    
-    localStorage.setItem(this.getKey('map_pins'), JSON.stringify(pins));
+
+    localStorage.setItem(this.getKey("map_pins"), JSON.stringify(pins));
   }
 
   static deleteMapPin(id: string): void {
-    const pins = this.getMapPins().filter(p => p.id !== id);
-    localStorage.setItem(this.getKey('map_pins'), JSON.stringify(pins));
+    const pins = this.getMapPins().filter((p) => p.id !== id);
+    localStorage.setItem(this.getKey("map_pins"), JSON.stringify(pins));
   }
 
   static addComment(entryId: string, comment: Comment): void {
     const entries = this.getJournalEntries();
-    const entry = entries.find(e => e.id === entryId);
-    
+    const entry = entries.find((e) => e.id === entryId);
+
     if (entry) {
       entry.comments.push(comment);
       entry.updatedAt = new Date().toISOString();
@@ -64,8 +64,8 @@ export class LocalStorage {
 
   static toggleLike(entryId: string): void {
     const entries = this.getJournalEntries();
-    const entry = entries.find(e => e.id === entryId);
-    
+    const entry = entries.find((e) => e.id === entryId);
+
     if (entry) {
       entry.likes = Math.max(0, entry.likes + (Math.random() > 0.5 ? 1 : -1));
       entry.updatedAt = new Date().toISOString();
@@ -77,7 +77,7 @@ export class LocalStorage {
     const data = {
       entries: this.getJournalEntries(),
       pins: this.getMapPins(),
-      exportDate: new Date().toISOString()
+      exportDate: new Date().toISOString(),
     };
     return JSON.stringify(data, null, 2);
   }
@@ -86,14 +86,20 @@ export class LocalStorage {
     try {
       const data = JSON.parse(jsonData);
       if (data.entries) {
-        localStorage.setItem(this.getKey('entries'), JSON.stringify(data.entries));
+        localStorage.setItem(
+          this.getKey("entries"),
+          JSON.stringify(data.entries),
+        );
       }
       if (data.pins) {
-        localStorage.setItem(this.getKey('map_pins'), JSON.stringify(data.pins));
+        localStorage.setItem(
+          this.getKey("map_pins"),
+          JSON.stringify(data.pins),
+        );
       }
       return true;
     } catch (error) {
-      console.error('Failed to import data:', error);
+      console.error("Failed to import data:", error);
       return false;
     }
   }
