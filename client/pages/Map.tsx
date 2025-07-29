@@ -63,16 +63,17 @@ export default function Map() {
 
   const handleMapClick = (e: React.MouseEvent<SVGElement>) => {
     if (!isFamilyMember) return;
-    
+
     const svg = e.currentTarget;
     const rect = svg.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    
-    // Convert to approximate lat/lng (simplified conversion)
-    const lat = 60.5 - (y / 100) * 7; // Scotland roughly spans 53.5 to 60.5 lat
-    const lng = -8 + (x / 100) * 10; // Scotland roughly spans -8 to 2 lng
-    
+    const x = ((e.clientX - rect.left) / rect.width) * 400; // Scale to SVG viewBox width
+    const y = ((e.clientY - rect.top) / rect.height) * 600; // Scale to SVG viewBox height
+
+    // Convert SVG coordinates to approximate lat/lng for Scotland
+    // Scotland spans roughly: lat 54.6 to 60.9, lng -8.2 to 1.8
+    const lat = 60.9 - (y / 600) * 6.3; // Map height to latitude range
+    const lng = -8.2 + (x / 400) * 10; // Map width to longitude range
+
     setNewPin(prev => ({ ...prev, lat, lng }));
     setIsCreatePinOpen(true);
   };
