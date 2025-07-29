@@ -26,6 +26,8 @@ export interface JournalEntry {
   areaType: 'town' | 'city' | 'loch' | 'mountain' | 'hike' | 'beach' | 'forest' | 'village';
   wouldReturnReason: string;
   wouldReturn: boolean;
+  hasFreeParkingAvailable: boolean;
+  parkingCost: string;
   author: string;
   likes: number;
   comments: Comment[];
