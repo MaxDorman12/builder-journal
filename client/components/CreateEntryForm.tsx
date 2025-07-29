@@ -40,7 +40,9 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
     wouldReturnReason: '',
     greatFor: [] as string[],
     images: [] as string[],
-    videos: [] as string[]
+    videos: [] as string[],
+    hasFreeParkingAvailable: true,
+    parkingCost: ''
   });
   const [newActivity, setNewActivity] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
