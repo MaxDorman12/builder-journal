@@ -50,13 +50,15 @@ export default function Login() {
     <div className="min-h-screen family-gradient flex items-center justify-center p-4">
       <Card className="family-card w-full max-w-md">
         <CardHeader className="text-center space-y-4">
-          <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-            <Heart className="h-6 w-6 text-primary fill-primary" />
+          <div className="mx-auto w-16 h-16 bg-gradient-to-br from-pink-200 to-purple-200 rounded-full flex items-center justify-center shadow-lg">
+            <Heart className="h-8 w-8 text-pink-600 fill-pink-600 bouncy" />
           </div>
           <div>
-            <CardTitle className="text-2xl">Family Login</CardTitle>
+            <CardTitle className="text-2xl bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              🏠 Family Login 🔑
+            </CardTitle>
             <p className="text-muted-foreground mt-2">
-              Enter the family password to access editing features
+              Enter the magical family password to unlock editing powers! ✨
             </p>
           </div>
         </CardHeader>
@@ -85,31 +87,36 @@ export default function Login() {
               </Alert>
             )}
 
-            <Button 
-              type="submit" 
-              className="w-full" 
+            <button
+              type="submit"
+              className="w-full fun-button disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isLoading}
             >
-              {isLoading ? 'Logging in...' : 'Login'}
-            </Button>
+              {isLoading ? '✨ Logging in...' : '🎆 Enter Family Portal!'}
+            </button>
           </form>
 
-          <div className="mt-6 p-4 bg-muted/50 rounded-lg">
-            <h4 className="font-medium text-sm mb-2">For Family Members:</h4>
-            <p className="text-xs text-muted-foreground mb-2">
-              Once logged in, you'll be able to create new journal entries,
+          <div className="mt-6 p-4 bg-gradient-to-r from-blue-100 to-purple-100 rounded-2xl shadow-inner">
+            <h4 className="font-medium text-sm mb-2 text-purple-800">🌈 For Family Members:</h4>
+            <p className="text-xs text-purple-700 mb-2">
+              Once logged in, you'll unlock magical powers to create journal entries,
               upload photos and videos, add pins to the map, and manage all
-              family content.
+              our wonderful family memories! 💫
             </p>
-            <p className="text-xs text-muted-foreground font-mono bg-muted p-2 rounded">
-              Family password: Summer07max
-            </p>
+            <div className="bg-gradient-to-r from-yellow-200 to-orange-200 p-3 rounded-xl shadow-md">
+              <p className="text-xs text-orange-800 font-mono font-bold">
+                🗝️ Secret Family Password: Summer07max
+              </p>
+            </div>
           </div>
 
           <div className="mt-4 text-center">
-            <Button variant="link" onClick={() => navigate('/')}>
-              Continue as Visitor
-            </Button>
+            <button
+              onClick={() => navigate('/')}
+              className="text-purple-600 hover:text-purple-800 font-medium text-sm hover:underline transition-colors"
+            >
+              👀 Continue as Visitor (view-only)
+            </button>
           </div>
         </CardContent>
       </Card>
