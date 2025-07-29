@@ -12,7 +12,6 @@ import { FAMILY_MEMBERS } from '@shared/api';
 
 export default function Login() {
   const [password, setPassword] = useState('');
-  const [selectedMember, setSelectedMember] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
@@ -27,12 +26,7 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!selectedMember) {
-      setError('Please select a family member');
-      return;
-    }
-    
+
     if (!password) {
       setError('Please enter the family password');
       return;
@@ -41,14 +35,14 @@ export default function Login() {
     setIsLoading(true);
     setError('');
 
-    const success = login(password, selectedMember);
-    
+    const success = login(password);
+
     if (success) {
       navigate('/');
     } else {
       setError('Incorrect password. Please try again.');
     }
-    
+
     setIsLoading(false);
   };
 
@@ -69,28 +63,6 @@ export default function Login() {
 
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="member">Select Family Member</Label>
-              <Select value={selectedMember} onValueChange={setSelectedMember}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Choose your name" />
-                </SelectTrigger>
-                <SelectContent>
-                  {FAMILY_MEMBERS.map((member) => (
-                    <SelectItem key={member.id} value={member.name}>
-                      <div className="flex items-center space-x-2">
-                        <User className="h-4 w-4" />
-                        <span>{member.name}</span>
-                        <span className="text-xs text-muted-foreground">
-                          ({member.role})
-                        </span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
             <div className="space-y-2">
               <Label htmlFor="password">Family Password</Label>
               <div className="relative">
@@ -130,7 +102,7 @@ export default function Login() {
               family content.
             </p>
             <p className="text-xs text-muted-foreground font-mono bg-muted p-2 rounded">
-              Demo password: ScotlandAdventures2024
+              Family password: Summer07max
             </p>
           </div>
 
