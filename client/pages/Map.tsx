@@ -217,9 +217,9 @@ export default function Map() {
             </div>
             
             {/* Map Container */}
-            <div 
+            <div
               ref={mapContainerRef}
-              className="relative w-full h-96 overflow-hidden cursor-grab active:cursor-grabbing"
+              className="relative w-full h-[70vh] min-h-[500px] max-h-[800px] overflow-hidden cursor-grab active:cursor-grabbing"
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUp}
