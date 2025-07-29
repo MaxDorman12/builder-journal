@@ -52,7 +52,7 @@ export default function Index() {
         </div>
         
         <h1 className="text-4xl md:text-6xl font-bold text-foreground leading-tight">
-          The MacLeod Family
+          The Dorman Family
           <span className="block text-primary">Scottish Adventures</span>
         </h1>
         
@@ -137,7 +137,7 @@ export default function Index() {
           <h2 className="text-3xl font-bold text-foreground">About Our Family</h2>
           <div className="prose prose-lg max-w-none text-muted-foreground">
             <p>
-              We're the MacLeod family - Max and Charlotte, along with our three wonderful 
+              We're the Dorman family - Max and Charlotte, along with our three wonderful 
               children Oscar, Rose, and Lola. Living in beautiful Scotland, we're passionate 
               about exploring our homeland's incredible landscapes, from the mysterious lochs 
               to the towering Munros.
