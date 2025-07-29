@@ -26,6 +26,9 @@ export default function Index() {
   const [pins, setPins] = useState<MapPinType[]>([]);
 
   useEffect(() => {
+    // Initialize sample data if no data exists
+    initializeSampleData();
+
     setEntries(LocalStorage.getJournalEntries());
     setPins(LocalStorage.getMapPins());
   }, []);
