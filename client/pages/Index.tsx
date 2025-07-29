@@ -46,9 +46,9 @@ export default function Index() {
     <div className="space-y-12">
       {/* Hero Section */}
       <section className="text-center space-y-6">
-        <div className="inline-flex items-center space-x-2 px-4 py-2 bg-primary/10 rounded-full">
-          <Heart className="h-5 w-5 text-primary fill-primary" />
-          <span className="text-primary font-medium">Welcome to our family adventures</span>
+        <div className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-pink-200 to-purple-200 rounded-full shadow-lg bouncy">
+          <Heart className="h-5 w-5 text-purple-600 fill-purple-600" />
+          <span className="text-purple-700 font-medium">✨ Welcome to our magical adventures! ✨</span>
         </div>
         
         <h1 className="text-4xl md:text-6xl font-bold text-foreground leading-tight">
@@ -63,72 +63,72 @@ export default function Index() {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Link to="/journal">
-            <Button size="lg" className="flex items-center space-x-2">
+            <button className="fun-button flex items-center space-x-2">
               <BookOpen className="h-5 w-5" />
-              <span>Read Our Journal</span>
-            </Button>
+              <span>📖 Read Our Journal</span>
+            </button>
           </Link>
-          
+
           <Link to="/map">
-            <Button variant="outline" size="lg" className="flex items-center space-x-2">
+            <button className="bg-gradient-to-r from-green-400 to-blue-400 hover:from-green-500 hover:to-blue-500 text-white font-semibold py-3 px-6 rounded-full transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2">
               <MapPin className="h-5 w-5" />
-              <span>Explore Our Map</span>
-            </Button>
+              <span>🗺️ Explore Our Map</span>
+            </button>
           </Link>
         </div>
       </section>
 
       {/* Stats Section */}
       <section className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="family-card">
-          <CardContent className="flex items-center space-x-3 p-6">
-            <div className="p-3 bg-primary/10 rounded-lg">
-              <MapPin className="h-6 w-6 text-primary" />
+        <div className="pastel-stat-card from-pink-200 to-pink-300">
+          <div className="flex items-center space-x-3">
+            <div className="p-3 bg-white/60 rounded-full">
+              <MapPin className="h-6 w-6 text-pink-700" />
             </div>
             <div>
-              <p className="text-2xl font-bold">{totalTrips}</p>
-              <p className="text-sm text-muted-foreground">Places Visited</p>
+              <p className="text-2xl font-bold text-pink-800">{totalTrips}</p>
+              <p className="text-sm text-pink-600">🌟 Places Visited</p>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card className="family-card">
-          <CardContent className="flex items-center space-x-3 p-6">
-            <div className="p-3 bg-accent/10 rounded-lg">
-              <BookOpen className="h-6 w-6 text-accent" />
+        <div className="pastel-stat-card from-purple-200 to-purple-300">
+          <div className="flex items-center space-x-3">
+            <div className="p-3 bg-white/60 rounded-full">
+              <BookOpen className="h-6 w-6 text-purple-700" />
             </div>
             <div>
-              <p className="text-2xl font-bold">{entries.length}</p>
-              <p className="text-sm text-muted-foreground">Journal Entries</p>
+              <p className="text-2xl font-bold text-purple-800">{entries.length}</p>
+              <p className="text-sm text-purple-600">📚 Journal Entries</p>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card className="family-card">
-          <CardContent className="flex items-center space-x-3 p-6">
-            <div className="p-3 bg-purple-100 rounded-lg">
-              <Users className="h-6 w-6 text-purple-600" />
+        <div className="pastel-stat-card from-blue-200 to-blue-300">
+          <div className="flex items-center space-x-3">
+            <div className="p-3 bg-white/60 rounded-full">
+              <Users className="h-6 w-6 text-blue-700" />
             </div>
             <div>
-              <p className="text-2xl font-bold">5</p>
-              <p className="text-sm text-muted-foreground">Family Members</p>
+              <p className="text-2xl font-bold text-blue-800">5</p>
+              <p className="text-sm text-blue-600">👨‍👩‍👧‍👦 Family Members</p>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card className="family-card">
-          <CardContent className="flex items-center space-x-3 p-6">
-            <div className="p-3 bg-yellow-100 rounded-lg">
-              <span className="text-2xl">
+        <div className="pastel-stat-card from-green-200 to-green-300">
+          <div className="flex items-center space-x-3">
+            <div className="p-3 bg-white/60 rounded-full">
+              <span className="text-2xl bouncy">
                 {averageMood > 0 ? MOOD_RATINGS.find(r => r.value === averageMood)?.emoji : '😊'}
               </span>
             </div>
             <div>
-              <p className="text-2xl font-bold">{averageMood > 0 ? `${averageMood}/5` : 'N/A'}</p>
-              <p className="text-sm text-muted-foreground">Average Trip Rating</p>
+              <p className="text-2xl font-bold text-green-800">{averageMood > 0 ? `${averageMood}/5` : 'N/A'}</p>
+              <p className="text-sm text-green-600">⭐ Average Trip Rating</p>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </section>
 
       {/* About Section */}
@@ -154,22 +154,22 @@ export default function Index() {
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <Badge variant="secondary" className="flex items-center space-x-1">
-              <Mountain className="h-3 w-3" />
-              <span>Highland Hikers</span>
-            </Badge>
-            <Badge variant="secondary" className="flex items-center space-x-1">
-              <Waves className="h-3 w-3" />
-              <span>Loch Explorers</span>
-            </Badge>
-            <Badge variant="secondary" className="flex items-center space-x-1">
-              <Camera className="h-3 w-3" />
-              <span>Memory Makers</span>
-            </Badge>
-            <Badge variant="secondary" className="flex items-center space-x-1">
-              <Compass className="h-3 w-3" />
-              <span>Adventure Seekers</span>
-            </Badge>
+            <div className="bg-gradient-to-r from-orange-200 to-red-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
+              <Mountain className="h-3 w-3 text-orange-700" />
+              <span className="text-orange-800 font-medium">🏔️ Highland Hikers</span>
+            </div>
+            <div className="bg-gradient-to-r from-blue-200 to-cyan-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
+              <Waves className="h-3 w-3 text-blue-700" />
+              <span className="text-blue-800 font-medium">🌊 Loch Explorers</span>
+            </div>
+            <div className="bg-gradient-to-r from-pink-200 to-purple-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
+              <Camera className="h-3 w-3 text-pink-700" />
+              <span className="text-pink-800 font-medium">📸 Memory Makers</span>
+            </div>
+            <div className="bg-gradient-to-r from-green-200 to-teal-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
+              <Compass className="h-3 w-3 text-green-700" />
+              <span className="text-green-800 font-medium">🧭 Adventure Seekers</span>
+            </div>
           </div>
         </div>
 
