@@ -57,6 +57,8 @@ export function initializeSampleData() {
       areaType: 'city',
       wouldReturnReason: 'The history is fascinating and there\'s still so much we didn\'t see. Maybe we\'ll visit during the Festival next time for an even more vibrant experience.',
       wouldReturn: true,
+      hasFreeParkingAvailable: false,
+      parkingCost: '£8 per day',
       author: 'Max',
       likes: 8,
       comments: [],
