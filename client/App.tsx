@@ -10,6 +10,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { Layout } from "@/components/Layout";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
+import Journal from "./pages/Journal";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,10 +31,7 @@ const App = () => (
             } />
             <Route path="/journal" element={
               <Layout>
-                <div className="text-center py-16">
-                  <h1 className="text-2xl font-bold mb-4">Journal Coming Soon</h1>
-                  <p className="text-muted-foreground">This page will show all family journal entries</p>
-                </div>
+                <Journal />
               </Layout>
             } />
             <Route path="/map" element={
