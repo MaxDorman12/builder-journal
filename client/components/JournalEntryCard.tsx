@@ -77,7 +77,8 @@ export function JournalEntryCard({
     setNewComment("");
     setVisitorName("");
     setShowNameInput(false);
-    // Refresh the entry data would happen here in a real app
+    // Notify parent to reload entries
+    onComment?.(entry.id);
   };
 
   const nextImage = () => {
