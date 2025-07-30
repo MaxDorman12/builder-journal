@@ -63,32 +63,43 @@ export default function Index() {
       const cloudEnabled = await HybridStorage.initialize();
       setIsCloudSyncEnabled(cloudEnabled);
 
-      // Manual test: try to read Charlie data from Firebase
+      // AUTO-SYNC: Always fetch fresh data from Firebase when page loads
       if (cloudEnabled) {
         try {
-          const firebaseCharlieData = await CloudStorage.getCharlieData();
-          console.log("🔥 Manual Firebase Charlie read:", {
-            hasImage: !!firebaseCharlieData.image,
-            imageLength: firebaseCharlieData.image?.length || 0,
-            imageStart: firebaseCharlieData.image?.substring(0, 30) || "none",
+          console.log("🔄 Auto-syncing with Firebase on page load...");
+
+          // Fetch ALL fresh data from Firebase
+          const [freshCharlieData, freshEntries, freshPins, freshWishlist] = await Promise.all([
+            CloudStorage.getCharlieData(),
+            CloudStorage.getJournalEntries(),
+            CloudStorage.getMapPins(),
+            CloudStorage.getWishlistItems()
+          ]);
+
+          console.log("📥 Fresh data received from Firebase:", {
+            charlieHasImage: !!freshCharlieData.image,
+            entriesCount: freshEntries.length,
+            pinsCount: freshPins.length,
+            wishlistCount: freshWishlist.length
           });
 
-          // Test writing to Firebase to ensure it's working
-          console.log("🧪 Testing Firebase write...");
-          await CloudStorage.setCharlieData({
-            image: firebaseCharlieData.image || "",
-            description:
-              firebaseCharlieData.description +
-              "\n[Test sync at " +
-              new Date().toLocaleTimeString() +
-              "]",
-          });
-          console.log("✅ Firebase write test successful");
+          // Update local storage with fresh Firebase data
+          LocalStorage.setCharlieData(freshCharlieData);
+          freshEntries.forEach((entry) => LocalStorage.saveJournalEntry(entry));
+          freshPins.forEach((pin) => LocalStorage.saveMapPin(pin));
+          freshWishlist.forEach((item) => LocalStorage.saveWishlistItem(item));
+
+          // Update UI with fresh data
+          setCharlieData(freshCharlieData);
+          setEntries(freshEntries);
+          setPins(freshPins);
+
+          console.log("✅ Auto-sync completed - all data refreshed from Firebase!");
+
         } catch (error) {
-          console.error(
-            "❌ Failed to read/write Charlie data from Firebase:",
-            error,
-          );
+          console.error("❌ Auto-sync failed:", error);
+          // Fallback to local data if Firebase fails
+          console.log("📱 Using local data as fallback");
         }
       }
 
