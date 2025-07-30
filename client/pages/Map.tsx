@@ -58,6 +58,8 @@ export default function Map() {
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapImageRef = useRef<HTMLImageElement>(null);
+  const [isPinPlacementMode, setIsPinPlacementMode] = useState(false);
+  const [pendingPinData, setPendingPinData] = useState<any>(null);
 
   useEffect(() => {
     setPins(LocalStorage.getMapPins());
