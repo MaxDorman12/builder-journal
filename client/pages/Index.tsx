@@ -114,8 +114,30 @@ export default function Index() {
           });
         } catch (error) {
           console.error("❌ Auto-sync failed:", error);
-          // Fallback to local data if Firebase fails
-          console.log("📱 Using local data as fallback");
+
+          // Try direct Firebase load as emergency fallback
+          try {
+            console.log("🚨 Emergency fallback: Direct Firebase load");
+            const emergencyEntries = await CloudStorage.getJournalEntries();
+            const emergencyCharlie = await CloudStorage.getCharlieData();
+            const emergencyPins = await CloudStorage.getMapPins();
+
+            console.log("🚨 Emergency data loaded:", {
+              entriesCount: emergencyEntries.length,
+              charlieHasImage: !!emergencyCharlie.image
+            });
+
+            setEntries(emergencyEntries);
+            setCharlieData(emergencyCharlie);
+            setPins(emergencyPins);
+          } catch (emergencyError) {
+            console.error("❌ Emergency fallback also failed:", emergencyError);
+            // Final fallback to localStorage (even if disabled)
+            console.log("📱 Using localStorage as final fallback");
+            setEntries(LocalStorage.getJournalEntries());
+            setCharlieData(LocalStorage.getCharlieData());
+            setPins(LocalStorage.getMapPins());
+          }
         }
       } else {
         // Even if cloud sync is disabled, try to load from Firebase for public viewing
