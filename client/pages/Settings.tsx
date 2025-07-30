@@ -403,7 +403,7 @@ export default function Settings() {
             </li>
             <li className="flex items-start space-x-2">
               <span className="text-green-600 mt-1">•</span>
-              <span><strong>Share with family:</strong> Send copies to other family members for extra safety</span>
+              <span><strong>Share with family:</strong> Send copies to other family for extra safety</span>
             </li>
           </ul>
         </CardContent>
