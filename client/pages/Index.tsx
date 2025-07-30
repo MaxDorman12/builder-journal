@@ -186,8 +186,9 @@ export default function Index() {
     initializeStorage();
     loadFreshData();
 
-    // Initialize Supabase Storage
-    SupabaseStorage.initializeBucket();
+    // Initialize Supabase Storage - DISABLED due to RLS policy restrictions
+    // Bucket must be created manually in Supabase dashboard
+    // SupabaseStorage.initializeBucket();
 
     // Load YouTube URL from localStorage
     const savedYoutubeUrl = localStorage.getItem("familyjournal_youtube_url");
