@@ -43,9 +43,9 @@ export default function Settings() {
         <Card className="family-card">
           <CardContent className="text-center py-12">
             <Shield className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Family Members Only</h3>
+            <h3 className="text-lg font-semibold mb-2">Login Required</h3>
             <p className="text-muted-foreground">
-              Only family members can access settings and backup features
+              Please log in to access settings and backup features
             </p>
           </CardContent>
         </Card>
