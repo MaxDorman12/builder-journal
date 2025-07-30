@@ -93,8 +93,11 @@ export class StorageCleanup {
     const savedMB =
       (beforeUsage.totalSize - afterUsage.totalSize) / 1024 / 1024;
 
+    // Try to re-enable localStorage after cleanup
+    const reEnabled = StorageHealth.forceReEnable();
+
     alert(
-      `🧹 AGGRESSIVE Storage Cleanup Complete!\n\nRemoved:\n• ${imagesCleared} images\n• ${videosCleared} videos\n• ${entriesCleared} old entries\n• Freed ${savedMB.toFixed(2)}MB space\n\nYour app should work normally now!`,
+      `🧹 AGGRESSIVE Storage Cleanup Complete!\n\nRemoved:\n• ${imagesCleared} images\n• ${videosCleared} videos\n• ${entriesCleared} old entries\n• Freed ${savedMB.toFixed(2)}MB space\n\nLocalStorage: ${reEnabled ? '✅ Re-enabled' : '❌ Still disabled'}\n\n${reEnabled ? 'Your app should work normally now!' : 'Try the 💥 RESET button for more space'}`,
     );
   }
 
