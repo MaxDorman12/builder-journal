@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import { JournalEntry, MOOD_RATINGS, AREA_TYPES, Comment } from "@shared/api";
 import { LocalStorage } from "@/lib/storage";
+import { HybridStorage } from "@/lib/hybridStorage";
 import { ExportUtils } from "@/lib/exportUtils";
 
 interface JournalEntryCardProps {
@@ -76,6 +77,13 @@ export function JournalEntryCard({
     };
 
     LocalStorage.addComment(entry.id, comment);
+    // Update in cloud if available
+    if (HybridStorage.isCloudEnabled()) {
+      const updatedEntry = HybridStorage.getJournalEntries().find(e => e.id === entry.id);
+      if (updatedEntry) {
+        await HybridStorage.saveJournalEntry(updatedEntry);
+      }
+    }
     setNewComment("");
     setVisitorName("");
     setShowNameInput(false);
@@ -459,7 +467,7 @@ export function JournalEntryCard({
                 <div>
                   <strong>Parking:</strong>{" "}
                   {entry.hasFreeParkingAvailable
-                    ? "🅿️ Free parking"
+                    ? "���️ Free parking"
                     : "💰 Paid parking"}
                   {!entry.hasFreeParkingAvailable && entry.parkingCost && (
                     <span className="ml-1">({entry.parkingCost})</span>

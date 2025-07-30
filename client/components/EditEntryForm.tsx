@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { JournalEntry, AREA_TYPES, MOOD_RATINGS } from "@shared/api";
 import { LocalStorage } from "@/lib/storage";
+import { HybridStorage } from "@/lib/hybridStorage";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface EditEntryFormProps {
@@ -90,7 +91,7 @@ export function EditEntryForm({ entry, onEntryUpdated }: EditEntryFormProps) {
         updatedAt: new Date().toISOString(),
       };
 
-      LocalStorage.saveJournalEntry(updatedEntry);
+      await HybridStorage.saveJournalEntry(updatedEntry);
       onEntryUpdated();
     } catch (err) {
       setError("Failed to update journal entry. Please try again.");
