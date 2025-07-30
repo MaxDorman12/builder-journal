@@ -239,13 +239,7 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
       });
 
       const sizeMB = file.size / (1024 * 1024);
-
-      // Check if file is too large for Supabase free tier (50MB limit)
-      if (sizeMB > 45) {
-        alert(`⚠️ Video "${file.name}" is ${sizeMB.toFixed(1)}MB\n\nOptions:\n1. Upgrade to Supabase Pro (500GB limit)\n2. Use a smaller video file\n3. Compress video before upload`);
-        console.warn(`Video too large for Supabase free tier: ${sizeMB.toFixed(1)}MB`);
-        continue; // Skip this file
-      }
+      console.log(`📹 Video size: ${sizeMB.toFixed(1)}MB`);
 
       // Upload videos to Supabase Storage
       try {
