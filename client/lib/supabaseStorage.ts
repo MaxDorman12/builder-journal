@@ -56,9 +56,8 @@ export class SupabaseStorage {
         entryId: entryId
       })
 
-      // Create unique file path
-      const fileExtension = file.name.split('.').pop() || 'bin'
-      const fileName = `${entryId}/${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExtension}`
+      // Create unique file path with generic extension to bypass MIME detection
+      const fileName = `${entryId}/${Date.now()}_${Math.random().toString(36).substring(2)}.dat`
 
       // Upload file to Supabase Storage without MIME type restrictions
       const { data, error } = await supabase.storage
@@ -124,8 +123,8 @@ export class SupabaseStorage {
             entryId: entryId
           })
 
-          // Create unique file path with PNG extension
-          const fileName = `${entryId}/${Date.now()}_compressed.png`
+          // Create unique file path with generic extension to bypass MIME detection
+          const fileName = `${entryId}/${Date.now()}_compressed.dat`
 
           // Upload blob to Supabase Storage without MIME type specification
           const { data, error } = await supabase.storage
