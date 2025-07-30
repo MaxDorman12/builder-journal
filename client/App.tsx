@@ -15,6 +15,7 @@ import Map from "./pages/Map";
 import Wishlist from "./pages/Wishlist";
 import Gallery from "./pages/Gallery";
 import Search from "./pages/Search";
+import Settings from "./pages/Settings";
 import Calendar from "./pages/Calendar";
 import NotFound from "./pages/NotFound";
 
