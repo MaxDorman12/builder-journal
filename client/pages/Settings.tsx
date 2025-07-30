@@ -383,6 +383,43 @@ export default function Settings() {
         </CardContent>
       </Card>
 
+      {/* Firebase Auto-Sync */}
+      <Card className="family-card border-green-200">
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2 text-green-700">
+            <Database className="h-5 w-5" />
+            <span>🔄 Auto-Sync (Firebase)</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Alert>
+            <CheckCircle className="h-4 w-4" />
+            <AlertDescription>
+              <strong>🚀 Real-Time Auto-Sync:</strong>
+              <br />📱 <strong>Edit on phone</strong> → 💻 <strong>Instantly shows on PC!</strong>
+              <br />🔄 No manual sync needed - changes appear automatically everywhere
+              <br />☁️ Data safely backed up in Google's cloud
+            </AlertDescription>
+          </Alert>
+
+          <div className="bg-green-50 p-4 rounded-lg">
+            <h4 className="font-semibold text-green-800 mb-2">How to Enable:</h4>
+            <ol className="text-sm text-green-700 space-y-1">
+              <li><strong>1.</strong> Create free Firebase project at console.firebase.google.com</li>
+              <li><strong>2.</strong> Copy your Firebase config</li>
+              <li><strong>3.</strong> Paste config in firebase.ts file</li>
+              <li><strong>4.</strong> Enjoy automatic syncing! 🎉</li>
+            </ol>
+          </div>
+
+          <div className="text-xs text-gray-600">
+            <p><strong>✅ Benefits:</strong> Real-time sync, cloud backup, family sharing</p>
+            <p><strong>📱 Perfect for:</strong> Active families who edit from multiple devices</p>
+            <p><strong>🔒 Privacy:</strong> Your own Firebase project = your data stays private</p>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* OneDrive Sync */}
       <Card className="family-card border-blue-200">
         <CardHeader>
@@ -439,7 +476,7 @@ export default function Settings() {
           <div className="text-xs text-gray-600 bg-blue-50 p-3 rounded-lg space-y-1">
             <p><strong>Step 1:</strong> 📱 On phone: "Create Sync File" → Save to OneDrive</p>
             <p><strong>Step 2:</strong> 💻 On PC: Download file → "Import from OneDrive"</p>
-            <p><strong>Step 3:</strong> 🎉 Enjoy synced journal across all devices!</p>
+            <p><strong>Step 3:</strong> ���� Enjoy synced journal across all devices!</p>
           </div>
         </CardContent>
       </Card>
