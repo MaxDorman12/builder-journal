@@ -96,6 +96,12 @@ export class LocalStorage {
   }
 
   static saveJournalEntry(entry: JournalEntry): void {
+    // Skip localStorage if disabled due to quota issues
+    if (!this.isLocalStorageUsable()) {
+      console.warn('📵 Skipping localStorage save - storage disabled');
+      return;
+    }
+
     const entries = this.getJournalEntries();
     const existingIndex = entries.findIndex((e) => e.id === entry.id);
 
