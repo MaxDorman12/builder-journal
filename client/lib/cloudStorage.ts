@@ -131,10 +131,15 @@ export class CloudStorage {
   static async enableCloudSync(): Promise<boolean> {
     try {
       // Test connection by writing a simple document
-      await setDoc(doc(db, "system", "test"), { timestamp: new Date() });
+      await setDoc(doc(db, "system", "test"), {
+        timestamp: new Date(),
+        test: true
+      });
+      console.log("✅ Firebase cloud sync enabled successfully");
       return true;
     } catch (error) {
-      console.error("Failed to enable cloud sync:", error);
+      console.warn("⚠️ Cloud sync not available:", error);
+      // This is fine - the app will work with localStorage only
       return false;
     }
   }
