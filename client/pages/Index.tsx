@@ -601,6 +601,15 @@ export default function Index() {
                 <Button
                   variant="ghost"
                   size="sm"
+                  onClick={() => StorageCleanup.emergencyCleanup()}
+                  className="h-8 w-auto px-2 text-xs bg-yellow-100"
+                  title="Clear large files to free up space"
+                >
+                  🧹 CLEAN
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={handleCharlieEdit}
                   className="h-8 w-8 p-0"
                   title="Edit Charlie's section"
