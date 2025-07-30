@@ -67,10 +67,14 @@ export class LocalStorage {
     const entry = entries.find((e) => e.id === entryId);
 
     if (entry) {
-      entry.likes = Math.max(0, entry.likes + (Math.random() > 0.5 ? 1 : -1));
+      entry.likes = Math.max(0, entry.likes + 1);
       entry.updatedAt = new Date().toISOString();
       this.saveJournalEntry(entry);
     }
+  }
+
+  static addLike(entryId: string): void {
+    this.toggleLike(entryId); // For now, just use the same logic
   }
 
   static getWishlistItems(): WishlistItem[] {
