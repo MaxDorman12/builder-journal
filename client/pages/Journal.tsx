@@ -148,23 +148,23 @@ export default function Journal() {
         </Dialog>
       </div>
 
-      {/* Search and Filters */}
+      {/* Search and Filters - Mobile optimized */}
       <Card className="family-card">
-        <CardContent className="p-6">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1">
+        <CardContent className="p-4 md:p-6">
+          <div className="space-y-4">
+            <div className="w-full">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search entries, locations, or content..."
+                  placeholder="Search entries, locations..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 text-base" // Prevents zoom on iOS
                 />
               </div>
             </div>
 
-            <div className="flex gap-2">
+            <div className="grid grid-cols-2 gap-2 md:flex md:gap-2">
               <select
                 value={filterAreaType}
                 onChange={(e) => setFilterAreaType(e.target.value)}
