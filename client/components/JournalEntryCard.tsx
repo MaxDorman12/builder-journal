@@ -32,6 +32,7 @@ import { LocalStorage } from "@/lib/storage";
 interface JournalEntryCardProps {
   entry: JournalEntry;
   onLike: (entryId: string) => void;
+  onComment?: (entryId: string) => void;
   onEdit?: (entry: JournalEntry) => void;
   onDelete?: (entryId: string) => void;
   isFamilyMember: boolean;
