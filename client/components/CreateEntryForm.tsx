@@ -29,6 +29,7 @@ import { JournalEntry, AREA_TYPES, MOOD_RATINGS } from "@shared/api";
 import { LocalStorage } from "@/lib/storage";
 import { HybridStorage } from "@/lib/hybridStorage";
 import { CloudStorage } from "@/lib/cloudStorage";
+import { SupabaseStorage } from "@/lib/supabaseStorage";
 import { MediaStorage } from "@/lib/mediaStorage";
 import { useAuth } from "@/contexts/AuthContext";
 
