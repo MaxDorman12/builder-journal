@@ -450,6 +450,9 @@ export default function Index() {
             <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
               Last Updated: {new Date().toLocaleTimeString()}
             </span>
+            <div className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">
+              Sync Test: {charlieData.description.includes('[Sync test at') ? '✅ WORKING' : '❌ NOT SYNCED'}
+            </div>
             {isAuthenticated && (
               <>
                 <Button
