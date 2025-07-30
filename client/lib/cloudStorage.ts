@@ -105,7 +105,8 @@ export class CloudStorage {
       await setDoc(docRef, {
         ...data,
         lastUpdated: new Date().toISOString(),
-        updatedBy: window.location.hostname + "-" + navigator.userAgent.substring(0, 50)
+        updatedBy:
+          window.location.hostname + "-" + navigator.userAgent.substring(0, 50),
       });
       console.log("✅ Save to Firebase completed successfully");
 
@@ -116,7 +117,7 @@ export class CloudStorage {
         console.log("✅ Verification read successful:", {
           hasImage: !!savedData.image,
           lastUpdated: savedData.lastUpdated,
-          updatedBy: savedData.updatedBy
+          updatedBy: savedData.updatedBy,
         });
       } else {
         console.error("❌ Document doesn't exist after save!");

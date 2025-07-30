@@ -189,13 +189,14 @@ export default function Index() {
     console.log("🐕 Charlie save clicked:", {
       hasNewDescription: !!tempCharlieData.description.trim(),
       hasNewImage: !!tempCharlieData.image.trim(),
-      currentDescription: charlieData.description?.substring(0, 50) + "..."
+      currentDescription: charlieData.description?.substring(0, 50) + "...",
     });
 
     // Allow saving if there's ANY content (text or image)
     const dataToSave = {
       image: tempCharlieData.image.trim() || charlieData.image || "",
-      description: tempCharlieData.description.trim() || charlieData.description || "",
+      description:
+        tempCharlieData.description.trim() || charlieData.description || "",
     };
 
     // Always save - even if only description changed
@@ -203,7 +204,7 @@ export default function Index() {
     console.log("🐕 Charlie data saved successfully:", {
       hasImage: !!dataToSave.image,
       imageLength: dataToSave.image?.length || 0,
-      descriptionLength: dataToSave.description?.length || 0
+      descriptionLength: dataToSave.description?.length || 0,
     });
 
     setCharlieData(dataToSave);
@@ -791,11 +792,7 @@ export default function Index() {
               <Button variant="outline" onClick={handleCharlieCancel}>
                 Cancel
               </Button>
-              <Button
-                onClick={handleCharlieSave}
-              >
-                Save Changes
-              </Button>
+              <Button onClick={handleCharlieSave}>Save Changes</Button>
             </div>
           </div>
         </DialogContent>
