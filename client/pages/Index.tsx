@@ -487,32 +487,35 @@ export default function Index() {
                   variant="ghost"
                   size="sm"
                   onClick={async () => {
-                    console.log(
-                      "🔄 FORCE SYNC - Clearing cache and re-syncing...",
-                    );
+                    try {
+                      console.log("🔄 FORCE SYNC START - Device:", navigator.userAgent.substring(0, 50));
+                      console.log("🔄 Clearing cache...");
 
-                    // Clear all local storage
-                    localStorage.clear();
+                      // Clear all local storage
+                      localStorage.clear();
 
-                    // Force fresh fetch from Firebase
-                    const freshData = await CloudStorage.getCharlieData();
-                    const freshEntries = await CloudStorage.getJournalEntries();
-                    const freshPins = await CloudStorage.getMapPins();
+                      console.log("🔄 Fetching from Firebase...");
 
-                    // Update everything
-                    setCharlieData(freshData);
-                    setEntries(freshEntries);
-                    setPins(freshPins);
+                      // Force fresh fetch from Firebase with timeout
+                      const freshData = await Promise.race([
+                        CloudStorage.getCharlieData(),
+                        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 10000))
+                      ]);
 
-                    console.log("✅ FORCE SYNC complete:", {
-                      charlieHasImage: !!freshData.image,
-                      imageLength: freshData.image?.length || 0,
-                      timestamp: new Date().toISOString(),
-                    });
+                      console.log("✅ Firebase data received:", {
+                        hasImage: !!freshData.image,
+                        imageLength: freshData.image?.length || 0
+                      });
 
-                    alert(
-                      "🔄 Force sync complete! Latest data loaded from Firebase.",
-                    );
+                      // Update UI
+                      setCharlieData(freshData);
+
+                      alert("✅ FORCE SYNC SUCCESS!\nImage: " + (freshData.image ? "YES" : "NO") + "\nLength: " + (freshData.image?.length || 0));
+
+                    } catch (error) {
+                      console.error("❌ FORCE SYNC FAILED:", error);
+                      alert("❌ FORCE SYNC FAILED: " + error.message + "\nCheck console for details.");
+                    }
                   }}
                   className="h-8 w-auto px-2 text-xs bg-red-100"
                   title="Force Sync"
