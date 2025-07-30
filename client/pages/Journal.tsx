@@ -34,6 +34,8 @@ export default function Journal() {
   const [filterAreaType, setFilterAreaType] = useState<string>("");
   const [filterMoodRating, setFilterMoodRating] = useState<number | null>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [editingEntry, setEditingEntry] = useState<JournalEntry | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   useEffect(() => {
     loadEntries();
