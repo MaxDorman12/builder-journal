@@ -15,7 +15,7 @@ export class LocalStorage {
 
     try {
       // Check sessionStorage flag from previous failures
-      if (sessionStorage.getItem('localStorage_disabled') === 'true') {
+      if (sessionStorage.getItem("localStorage_disabled") === "true") {
         this.localStorageDisabled = true;
         console.warn("📵 localStorage previously disabled, keeping disabled");
         return;
@@ -27,7 +27,7 @@ export class LocalStorage {
     } catch (error) {
       console.warn("📵 localStorage completely full, disabling permanently");
       this.localStorageDisabled = true;
-      sessionStorage.setItem('localStorage_disabled', 'true');
+      sessionStorage.setItem("localStorage_disabled", "true");
     }
   }
 
@@ -40,7 +40,9 @@ export class LocalStorage {
   // Override localStorage methods when disabled
   private static safeLocalStorageSet(key: string, value: string): boolean {
     if (!this.isLocalStorageUsable()) {
-      console.warn(`📵 Skipping localStorage.setItem(${key}) - storage disabled`);
+      console.warn(
+        `📵 Skipping localStorage.setItem(${key}) - storage disabled`,
+      );
       return false;
     }
 
@@ -50,14 +52,16 @@ export class LocalStorage {
     } catch (error) {
       console.error(`❌ localStorage.setItem failed for ${key}`);
       this.localStorageDisabled = true;
-      sessionStorage.setItem('localStorage_disabled', 'true');
+      sessionStorage.setItem("localStorage_disabled", "true");
       return false;
     }
   }
 
   private static safeLocalStorageGet(key: string): string | null {
     if (!this.isLocalStorageUsable()) {
-      console.warn(`📵 Skipping localStorage.getItem(${key}) - storage disabled`);
+      console.warn(
+        `📵 Skipping localStorage.getItem(${key}) - storage disabled`,
+      );
       return null;
     }
 
@@ -164,17 +168,27 @@ export class LocalStorage {
       entries.push(entry);
     }
 
-    const success = this.safeLocalStorageSet(this.getKey("entries"), JSON.stringify(entries));
+    const success = this.safeLocalStorageSet(
+      this.getKey("entries"),
+      JSON.stringify(entries),
+    );
     if (!success) {
-      console.warn("📵 Journal entry not saved locally - using cloud sync only");
+      console.warn(
+        "📵 Journal entry not saved locally - using cloud sync only",
+      );
     }
   }
 
   static deleteJournalEntry(id: string): void {
     const entries = this.getJournalEntries().filter((e) => e.id !== id);
-    const success = this.safeLocalStorageSet(this.getKey("entries"), JSON.stringify(entries));
+    const success = this.safeLocalStorageSet(
+      this.getKey("entries"),
+      JSON.stringify(entries),
+    );
     if (!success) {
-      console.warn("📵 Journal entry deletion not saved locally - using cloud sync only");
+      console.warn(
+        "📵 Journal entry deletion not saved locally - using cloud sync only",
+      );
     }
   }
 
@@ -335,7 +349,10 @@ export class LocalStorage {
   }
 
   static setCharlieData(data: { image: string; description: string }): void {
-    const success = this.safeLocalStorageSet(this.getKey("charlie_data"), JSON.stringify(data));
+    const success = this.safeLocalStorageSet(
+      this.getKey("charlie_data"),
+      JSON.stringify(data),
+    );
     if (!success) {
       console.warn("📵 Charlie data not saved locally - using cloud sync only");
     }

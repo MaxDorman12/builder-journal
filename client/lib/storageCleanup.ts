@@ -1,5 +1,5 @@
 // Storage cleanup utility for quota issues
-import { StorageHealth } from './storageHealth';
+import { StorageHealth } from "./storageHealth";
 
 export class StorageCleanup {
   // Clear large base64 images from localStorage
@@ -97,7 +97,7 @@ export class StorageCleanup {
     const reEnabled = StorageHealth.forceReEnable();
 
     alert(
-      `🧹 AGGRESSIVE Storage Cleanup Complete!\n\nRemoved:\n• ${imagesCleared} images\n• ${videosCleared} videos\n• ${entriesCleared} old entries\n• Freed ${savedMB.toFixed(2)}MB space\n\nLocalStorage: ${reEnabled ? '✅ Re-enabled' : '❌ Still disabled'}\n\n${reEnabled ? 'Your app should work normally now!' : 'Try the 💥 RESET button for more space'}`,
+      `🧹 AGGRESSIVE Storage Cleanup Complete!\n\nRemoved:\n• ${imagesCleared} images\n• ${videosCleared} videos\n• ${entriesCleared} old entries\n• Freed ${savedMB.toFixed(2)}MB space\n\nLocalStorage: ${reEnabled ? "✅ Re-enabled" : "❌ Still disabled"}\n\n${reEnabled ? "Your app should work normally now!" : "Try the 💥 RESET button for more space"}`,
     );
   }
 
