@@ -461,26 +461,6 @@ export default function Index() {
           <h2 className="text-3xl font-bold text-foreground flex items-center gap-3">
             <span className="text-4xl">🐕</span>
             Meet Charlie
-            {isCloudSyncEnabled && (
-              <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
-                🔄 Auto-sync
-              </span>
-            )}
-            <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
-              🔄 Auto-sync on refresh
-            </span>
-            <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
-              Last Updated: {new Date().toLocaleTimeString()}
-            </span>
-            <div className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">
-              Sync Test:{" "}
-              {charlieData.description.includes("[Sync test at")
-                ? "✅ WORKING"
-                : "❌ NOT SYNCED"}
-            </div>
-            <div className="text-sm bg-yellow-100 text-yellow-800 px-3 py-2 rounded-lg border-2 border-yellow-300 font-mono">
-              🌐 CURRENT URL: {window.location.href}
-            </div>
             {isAuthenticated && (
               <>
                 <Button
