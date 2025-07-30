@@ -29,7 +29,6 @@ export function Layout({ children }: LayoutProps) {
     { name: "Journal", href: "/journal", icon: BookOpen },
     { name: "Map", href: "/map", icon: Map },
     { name: "Gallery", href: "/gallery", icon: Camera },
-    { name: "Search", href: "/search", icon: Search },
     { name: "Wishlist", href: "/wishlist", icon: Star },
     { name: "Calendar", href: "/calendar", icon: Calendar },
   ];
@@ -79,7 +78,7 @@ export function Layout({ children }: LayoutProps) {
                   <div className="bg-gradient-to-r from-green-200 to-blue-200 px-3 py-1 rounded-full flex items-center space-x-1 shadow-md">
                     <Camera className="h-3 w-3 text-green-700" />
                     <span className="text-green-800 font-medium text-sm">
-                      👨‍👩‍👧‍👦 {currentUser}
+                      👨‍👩‍����‍👦 {currentUser}
                     </span>
                   </div>
                   <button
@@ -139,7 +138,7 @@ export function Layout({ children }: LayoutProps) {
               Made with ❤️ for the Dorman Family Adventures
             </p>
             <p className="text-xs mt-2">
-              Private family journal - For family eyes only 👨‍👩‍👧‍👦
+              Private family journal - For family eyes only 👨‍👩‍��‍👦
             </p>
           </div>
         </div>
