@@ -165,11 +165,12 @@ export default function Index() {
           tempCharlieData.description.trim() || charlieData.description,
       };
 
-      if (isCloudSyncEnabled) {
-        await HybridStorage.setCharlieData(dataToSave);
-      } else {
-        LocalStorage.setCharlieData(dataToSave);
-      }
+      // Always use HybridStorage - it handles both local and cloud automatically
+      await HybridStorage.setCharlieData(dataToSave);
+      console.log("🐕 Charlie data saved:", {
+        hasImage: !!dataToSave.image,
+        imageLength: dataToSave.image?.length || 0
+      });
 
       setCharlieData(dataToSave);
       setIsCharlieDialogOpen(false);
@@ -446,7 +447,7 @@ export default function Index() {
           <div className="flex flex-wrap gap-3">
             <div className="bg-gradient-to-r from-amber-200 to-yellow-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
               <span className="text-amber-800 font-medium">
-                🎾 Adventure Buddy
+                �� Adventure Buddy
               </span>
             </div>
             <div className="bg-gradient-to-r from-green-200 to-emerald-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
