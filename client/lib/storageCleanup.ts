@@ -1,4 +1,6 @@
 // Storage cleanup utility for quota issues
+import { StorageHealth } from './storageHealth';
+
 export class StorageCleanup {
   // Clear large base64 images from localStorage
   static clearLargeImages(): number {
