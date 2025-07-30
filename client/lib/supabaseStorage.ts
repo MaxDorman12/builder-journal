@@ -71,8 +71,11 @@ export class SupabaseStorage {
 
       if (error) {
         console.error('❌ Supabase upload error:', error)
-        if (error.message?.includes('Failed to fetch')) {
-          console.error('💡 Falling back to base64 storage')
+        if (error.message?.includes('Failed to fetch') || error.message?.includes('mime type')) {
+          console.error('💡 MIME type or connection issue, falling back to base64 storage')
+          if (error.message?.includes('mime type')) {
+            console.error('Bucket MIME type restrictions detected. Please configure bucket to allow this file type:', file.type)
+          }
           SupabaseSetup.displaySetupInstructions()
           return await this.fileToBase64(file)
         }
