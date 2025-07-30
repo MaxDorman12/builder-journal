@@ -155,13 +155,13 @@ export default function Index() {
         const [freshCharlie, freshEntries, freshPins] = await Promise.all([
           CloudStorage.getCharlieData(),
           CloudStorage.getJournalEntries(),
-          CloudStorage.getMapPins()
+          CloudStorage.getMapPins(),
         ]);
 
         console.log("✅ FRESH DATA LOADED:", {
           charlieImage: !!freshCharlie.image,
           entriesCount: freshEntries.length,
-          pinsCount: freshPins.length
+          pinsCount: freshPins.length,
         });
 
         // UPDATE UI IMMEDIATELY
@@ -171,9 +171,8 @@ export default function Index() {
 
         // Update local storage as backup
         LocalStorage.setCharlieData(freshCharlie);
-        freshEntries.forEach(entry => LocalStorage.saveJournalEntry(entry));
-        freshPins.forEach(pin => LocalStorage.saveMapPin(pin));
-
+        freshEntries.forEach((entry) => LocalStorage.saveJournalEntry(entry));
+        freshPins.forEach((pin) => LocalStorage.saveMapPin(pin));
       } catch (error) {
         console.error("❌ Failed to load fresh data:", error);
         // Fallback to local data only if Firebase completely fails
