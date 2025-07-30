@@ -347,28 +347,30 @@ export default function Index() {
         canvas.height = height;
         ctx?.drawImage(img, 0, 0, width, height);
 
-        // Convert to base64 with aggressive compression for Firebase
-        let quality = 0.6;
-        let compressedDataUrl = canvas.toDataURL("image/jpeg", quality);
+        // For large images, upload to Firebase Storage instead of base64
+        try {
+          console.log("📸 Uploading large image to Firebase Storage...");
 
-        // If still too large for Firebase (1MB limit), compress more
-        while (compressedDataUrl.length > 800000 && quality > 0.1) {
-          quality -= 0.1;
-          compressedDataUrl = canvas.toDataURL("image/jpeg", quality);
+          // Generate unique path for this image
+          const imagePath = ImageStorage.generateImagePath("charlie");
+
+          // Upload compressed image to Firebase Storage
+          const downloadURL = await ImageStorage.uploadCompressedImage(canvas, imagePath);
+
+          console.log("✅ Image uploaded to Firebase Storage:", {
+            originalSize: file.size,
+            dimensions: `${width}x${height}`,
+            downloadURL: downloadURL
+          });
+
+          setTempCharlieData({
+            ...tempCharlieData,
+            image: downloadURL,
+          });
+        } catch (error) {
+          console.error("❌ Failed to upload to Firebase Storage:", error);
+          alert("❌ Failed to upload image. Please try again.");
         }
-
-        console.log("📸 Image compressed for Firebase:", {
-          originalSize: file.size,
-          compressedLength: compressedDataUrl.length,
-          dimensions: `${width}x${height}`,
-          quality: quality,
-          firebaseSafe: compressedDataUrl.length < 800000 ? "✅" : "❌",
-        });
-
-        setTempCharlieData({
-          ...tempCharlieData,
-          image: compressedDataUrl,
-        });
       };
 
       // Load the file
