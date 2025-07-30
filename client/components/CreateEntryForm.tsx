@@ -233,13 +233,21 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
     const files = Array.from(e.target.files || []);
 
     for (const file of files) {
-      // Allow large videos - Supabase Storage can handle them
       console.log(`🎥 Processing video "${file.name}":`, {
         size: file.size,
         type: file.type,
       });
 
-      // Upload large videos to Supabase Storage
+      const sizeMB = file.size / (1024 * 1024);
+
+      // Check if file is too large for Supabase free tier (50MB limit)
+      if (sizeMB > 45) {
+        alert(`⚠️ Video "${file.name}" is ${sizeMB.toFixed(1)}MB\n\nOptions:\n1. Upgrade to Supabase Pro (500GB limit)\n2. Use a smaller video file\n3. Compress video before upload`);
+        console.warn(`Video too large for Supabase free tier: ${sizeMB.toFixed(1)}MB`);
+        continue; // Skip this file
+      }
+
+      // Upload videos to Supabase Storage
       try {
         const entryId = `entry_${Date.now()}`;
         const publicUrl = await SupabaseStorage.uploadFile(file, entryId);
@@ -252,17 +260,21 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
         console.log(`✅ Video "${file.name}" uploaded to Supabase:`, publicUrl);
       } catch (error) {
         console.warn('Supabase video upload failed, using base64 fallback:', error);
-        // Fallback to base64 if Supabase fails
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          if (event.target?.result) {
-            setFormData((prev) => ({
-              ...prev,
-              videos: [...prev.videos, event.target!.result as string],
-            }));
-          }
-        };
-        reader.readAsDataURL(file);
+        // For small videos, fallback to base64
+        if (sizeMB < 10) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            if (event.target?.result) {
+              setFormData((prev) => ({
+                ...prev,
+                videos: [...prev.videos, event.target!.result as string],
+              }));
+            }
+          };
+          reader.readAsDataURL(file);
+        } else {
+          alert(`❌ Upload failed for "${file.name}" (${sizeMB.toFixed(1)}MB)\n\nPlease upgrade to Supabase Pro or use a smaller video.`);
+        }
       }
     }
   };
