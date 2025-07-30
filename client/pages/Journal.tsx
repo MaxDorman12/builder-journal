@@ -335,6 +335,7 @@ export default function Journal() {
               key={entry.id}
               entry={entry}
               onLike={handleLike}
+              onComment={handleComment}
               onEdit={isFamilyMember ? handleEdit : undefined}
               onDelete={isFamilyMember ? handleDelete : undefined}
               isFamilyMember={isFamilyMember}
