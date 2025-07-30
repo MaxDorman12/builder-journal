@@ -105,7 +105,15 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
         updatedAt: new Date().toISOString(),
       };
 
-      await HybridStorage.saveJournalEntry(entry);
+      // FORCE SAVE TO FIREBASE FIRST
+      try {
+        await CloudStorage.saveJournalEntry(entry);
+        LocalStorage.saveJournalEntry(entry); // Backup to local
+        console.log("✅ Journal entry saved to Firebase");
+      } catch (error) {
+        console.error("❌ Firebase save failed:", error);
+        LocalStorage.saveJournalEntry(entry); // Fallback to local only
+      }
       setCreatedEntryId(entryId);
 
       // Show option to place pin on map
