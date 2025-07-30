@@ -232,13 +232,8 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
   const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
 
-    files.forEach((file) => {
-      // Allow large videos - Firebase Storage can handle them
-      console.log(`🎥 Processing video "${file.name}":`, {
-        size: file.size,
-        type: file.type
-      });
-
+    for (const file of files) {
+      // Allow large videos - Supabase Storage can handle them
       console.log(`🎥 Processing video "${file.name}":`, {
         size: file.size,
         type: file.type,
@@ -269,7 +264,7 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
         };
         reader.readAsDataURL(file);
       }
-    });
+    }
   };
 
   const removeImage = (index: number) => {
