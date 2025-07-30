@@ -85,7 +85,8 @@ const App = () => (
 
 const container = document.getElementById("root")!;
 
-// Prevent multiple root creation during development hot reloading
-if (!(container as any)._reactRootContainer) {
-  createRoot(container).render(<App />);
+// Store root in global variable to prevent multiple creation
+if (!(window as any).__react_root__) {
+  (window as any).__react_root__ = createRoot(container);
 }
+(window as any).__react_root__.render(<App />);
