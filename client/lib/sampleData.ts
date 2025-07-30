@@ -91,6 +91,8 @@ export function initializeSampleData() {
       wouldReturn: true,
       hasFreeParkingAvailable: false,
       parkingCost: "£8 per day",
+      isPaidActivity: true,
+      activityCost: "£16 adults, £8 children",
       author: "Max",
       likes: 8,
       comments: [],
