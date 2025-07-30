@@ -48,7 +48,7 @@ export default function Gallery() {
     } catch (error) {
       console.error('Error loading gallery:', error);
     }
-  }, []);
+  }, [sortBy]); // Re-load when sortBy changes
 
   const loadPhotos = () => {
     try {
