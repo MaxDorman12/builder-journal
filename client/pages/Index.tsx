@@ -316,7 +316,7 @@ export default function Index() {
       const ctx = canvas.getContext("2d");
       const img = new Image();
 
-      img.onload = () => {
+      img.onload = async () => {
         // Calculate new dimensions (max 800px width/height)
         const maxSize = 800;
         let { width, height } = img;
