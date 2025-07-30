@@ -169,7 +169,7 @@ export default function Index() {
       await HybridStorage.setCharlieData(dataToSave);
       console.log("🐕 Charlie data saved:", {
         hasImage: !!dataToSave.image,
-        imageLength: dataToSave.image?.length || 0
+        imageLength: dataToSave.image?.length || 0,
       });
 
       setCharlieData(dataToSave);
