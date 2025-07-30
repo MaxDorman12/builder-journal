@@ -39,6 +39,7 @@ import { MapPin, MOOD_RATINGS, JournalEntry } from "@shared/api";
 
 export default function Map() {
   const { isFamilyMember } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [pins, setPins] = useState<MapPin[]>([]);
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [selectedPin, setSelectedPin] = useState<MapPin | null>(null);
