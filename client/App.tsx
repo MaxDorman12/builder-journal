@@ -13,6 +13,7 @@ import Login from "./pages/Login";
 import Journal from "./pages/Journal";
 import Map from "./pages/Map";
 import Wishlist from "./pages/Wishlist";
+import Gallery from "./pages/Gallery";
 import Calendar from "./pages/Calendar";
 import NotFound from "./pages/NotFound";
 
