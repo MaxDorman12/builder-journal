@@ -519,9 +519,7 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
                   }))
                 }
               />
-              <Label htmlFor="isPaidActivity">
-                💰 This is a paid activity
-              </Label>
+              <Label htmlFor="isPaidActivity">💰 This is a paid activity</Label>
             </div>
 
             {formData.isPaidActivity && (
