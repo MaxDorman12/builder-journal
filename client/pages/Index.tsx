@@ -132,13 +132,13 @@ export default function Index() {
     if (file) {
       // Check file size (limit to 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        alert('Image size must be less than 5MB');
+        alert("Image size must be less than 5MB");
         return;
       }
 
       // Check file type
-      if (!file.type.startsWith('image/')) {
-        alert('Please select an image file');
+      if (!file.type.startsWith("image/")) {
+        alert("Please select an image file");
         return;
       }
 
@@ -147,7 +147,7 @@ export default function Index() {
         const result = e.target?.result as string;
         setTempCharlieData({
           ...tempCharlieData,
-          image: result
+          image: result,
         });
       };
       reader.readAsDataURL(file);
@@ -519,7 +519,8 @@ export default function Index() {
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         e.target.style.display = "none";
-                        e.target.parentElement.innerHTML = '<div class="flex items-center justify-center h-full"><div class="text-6xl">🐕</div></div>';
+                        e.target.parentElement.innerHTML =
+                          '<div class="flex items-center justify-center h-full"><div class="text-6xl">🐕</div></div>';
                       }}
                     />
                   </div>
@@ -528,7 +529,10 @@ export default function Index() {
 
               {/* File Upload Option */}
               <div className="space-y-2">
-                <Label htmlFor="charlie-file-upload" className="text-sm font-medium">
+                <Label
+                  htmlFor="charlie-file-upload"
+                  className="text-sm font-medium"
+                >
                   📱 Upload from Device
                 </Label>
                 <Input
@@ -545,12 +549,19 @@ export default function Index() {
 
               {/* URL Option */}
               <div className="space-y-2">
-                <Label htmlFor="charlie-image-url" className="text-sm font-medium">
+                <Label
+                  htmlFor="charlie-image-url"
+                  className="text-sm font-medium"
+                >
                   🔗 Or paste image URL
                 </Label>
                 <Input
                   id="charlie-image-url"
-                  value={tempCharlieData.image.startsWith('data:') ? '' : tempCharlieData.image}
+                  value={
+                    tempCharlieData.image.startsWith("data:")
+                      ? ""
+                      : tempCharlieData.image
+                  }
                   onChange={(e) =>
                     setTempCharlieData({
                       ...tempCharlieData,
@@ -570,7 +581,9 @@ export default function Index() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setTempCharlieData({...tempCharlieData, image: ''})}
+                  onClick={() =>
+                    setTempCharlieData({ ...tempCharlieData, image: "" })
+                  }
                   className="w-full"
                 >
                   🗑️ Remove Photo
