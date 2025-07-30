@@ -94,7 +94,7 @@ export default function Wishlist() {
     LocalStorage.markWishlistItemCompleted(id);
     // Update in cloud if available
     if (HybridStorage.isCloudEnabled()) {
-      const item = HybridStorage.getWishlistItems().find(i => i.id === id);
+      const item = HybridStorage.getWishlistItems().find((i) => i.id === id);
       if (item) {
         await HybridStorage.saveWishlistItem(item);
       }

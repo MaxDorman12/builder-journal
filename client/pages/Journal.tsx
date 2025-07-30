@@ -76,7 +76,9 @@ export default function Journal() {
     LocalStorage.toggleLike(entryId);
     // Update in cloud if available
     if (HybridStorage.isCloudEnabled()) {
-      const entry = HybridStorage.getJournalEntries().find(e => e.id === entryId);
+      const entry = HybridStorage.getJournalEntries().find(
+        (e) => e.id === entryId,
+      );
       if (entry) {
         await HybridStorage.saveJournalEntry(entry);
       }

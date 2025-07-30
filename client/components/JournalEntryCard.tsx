@@ -79,7 +79,9 @@ export function JournalEntryCard({
     LocalStorage.addComment(entry.id, comment);
     // Update in cloud if available
     if (HybridStorage.isCloudEnabled()) {
-      const updatedEntry = HybridStorage.getJournalEntries().find(e => e.id === entry.id);
+      const updatedEntry = HybridStorage.getJournalEntries().find(
+        (e) => e.id === entry.id,
+      );
       if (updatedEntry) {
         await HybridStorage.saveJournalEntry(updatedEntry);
       }
