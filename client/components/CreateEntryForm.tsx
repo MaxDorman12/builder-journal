@@ -51,6 +51,8 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
     videos: [] as string[],
     hasFreeParkingAvailable: true,
     parkingCost: "",
+    isPaidActivity: false,
+    activityCost: "",
   });
   const [newActivity, setNewActivity] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
