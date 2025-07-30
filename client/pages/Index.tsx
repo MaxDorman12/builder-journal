@@ -63,7 +63,7 @@ export default function Index() {
       const cloudEnabled = await HybridStorage.initialize();
       setIsCloudSyncEnabled(cloudEnabled);
 
-      // AUTO-SYNC: Always fetch fresh data from Firebase when page loads
+      // AUTO-SYNC: Always fetch fresh data from Firebase when page loads (for ALL visitors)
       if (cloudEnabled) {
         try {
           console.log("🔄 Auto-syncing with Firebase on page load...");
