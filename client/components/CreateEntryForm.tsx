@@ -225,13 +225,11 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
     const files = Array.from(e.target.files || []);
 
     files.forEach((file) => {
-      // Check file size (limit to 50MB per video)
-      if (file.size > 50 * 1024 * 1024) {
-        alert(
-          `Video "${file.name}" is too large. Please choose videos under 50MB.`,
-        );
-        return;
-      }
+      // Allow large videos - Firebase Storage can handle them
+      console.log(`🎥 Processing video "${file.name}":`, {
+        size: file.size,
+        type: file.type
+      });
 
       console.log(`🎥 Processing video "${file.name}":`, {
         size: file.size,
