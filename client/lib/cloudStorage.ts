@@ -19,7 +19,21 @@ export class CloudStorage {
 
   // Journal Entries
   static async saveJournalEntry(entry: JournalEntry): Promise<void> {
-    await setDoc(doc(db, "journal-entries", entry.id), entry);
+    try {
+      console.log("💾 Saving journal entry to Firebase:", {
+        id: entry.id,
+        title: entry.title,
+        imagesCount: entry.images?.length || 0,
+        videosCount: entry.videos?.length || 0,
+        totalSize: JSON.stringify(entry).length
+      });
+
+      await setDoc(doc(db, "journal-entries", entry.id), entry);
+      console.log("✅ Journal entry saved to Firebase successfully");
+    } catch (error) {
+      console.error("❌ Firebase journal entry save failed:", error);
+      throw error;
+    }
   }
 
   static async getJournalEntries(): Promise<JournalEntry[]> {
