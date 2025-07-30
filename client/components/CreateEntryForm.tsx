@@ -124,12 +124,8 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
         console.error("❌ Firebase save failed:", error);
         console.error("Error details:", error.message);
 
-        // Check if it's a size issue
-        if (error.message && error.message.includes("size")) {
-          alert("❌ Entry too large! Try reducing image/video sizes or count.");
-          setError("Entry too large. Try reducing media files.");
-          return;
-        }
+        // Log the error but continue with fallback
+        console.warn("Firebase save failed, using local storage fallback");
 
         console.log("📱 Falling back to local storage only");
         LocalStorage.saveJournalEntry(entry); // Fallback to local only
