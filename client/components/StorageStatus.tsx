@@ -1,18 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
-import { StorageCleanup } from '@/lib/storageCleanup';
-import { AlertTriangle, CloudOff, HardDrive } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { StorageCleanup } from "@/lib/storageCleanup";
+import { AlertTriangle, CloudOff, HardDrive } from "lucide-react";
 
 export function StorageStatus() {
   const [storageDisabled, setStorageDisabled] = useState(false);
-  const [storageUsage, setStorageUsage] = useState({ totalSize: 0, itemCount: 0 });
+  const [storageUsage, setStorageUsage] = useState({
+    totalSize: 0,
+    itemCount: 0,
+  });
 
   useEffect(() => {
     // Check if localStorage is working
     try {
-      const testKey = '__storage_test__';
-      localStorage.setItem(testKey, 'test');
+      const testKey = "__storage_test__";
+      localStorage.setItem(testKey, "test");
       localStorage.removeItem(testKey);
       setStorageDisabled(false);
     } catch (error) {
@@ -38,7 +41,8 @@ export function StorageStatus() {
         <AlertDescription className="text-red-800">
           <div className="flex items-center justify-between">
             <div>
-              <strong>Device Storage Full!</strong> Changes won't save locally but will sync to cloud.
+              <strong>Device Storage Full!</strong> Changes won't save locally
+              but will sync to cloud.
             </div>
             <div className="flex gap-2 ml-4">
               <Button
@@ -70,7 +74,8 @@ export function StorageStatus() {
       <AlertDescription className="text-yellow-800">
         <div className="flex items-center justify-between">
           <div>
-            <strong>Storage Warning:</strong> Using {sizeMB}MB of local storage. Consider cleaning up.
+            <strong>Storage Warning:</strong> Using {sizeMB}MB of local storage.
+            Consider cleaning up.
           </div>
           <Button
             size="sm"

@@ -12,12 +12,14 @@ export class LocalStorage {
     if (this.localStorageDisabled) return false;
 
     try {
-      const testKey = '__test__';
-      localStorage.setItem(testKey, 'test');
+      const testKey = "__test__";
+      localStorage.setItem(testKey, "test");
       localStorage.removeItem(testKey);
       return true;
     } catch (error) {
-      console.warn('📵 localStorage completely full, disabling for this session');
+      console.warn(
+        "📵 localStorage completely full, disabling for this session",
+      );
       this.localStorageDisabled = true;
       return false;
     }
@@ -25,23 +27,27 @@ export class LocalStorage {
 
   // Handle localStorage quota exceeded errors
   private static handleQuotaExceeded(key: string, data: any): void {
-    console.log('🧹 Auto-cleanup triggered due to quota exceeded');
+    console.log("🧹 Auto-cleanup triggered due to quota exceeded");
 
     // Emergency cleanup of large base64 data
     this.emergencyCleanup();
 
     // Immediately disable localStorage - don't even try to save again
     this.localStorageDisabled = true;
-    console.warn('📵 localStorage completely full and disabled for this session');
+    console.warn(
+      "📵 localStorage completely full and disabled for this session",
+    );
 
     // Show one-time alert about storage being disabled
-    if (!sessionStorage.getItem('storage_alert_shown')) {
-      sessionStorage.setItem('storage_alert_shown', 'true');
-      alert(`📵 Device Storage Full!\n\nYour family journal will work but changes won't save locally on this device.\n\n✅ Data WILL sync to cloud (Firebase/Supabase)\n✅ Other devices will still work normally\n\n🔧 To fix: Click "🧹 CLEAN" or clear browser data`);
+    if (!sessionStorage.getItem("storage_alert_shown")) {
+      sessionStorage.setItem("storage_alert_shown", "true");
+      alert(
+        `📵 Device Storage Full!\n\nYour family journal will work but changes won't save locally on this device.\n\n✅ Data WILL sync to cloud (Firebase/Supabase)\n✅ Other devices will still work normally\n\n🔧 To fix: Click "🧹 CLEAN" or clear browser data`,
+      );
     }
 
     // Don't throw error - just continue without localStorage
-    console.log('🌥️ Continuing with cloud-only storage mode');
+    console.log("🌥️ Continuing with cloud-only storage mode");
   }
 
   // Emergency cleanup of large files
@@ -50,14 +56,21 @@ export class LocalStorage {
     let clearedSize = 0;
     const keys = Object.keys(localStorage);
 
-    console.log(`🧹 Starting emergency cleanup of ${keys.length} localStorage items`);
+    console.log(
+      `🧹 Starting emergency cleanup of ${keys.length} localStorage items`,
+    );
 
     // Phase 1: Remove ALL base64 images/videos regardless of size
     for (const key of keys) {
       try {
         const value = localStorage.getItem(key);
-        if (value && (value.startsWith('data:image/') || value.startsWith('data:video/'))) {
-          console.log(`🗑️ Removing media file: ${key} (${(value.length/1024).toFixed(1)}KB)`);
+        if (
+          value &&
+          (value.startsWith("data:image/") || value.startsWith("data:video/"))
+        ) {
+          console.log(
+            `🗑️ Removing media file: ${key} (${(value.length / 1024).toFixed(1)}KB)`,
+          );
           clearedSize += value.length;
           localStorage.removeItem(key);
           clearedCount++;
@@ -75,16 +88,21 @@ export class LocalStorage {
         const entries = this.getJournalEntries();
         if (entries.length > 5) {
           const recentEntries = entries.slice(-5); // Keep last 5
-          localStorage.setItem(this.getKey("entries"), JSON.stringify(recentEntries));
+          localStorage.setItem(
+            this.getKey("entries"),
+            JSON.stringify(recentEntries),
+          );
           console.log(`🗑️ Reduced journal entries from ${entries.length} to 5`);
           clearedCount += entries.length - 5;
         }
       } catch (error) {
-        console.error('Failed to reduce journal entries:', error);
+        console.error("Failed to reduce journal entries:", error);
       }
     }
 
-    console.log(`🧹 Emergency cleanup complete: ${clearedCount} items, ${(clearedSize/1024/1024).toFixed(1)}MB freed`);
+    console.log(
+      `🧹 Emergency cleanup complete: ${clearedCount} items, ${(clearedSize / 1024 / 1024).toFixed(1)}MB freed`,
+    );
   }
 
   static getJournalEntries(): JournalEntry[] {
@@ -95,7 +113,7 @@ export class LocalStorage {
   static saveJournalEntry(entry: JournalEntry): void {
     // Skip localStorage if disabled due to quota issues
     if (!this.isLocalStorageUsable()) {
-      console.warn('📵 Skipping localStorage save - storage disabled');
+      console.warn("📵 Skipping localStorage save - storage disabled");
       return;
     }
 
@@ -111,9 +129,9 @@ export class LocalStorage {
     try {
       localStorage.setItem(this.getKey("entries"), JSON.stringify(entries));
     } catch (error) {
-      console.error('❌ localStorage quota exceeded when saving journal entry');
+      console.error("❌ localStorage quota exceeded when saving journal entry");
       // Try emergency cleanup and retry
-      this.handleQuotaExceeded('entries', entries);
+      this.handleQuotaExceeded("entries", entries);
     }
   }
 
@@ -122,8 +140,10 @@ export class LocalStorage {
     try {
       localStorage.setItem(this.getKey("entries"), JSON.stringify(entries));
     } catch (error) {
-      console.error('❌ localStorage quota exceeded when deleting journal entry');
-      this.handleQuotaExceeded('entries', entries);
+      console.error(
+        "❌ localStorage quota exceeded when deleting journal entry",
+      );
+      this.handleQuotaExceeded("entries", entries);
     }
   }
 
@@ -145,8 +165,8 @@ export class LocalStorage {
     try {
       localStorage.setItem(this.getKey("map_pins"), JSON.stringify(pins));
     } catch (error) {
-      console.error('❌ localStorage quota exceeded when saving map pin');
-      this.handleQuotaExceeded('map_pins', pins);
+      console.error("❌ localStorage quota exceeded when saving map pin");
+      this.handleQuotaExceeded("map_pins", pins);
     }
   }
 
@@ -155,8 +175,8 @@ export class LocalStorage {
     try {
       localStorage.setItem(this.getKey("map_pins"), JSON.stringify(pins));
     } catch (error) {
-      console.error('❌ localStorage quota exceeded when deleting map pin');
-      this.handleQuotaExceeded('map_pins', pins);
+      console.error("❌ localStorage quota exceeded when deleting map pin");
+      this.handleQuotaExceeded("map_pins", pins);
     }
   }
 
@@ -204,8 +224,8 @@ export class LocalStorage {
     try {
       localStorage.setItem(this.getKey("wishlist"), JSON.stringify(items));
     } catch (error) {
-      console.error('❌ localStorage quota exceeded when saving wishlist');
-      this.handleQuotaExceeded('wishlist', items);
+      console.error("❌ localStorage quota exceeded when saving wishlist");
+      this.handleQuotaExceeded("wishlist", items);
     }
   }
 
@@ -214,8 +234,10 @@ export class LocalStorage {
     try {
       localStorage.setItem(this.getKey("wishlist"), JSON.stringify(items));
     } catch (error) {
-      console.error('❌ localStorage quota exceeded when deleting wishlist item');
-      this.handleQuotaExceeded('wishlist', items);
+      console.error(
+        "❌ localStorage quota exceeded when deleting wishlist item",
+      );
+      this.handleQuotaExceeded("wishlist", items);
     }
   }
 
@@ -284,15 +306,17 @@ export class LocalStorage {
   static setCharlieData(data: { image: string; description: string }): void {
     // Skip localStorage if disabled due to quota issues
     if (!this.isLocalStorageUsable()) {
-      console.warn('📵 Skipping Charlie data localStorage save - storage disabled');
+      console.warn(
+        "📵 Skipping Charlie data localStorage save - storage disabled",
+      );
       return;
     }
 
     try {
       localStorage.setItem(this.getKey("charlie_data"), JSON.stringify(data));
     } catch (error) {
-      console.error('❌ localStorage quota exceeded when saving Charlie data');
-      this.handleQuotaExceeded('charlie_data', data);
+      console.error("❌ localStorage quota exceeded when saving Charlie data");
+      this.handleQuotaExceeded("charlie_data", data);
     }
   }
 
