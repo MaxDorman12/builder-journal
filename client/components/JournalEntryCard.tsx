@@ -25,6 +25,7 @@ import {
   Edit2,
   Trash2,
   MoreHorizontal,
+  Download,
 } from "lucide-react";
 import { JournalEntry, MOOD_RATINGS, AREA_TYPES, Comment } from "@shared/api";
 import { LocalStorage } from "@/lib/storage";
