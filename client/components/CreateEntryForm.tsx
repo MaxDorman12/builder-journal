@@ -166,13 +166,11 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
     const files = Array.from(e.target.files || []);
 
     files.forEach((file) => {
-      // Check file size (limit to 5MB per image)
-      if (file.size > 5 * 1024 * 1024) {
-        alert(
-          `Image "${file.name}" is too large. Please choose images under 5MB.`,
-        );
-        return;
-      }
+      // Allow large images - Firebase Storage can handle them
+      console.log(`📸 Processing image "${file.name}":`, {
+        size: file.size,
+        type: file.type
+      });
 
       // Compress image for better performance
       const canvas = document.createElement("canvas");
