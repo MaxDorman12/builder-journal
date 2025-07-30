@@ -186,6 +186,9 @@ export default function Index() {
     initializeStorage();
     loadFreshData();
 
+    // Initialize Supabase Storage
+    SupabaseStorage.initializeBucket();
+
     // Load YouTube URL from localStorage
     const savedYoutubeUrl = localStorage.getItem("familyjournal_youtube_url");
     const defaultUrl = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
