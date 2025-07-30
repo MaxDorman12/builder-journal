@@ -75,6 +75,22 @@ export default function Journal() {
     loadEntries();
   };
 
+  const handleEdit = (entry: JournalEntry) => {
+    setEditingEntry(entry);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleDelete = (entryId: string) => {
+    LocalStorage.deleteJournalEntry(entryId);
+    loadEntries();
+  };
+
+  const handleEntryUpdated = () => {
+    loadEntries();
+    setIsEditDialogOpen(false);
+    setEditingEntry(null);
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
