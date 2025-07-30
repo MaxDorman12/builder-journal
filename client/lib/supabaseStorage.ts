@@ -4,9 +4,50 @@ import { SupabaseSetup } from './supabaseSetup'
 
 export class SupabaseStorage {
   private static BUCKET_NAME = 'journal-media'
+  private static storageEnabled: boolean | null = null
+
+  // Check if Supabase Storage is available
+  private static async checkStorageAvailability(): Promise<boolean> {
+    if (this.storageEnabled !== null) {
+      return this.storageEnabled
+    }
+
+    try {
+      const { data, error } = await supabase.storage.listBuckets()
+      this.storageEnabled = !error
+      return this.storageEnabled
+    } catch (error) {
+      console.warn('⚠️ Supabase Storage not available, using fallback')
+      this.storageEnabled = false
+      return false
+    }
+  }
+
+  // Convert file to base64 as fallback
+  private static fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(reader.result as string)
+      reader.onerror = reject
+      reader.readAsDataURL(file)
+    })
+  }
+
+  // Convert canvas to base64 as fallback
+  private static canvasToBase64(canvas: HTMLCanvasElement): string {
+    return canvas.toDataURL('image/jpeg', 0.8)
+  }
 
   // Upload image/video file and return public URL
   static async uploadFile(file: File, entryId: string): Promise<string> {
+    // Check if Supabase Storage is available
+    const storageAvailable = await this.checkStorageAvailability()
+
+    if (!storageAvailable) {
+      console.log('⚠️ Supabase Storage unavailable, using base64 fallback')
+      return await this.fileToBase64(file)
+    }
+
     try {
       console.log('🔄 Uploading to Supabase Storage:', {
         fileName: file.name,
@@ -18,9 +59,6 @@ export class SupabaseStorage {
       // Create unique file path
       const fileExtension = file.name.split('.').pop() || 'bin'
       const fileName = `${entryId}/${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExtension}`
-      
-      // Ensure bucket exists before upload
-      await this.initializeBucket()
 
       // Upload file to Supabase Storage
       const { data, error } = await supabase.storage
@@ -33,11 +71,9 @@ export class SupabaseStorage {
       if (error) {
         console.error('❌ Supabase upload error:', error)
         if (error.message?.includes('Failed to fetch')) {
-          console.error('💡 This usually means:')
-          console.error('1. Storage bucket doesn\'t exist')
-          console.error('2. RLS policies are blocking access')
-          console.error('3. CORS configuration issues')
+          console.error('💡 Falling back to base64 storage')
           SupabaseSetup.displaySetupInstructions()
+          return await this.fileToBase64(file)
         }
         throw error
       }
@@ -54,17 +90,26 @@ export class SupabaseStorage {
 
       return urlData.publicUrl
     } catch (error) {
-      console.error('❌ Supabase Storage upload failed:', error)
-      throw error
+      console.error('❌ Supabase Storage upload failed, using base64 fallback:', error)
+      return await this.fileToBase64(file)
     }
   }
 
   // Upload compressed image from canvas
   static async uploadCompressedImage(canvas: HTMLCanvasElement, entryId: string): Promise<string> {
+    // Check if Supabase Storage is available
+    const storageAvailable = await this.checkStorageAvailability()
+
+    if (!storageAvailable) {
+      console.log('⚠️ Supabase Storage unavailable, using base64 fallback')
+      return this.canvasToBase64(canvas)
+    }
+
     return new Promise((resolve, reject) => {
       canvas.toBlob(async (blob) => {
         if (!blob) {
-          reject(new Error('Failed to create blob from canvas'))
+          // Fallback to base64 if blob creation fails
+          resolve(this.canvasToBase64(canvas))
           return
         }
 
@@ -77,9 +122,6 @@ export class SupabaseStorage {
 
           // Create unique file path
           const fileName = `${entryId}/${Date.now()}_compressed.jpg`
-          
-          // Ensure bucket exists before upload
-          await this.initializeBucket()
 
           // Upload blob to Supabase Storage
           const { data, error } = await supabase.storage
@@ -92,11 +134,10 @@ export class SupabaseStorage {
           if (error) {
             console.error('❌ Supabase compressed upload error:', error)
             if (error.message?.includes('Failed to fetch')) {
-              console.error('💡 This usually means:')
-              console.error('1. Storage bucket doesn\'t exist')
-              console.error('2. RLS policies are blocking access')
-              console.error('3. CORS configuration issues')
+              console.error('💡 Falling back to base64 storage')
               SupabaseSetup.displaySetupInstructions()
+              resolve(this.canvasToBase64(canvas))
+              return
             }
             throw error
           }
@@ -109,8 +150,8 @@ export class SupabaseStorage {
           console.log('✅ Compressed image uploaded to Supabase:', urlData.publicUrl)
           resolve(urlData.publicUrl)
         } catch (error) {
-          console.error('❌ Supabase compressed upload failed:', error)
-          reject(error)
+          console.error('❌ Supabase compressed upload failed, using base64 fallback:', error)
+          resolve(this.canvasToBase64(canvas))
         }
       }, 'image/jpeg', 0.8)
     })
@@ -147,6 +188,14 @@ export class SupabaseStorage {
   static async initializeBucket(): Promise<void> {
     try {
       console.log('🔄 Initializing Supabase Storage bucket...')
+
+      // Check if storage is enabled first
+      const storageEnabled = await SupabaseSetup.isStorageEnabled()
+      if (!storageEnabled) {
+        console.warn('⚠️ Supabase Storage service is not enabled or accessible')
+        SupabaseSetup.displaySetupInstructions()
+        return
+      }
 
       // First test connection
       const testResult = await SupabaseSetup.testConnection()
