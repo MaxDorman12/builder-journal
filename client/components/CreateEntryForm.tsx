@@ -74,8 +74,9 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
     setError("");
 
     try {
+      const entryId = Date.now().toString();
       const entry: JournalEntry = {
-        id: Date.now().toString(),
+        id: entryId,
         title: formData.title.trim(),
         content: formData.content.trim(),
         location: formData.location.trim(),
