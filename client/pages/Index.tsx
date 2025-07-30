@@ -72,8 +72,17 @@ export default function Index() {
             imageLength: firebaseCharlieData.image?.length || 0,
             imageStart: firebaseCharlieData.image?.substring(0, 30) || "none",
           });
+
+          // Test writing to Firebase to ensure it's working
+          console.log("🧪 Testing Firebase write...");
+          await CloudStorage.setCharlieData({
+            image: firebaseCharlieData.image || "",
+            description: firebaseCharlieData.description + "\n[Test sync at " + new Date().toLocaleTimeString() + "]"
+          });
+          console.log("✅ Firebase write test successful");
+
         } catch (error) {
-          console.error("❌ Failed to read Charlie data from Firebase:", error);
+          console.error("❌ Failed to read/write Charlie data from Firebase:", error);
         }
       }
 
