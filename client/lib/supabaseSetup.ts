@@ -82,8 +82,8 @@ export class SupabaseSetup {
   static displaySetupInstructions(): void {
     console.log('\n📋 SUPABASE STORAGE SETUP INSTRUCTIONS:')
     console.log('==========================================')
-    console.log('🚨 CRITICAL: MIME type errors detected!')
-    console.log('Supabase is rejecting your MIME types as "not supported"')
+    console.log('🚨 CRITICAL: RLS Policy Error!')
+    console.log('Row Level Security is blocking uploads')
     console.log('')
     console.log('SOLUTION: LEAVE MIME TYPES COMPLETELY EMPTY')
     console.log('==========================================')
