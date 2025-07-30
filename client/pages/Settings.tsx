@@ -180,11 +180,11 @@ export default function Settings() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <p className="text-sm text-muted-foreground">Logged in as</p>
-              <p className="font-semibold">{currentUser || 'Family Member'}</p>
+              <p className="font-semibold">{currentUser || 'Dorman Family'}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Account Type</p>
-              <p className="font-semibold">Family Member</p>
+              <p className="text-sm text-muted-foreground">Journal Owner</p>
+              <p className="font-semibold">Dorman Family</p>
             </div>
           </div>
           <div className="pt-4 border-t">
