@@ -5,6 +5,47 @@ export class LocalStorage {
     return `familyjournal_${key}`;
   }
 
+  // Handle localStorage quota exceeded errors
+  private static handleQuotaExceeded(key: string, data: any): void {
+    console.log('🧹 Auto-cleanup triggered due to quota exceeded');
+
+    // Emergency cleanup of large base64 data
+    this.emergencyCleanup();
+
+    // Try saving again after cleanup
+    try {
+      localStorage.setItem(this.getKey(key), JSON.stringify(data));
+      console.log('✅ Save successful after cleanup');
+    } catch (retryError) {
+      console.error('❌ Save failed even after cleanup:', retryError);
+      alert('❌ Storage full! Please click "🧹 CLEAN" button to free up space.');
+      throw retryError;
+    }
+  }
+
+  // Emergency cleanup of large files
+  private static emergencyCleanup(): void {
+    let clearedCount = 0;
+    const keys = Object.keys(localStorage);
+
+    for (const key of keys) {
+      try {
+        const value = localStorage.getItem(key);
+        if (value &&
+            (value.startsWith('data:image/') || value.startsWith('data:video/')) &&
+            value.length > 100000) {
+          console.log(`🗑️ Auto-removing large file: ${key}`);
+          localStorage.removeItem(key);
+          clearedCount++;
+        }
+      } catch (error) {
+        // Skip problematic items
+      }
+    }
+
+    console.log(`🧹 Auto-cleanup removed ${clearedCount} large files`);
+  }
+
   static getJournalEntries(): JournalEntry[] {
     const data = localStorage.getItem(this.getKey("entries"));
     return data ? JSON.parse(data) : [];
