@@ -70,6 +70,14 @@ const App = () => (
               }
             />
             <Route
+              path="/search"
+              element={
+                <Layout>
+                  <Search />
+                </Layout>
+              }
+            />
+            <Route
               path="/calendar"
               element={
                 <Layout>
