@@ -108,6 +108,22 @@ export default function Index() {
           // Fallback to local data if Firebase fails
           console.log("📱 Using local data as fallback");
         }
+      } else {
+        // Even if cloud sync is disabled, try to load from Firebase for public viewing
+        try {
+          console.log("🌐 Loading public data from Firebase...");
+          const publicCharlieData = await CloudStorage.getCharlieData();
+          const publicEntries = await CloudStorage.getJournalEntries();
+          const publicPins = await CloudStorage.getMapPins();
+
+          setCharlieData(publicCharlieData);
+          setEntries(publicEntries);
+          setPins(publicPins);
+
+          console.log("✅ Public data loaded successfully!");
+        } catch (error) {
+          console.warn("⚠️ Could not load public data, using defaults:", error);
+        }
       }
 
       if (cloudEnabled) {
