@@ -795,7 +795,8 @@ export default function Index() {
                 onClick={handleCharlieSave}
                 disabled={
                   !tempCharlieData.description.trim() &&
-                  !tempCharlieData.image.trim()
+                  !tempCharlieData.image.trim() &&
+                  tempCharlieData.description === charlieData.description
                 }
               >
                 Save Changes
