@@ -254,7 +254,7 @@ export function FamilyStats({ showAll = false, onViewAll, onClose }: FamilyStats
     {
       icon: MessageCircle,
       value: stats.totalComments,
-      label: '��� Comments Shared',
+      label: '💬 Comments Shared',
       color: 'from-indigo-200 to-blue-300',
       textColor: 'text-indigo-700'
     },
@@ -322,6 +322,21 @@ export function FamilyStats({ showAll = false, onViewAll, onClose }: FamilyStats
           );
         })}
       </div>
+
+      {/* Close Button */}
+      {showAll && onClose && (
+        <div className="text-center">
+          <Button
+            variant="outline"
+            onClick={onClose}
+            className="group hover:bg-gradient-to-r hover:from-red-50 hover:to-pink-50"
+          >
+            <ChevronUp className="h-4 w-4 mr-2" />
+            Show Less Stats
+            <X className="h-4 w-4 ml-2 group-hover:rotate-90 transition-transform" />
+          </Button>
+        </div>
+      )}
 
       {/* View All Button */}
       {!showAll && onViewAll && (
