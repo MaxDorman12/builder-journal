@@ -1,8 +1,26 @@
 import { JournalEntry, MapPin, Comment, WishlistItem } from "@shared/api";
 
 export class LocalStorage {
+  private static localStorageDisabled = false;
+
   private static getKey(key: string): string {
     return `familyjournal_${key}`;
+  }
+
+  // Check if localStorage is completely unusable
+  private static isLocalStorageUsable(): boolean {
+    if (this.localStorageDisabled) return false;
+
+    try {
+      const testKey = '__test__';
+      localStorage.setItem(testKey, 'test');
+      localStorage.removeItem(testKey);
+      return true;
+    } catch (error) {
+      console.warn('📵 localStorage completely full, disabling for this session');
+      this.localStorageDisabled = true;
+      return false;
+    }
   }
 
   // Handle localStorage quota exceeded errors
