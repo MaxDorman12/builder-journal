@@ -52,6 +52,14 @@ const App = () => (
               }
             />
             <Route
+              path="/wishlist"
+              element={
+                <Layout>
+                  <Wishlist />
+                </Layout>
+              }
+            />
+            <Route
               path="/calendar"
               element={
                 <Layout>
