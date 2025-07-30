@@ -382,7 +382,7 @@ export default function Calendar() {
                   key={entry.id}
                   entry={entry}
                   onLike={handleLike}
-                  isFamilyMember={true} // For demo purposes
+                  isFamilyMember={isFamilyMember}
                 />
               ))}
             </div>
