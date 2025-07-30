@@ -67,6 +67,27 @@ export default function Index() {
       const cloudEnabled = await HybridStorage.initialize();
       setIsCloudSyncEnabled(cloudEnabled);
 
+      // If localStorage is disabled, force direct Firebase access
+      if (StorageHealth.isDisabled()) {
+        console.log("📵 localStorage disabled - forcing direct Firebase access");
+        try {
+          const directEntries = await CloudStorage.getJournalEntries();
+          const directCharlie = await CloudStorage.getCharlieData();
+          const directPins = await CloudStorage.getMapPins();
+
+          console.log("📱 Direct Firebase load successful:", {
+            entriesCount: directEntries.length,
+            charlieHasImage: !!directCharlie.image
+          });
+
+          setEntries(directEntries);
+          setCharlieData(directCharlie);
+          setPins(directPins);
+        } catch (error) {
+          console.error("❌ Direct Firebase access failed:", error);
+        }
+      }
+
       // AUTO-SYNC: Always fetch fresh data from Firebase when page loads (for ALL visitors)
       if (cloudEnabled) {
         try {
