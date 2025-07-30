@@ -61,6 +61,44 @@ export default function Wishlist() {
     loadWishlistItems();
   };
 
+  const handleCreateItem = () => {
+    if (!formData.title.trim() || !formData.location.trim()) return;
+
+    const item: WishlistItem = {
+      id: Date.now().toString(),
+      title: formData.title.trim(),
+      description: formData.description.trim(),
+      location: formData.location.trim(),
+      priority: formData.priority,
+      category: formData.category,
+      estimatedCost: formData.estimatedCost.trim(),
+      bestTimeToVisit: formData.bestTimeToVisit.trim(),
+      notes: formData.notes.trim(),
+      isCompleted: false,
+      addedBy: currentUser || 'Family Member',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    LocalStorage.saveWishlistItem(item);
+    loadWishlistItems();
+    setIsCreateDialogOpen(false);
+    resetForm();
+  };
+
+  const resetForm = () => {
+    setFormData({
+      title: '',
+      description: '',
+      location: '',
+      priority: 'medium',
+      category: 'adventure',
+      estimatedCost: '',
+      bestTimeToVisit: '',
+      notes: ''
+    });
+  };
+
   return (
     <div className="space-y-6 p-6">
       {/* Header */}
