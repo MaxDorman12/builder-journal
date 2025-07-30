@@ -131,7 +131,9 @@ export default function Index() {
     if (file) {
       // Check file size (limit to 2MB for better performance)
       if (file.size > 2 * 1024 * 1024) {
-        alert("Image size must be less than 2MB. Please choose a smaller image or compress it first.");
+        alert(
+          "Image size must be less than 2MB. Please choose a smaller image or compress it first.",
+        );
         return;
       }
 
@@ -142,8 +144,8 @@ export default function Index() {
       }
 
       // Create canvas for image compression
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
       const img = new Image();
 
       img.onload = () => {
@@ -167,7 +169,7 @@ export default function Index() {
         ctx?.drawImage(img, 0, 0, width, height);
 
         // Convert to base64 with compression
-        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+        const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.8);
 
         setTempCharlieData({
           ...tempCharlieData,
@@ -573,7 +575,8 @@ export default function Index() {
                   className="w-full"
                 />
                 <p className="text-xs text-muted-foreground">
-                  Upload directly from your phone or computer (max 2MB, auto-compressed)
+                  Upload directly from your phone or computer (max 2MB,
+                  auto-compressed)
                 </p>
               </div>
 
