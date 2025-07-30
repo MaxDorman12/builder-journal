@@ -451,15 +451,32 @@ export default function Index() {
               Last Updated: {new Date().toLocaleTimeString()}
             </span>
             {isAuthenticated && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleCharlieEdit}
-                className="h-8 w-8 p-0 ml-auto"
-                title="Edit Charlie's section"
-              >
-                <Edit2 className="h-4 w-4" />
-              </Button>
+              <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={async () => {
+                    console.log("🧪 Testing sync...");
+                    await HybridStorage.setCharlieData({
+                      ...charlieData,
+                      description: charlieData.description + "\n[Sync test at " + new Date().toLocaleTimeString() + "]"
+                    });
+                  }}
+                  className="h-8 w-auto px-2 text-xs bg-yellow-100"
+                  title="Test Sync"
+                >
+                  🧪 Test
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleCharlieEdit}
+                  className="h-8 w-8 p-0"
+                  title="Edit Charlie's section"
+                >
+                  <Edit2 className="h-4 w-4" />
+                </Button>
+              </>
             )}
           </h2>
           <div className="prose prose-lg max-w-none text-muted-foreground">
