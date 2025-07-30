@@ -14,6 +14,7 @@ import {
   Calendar,
   Star,
   Search,
+  Settings,
 } from "lucide-react";
 
 interface LayoutProps {
