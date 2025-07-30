@@ -98,6 +98,11 @@ export default function Index() {
           console.log(
             "✅ Auto-sync completed - all data refreshed from Firebase!",
           );
+          console.log("👀 New visitors will see:", {
+            charlieHasImage: !!freshCharlieData.image,
+            entriesCount: freshEntries.length,
+            pinsCount: freshPins.length
+          });
         } catch (error) {
           console.error("❌ Auto-sync failed:", error);
           // Fallback to local data if Firebase fails
