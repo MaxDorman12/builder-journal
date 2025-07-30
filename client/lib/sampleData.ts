@@ -35,6 +35,8 @@ export function initializeSampleData() {
       wouldReturn: true,
       hasFreeParkingAvailable: true,
       parkingCost: "",
+      isPaidActivity: false,
+      activityCost: "",
       author: "Charlotte",
       likes: 18,
       comments: [
