@@ -1,23 +1,28 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { LocalStorage } from '@/lib/storage';
-import { initializeSampleData } from '@/lib/sampleData';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { 
-  Camera, 
-  Calendar, 
-  MapPin, 
-  User, 
-  ChevronLeft, 
+import React, { useState, useEffect, useRef } from "react";
+import { LocalStorage } from "@/lib/storage";
+import { initializeSampleData } from "@/lib/sampleData";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Camera,
+  Calendar,
+  MapPin,
+  User,
+  ChevronLeft,
   ChevronRight,
   Grid3X3,
   List,
   Heart,
-  MessageCircle
-} from 'lucide-react';
-import { JournalEntry, MOOD_RATINGS } from '@shared/api';
+  MessageCircle,
+} from "lucide-react";
+import { JournalEntry, MOOD_RATINGS } from "@shared/api";
 
 interface PhotoItem {
   id: string;
@@ -37,8 +42,8 @@ export default function Gallery() {
   const [selectedPhoto, setSelectedPhoto] = useState<PhotoItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [sortBy, setSortBy] = useState<'date' | 'entry' | 'mood'>('date');
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [sortBy, setSortBy] = useState<"date" | "entry" | "mood">("date");
 
   // Touch handling for mobile swipe
   const touchStartX = useRef<number>(0);
@@ -50,7 +55,7 @@ export default function Gallery() {
       initializeSampleData();
       loadPhotos();
     } catch (error) {
-      console.error('Error loading gallery:', error);
+      console.error("Error loading gallery:", error);
     }
   }, [sortBy]); // Re-load when sortBy changes
 
@@ -71,7 +76,7 @@ export default function Gallery() {
             author: entry.author,
             moodRating: entry.moodRating,
             likes: entry.likes,
-            commentCount: entry.comments.length
+            commentCount: entry.comments.length,
           });
         });
       });
@@ -79,11 +84,11 @@ export default function Gallery() {
       // Sort photos
       const sortedPhotos = [...allPhotos].sort((a, b) => {
         switch (sortBy) {
-          case 'date':
+          case "date":
             return new Date(b.date).getTime() - new Date(a.date).getTime();
-          case 'entry':
+          case "entry":
             return a.entryTitle.localeCompare(b.entryTitle);
-          case 'mood':
+          case "mood":
             return b.moodRating - a.moodRating;
           default:
             return 0;
@@ -92,30 +97,33 @@ export default function Gallery() {
 
       setPhotos(sortedPhotos);
     } catch (error) {
-      console.error('Error loading photos:', error);
+      console.error("Error loading photos:", error);
       setPhotos([]);
     }
   };
 
   const openPhotoModal = (photo: PhotoItem) => {
-    const photoIndex = photos.findIndex(p => p.id === photo.id);
+    const photoIndex = photos.findIndex((p) => p.id === photo.id);
     setCurrentPhotoIndex(photoIndex);
     setSelectedPhoto(photo);
     setIsModalOpen(true);
   };
 
-  const navigatePhoto = (direction: 'next' | 'prev') => {
-    const newIndex = direction === 'next' 
-      ? (currentPhotoIndex + 1) % photos.length
-      : currentPhotoIndex === 0 ? photos.length - 1 : currentPhotoIndex - 1;
-    
+  const navigatePhoto = (direction: "next" | "prev") => {
+    const newIndex =
+      direction === "next"
+        ? (currentPhotoIndex + 1) % photos.length
+        : currentPhotoIndex === 0
+          ? photos.length - 1
+          : currentPhotoIndex - 1;
+
     setCurrentPhotoIndex(newIndex);
     setSelectedPhoto(photos[newIndex]);
   };
 
   const getMoodEmoji = (rating: number) => {
-    const mood = MOOD_RATINGS.find(r => r.value === rating);
-    return mood?.emoji || '😊';
+    const mood = MOOD_RATINGS.find((r) => r.value === rating);
+    return mood?.emoji || "😊";
   };
 
   // Touch handlers for mobile swipe navigation
@@ -135,10 +143,10 @@ export default function Gallery() {
     const isRightSwipe = distance < -50;
 
     if (isLeftSwipe && photos.length > 1) {
-      navigatePhoto('next');
+      navigatePhoto("next");
     }
     if (isRightSwipe && photos.length > 1) {
-      navigatePhoto('prev');
+      navigatePhoto("prev");
     }
   };
 
@@ -147,7 +155,9 @@ export default function Gallery() {
       {/* Header */}
       <div className="space-y-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">📸 Family Photo Gallery</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground">
+            📸 Family Photo Gallery
+          </h1>
           <p className="text-muted-foreground text-sm md:text-base">
             All your adventure memories in one beautiful place
           </p>
@@ -157,7 +167,9 @@ export default function Gallery() {
         <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
           <select
             value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as 'date' | 'entry' | 'mood')}
+            onChange={(e) =>
+              setSortBy(e.target.value as "date" | "entry" | "mood")
+            }
             className="px-3 py-2 border border-input bg-background rounded-md text-sm w-full sm:w-auto"
           >
             <option value="date">📅 Sort by Date</option>
@@ -167,18 +179,18 @@ export default function Gallery() {
 
           <div className="flex border border-input rounded-md w-full sm:w-auto">
             <Button
-              variant={viewMode === 'grid' ? 'default' : 'ghost'}
+              variant={viewMode === "grid" ? "default" : "ghost"}
               size="sm"
-              onClick={() => setViewMode('grid')}
+              onClick={() => setViewMode("grid")}
               className="rounded-r-none border-r flex-1 sm:flex-none"
             >
               <Grid3X3 className="h-4 w-4" />
               <span className="ml-2 sm:hidden">Grid</span>
             </Button>
             <Button
-              variant={viewMode === 'list' ? 'default' : 'ghost'}
+              variant={viewMode === "list" ? "default" : "ghost"}
               size="sm"
-              onClick={() => setViewMode('list')}
+              onClick={() => setViewMode("list")}
               className="rounded-l-none flex-1 sm:flex-none"
             >
               <List className="h-4 w-4" />
@@ -209,7 +221,7 @@ export default function Gallery() {
             </div>
             <div>
               <p className="text-lg font-bold text-purple-800">
-                {new Set(photos.map(p => p.location)).size}
+                {new Set(photos.map((p) => p.location)).size}
               </p>
               <p className="text-xs text-purple-600">📍 Unique Locations</p>
             </div>
@@ -237,7 +249,7 @@ export default function Gallery() {
             </div>
             <div>
               <p className="text-lg font-bold text-green-800">
-                {new Set(photos.map(p => p.author)).size}
+                {new Set(photos.map((p) => p.author)).size}
               </p>
               <p className="text-xs text-green-600">👥 Contributors</p>
             </div>
@@ -257,13 +269,15 @@ export default function Gallery() {
           </CardContent>
         </Card>
       ) : (
-        <div className={
-          viewMode === 'grid'
-            ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 md:gap-4"
-            : "space-y-3"
-        }>
-          {photos.map((photo) => (
-            viewMode === 'grid' ? (
+        <div
+          className={
+            viewMode === "grid"
+              ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 md:gap-4"
+              : "space-y-3"
+          }
+        >
+          {photos.map((photo) =>
+            viewMode === "grid" ? (
               <div
                 key={photo.id}
                 className="group relative aspect-square overflow-hidden rounded-lg cursor-pointer family-card hover:shadow-lg transition-all duration-200 hover:scale-105"
@@ -280,7 +294,9 @@ export default function Gallery() {
                     {photo.entryTitle}
                   </p>
                   <div className="flex items-center justify-between mt-1">
-                    <span className="text-white text-xs">{getMoodEmoji(photo.moodRating)}</span>
+                    <span className="text-white text-xs">
+                      {getMoodEmoji(photo.moodRating)}
+                    </span>
                     <div className="flex items-center space-x-1 text-white text-xs">
                       <Heart className="h-3 w-3" />
                       <span>{photo.likes}</span>
@@ -304,7 +320,9 @@ export default function Gallery() {
                       />
                     </div>
                     <div className="flex-1 space-y-2">
-                      <h3 className="font-semibold line-clamp-1">{photo.entryTitle}</h3>
+                      <h3 className="font-semibold line-clamp-1">
+                        {photo.entryTitle}
+                      </h3>
                       <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                         <div className="flex items-center space-x-1">
                           <MapPin className="h-3 w-3" />
@@ -312,7 +330,9 @@ export default function Gallery() {
                         </div>
                         <div className="flex items-center space-x-1">
                           <Calendar className="h-3 w-3" />
-                          <span>{new Date(photo.date).toLocaleDateString()}</span>
+                          <span>
+                            {new Date(photo.date).toLocaleDateString()}
+                          </span>
                         </div>
                         <div className="flex items-center space-x-1">
                           <User className="h-3 w-3" />
@@ -320,7 +340,9 @@ export default function Gallery() {
                         </div>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-lg">{getMoodEmoji(photo.moodRating)}</span>
+                        <span className="text-lg">
+                          {getMoodEmoji(photo.moodRating)}
+                        </span>
                         <div className="flex items-center space-x-3 text-sm text-muted-foreground">
                           <div className="flex items-center space-x-1">
                             <Heart className="h-3 w-3" />
@@ -336,8 +358,8 @@ export default function Gallery() {
                   </div>
                 </CardContent>
               </Card>
-            )
-          ))}
+            ),
+          )}
         </div>
       )}
 
@@ -348,9 +370,16 @@ export default function Gallery() {
             <>
               <DialogHeader className="p-4 md:p-6 pb-0">
                 <DialogTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                  <span className="text-base md:text-lg line-clamp-2">{selectedPhoto.entryTitle}</span>
+                  <span className="text-base md:text-lg line-clamp-2">
+                    {selectedPhoto.entryTitle}
+                  </span>
                   <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white self-start sm:self-auto">
-                    {getMoodEmoji(selectedPhoto.moodRating)} {MOOD_RATINGS.find(r => r.value === selectedPhoto.moodRating)?.label}
+                    {getMoodEmoji(selectedPhoto.moodRating)}{" "}
+                    {
+                      MOOD_RATINGS.find(
+                        (r) => r.value === selectedPhoto.moodRating,
+                      )?.label
+                    }
                   </Badge>
                 </DialogTitle>
               </DialogHeader>
@@ -368,14 +397,14 @@ export default function Gallery() {
                     className="max-w-full max-h-full object-contain"
                   />
                 </div>
-                
+
                 {photos.length > 1 && (
                   <>
                     <Button
                       variant="outline"
                       size="icon"
                       className="absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white z-10"
-                      onClick={() => navigatePhoto('prev')}
+                      onClick={() => navigatePhoto("prev")}
                     >
                       <ChevronLeft className="h-4 w-4" />
                     </Button>
@@ -383,7 +412,7 @@ export default function Gallery() {
                       variant="outline"
                       size="icon"
                       className="absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white z-10"
-                      onClick={() => navigatePhoto('next')}
+                      onClick={() => navigatePhoto("next")}
                     >
                       <ChevronRight className="h-4 w-4" />
                     </Button>
@@ -401,7 +430,7 @@ export default function Gallery() {
                   </div>
                 )}
               </div>
-              
+
               <div className="p-4 md:p-6 pt-4 space-y-3">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 text-sm">
                   <div className="flex items-center space-x-2">
@@ -410,7 +439,9 @@ export default function Gallery() {
                   </div>
                   <div className="flex items-center space-x-2">
                     <Calendar className="h-4 w-4 text-muted-foreground" />
-                    <span>{new Date(selectedPhoto.date).toLocaleDateString()}</span>
+                    <span>
+                      {new Date(selectedPhoto.date).toLocaleDateString()}
+                    </span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <User className="h-4 w-4 text-muted-foreground" />

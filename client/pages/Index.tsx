@@ -248,7 +248,10 @@ export default function Index() {
                 (r) => r.value === entry.moodRating,
               );
               return (
-                <Card key={entry.id} className="family-card overflow-hidden hover:shadow-lg transition-all duration-200 hover:scale-105">
+                <Card
+                  key={entry.id}
+                  className="family-card overflow-hidden hover:shadow-lg transition-all duration-200 hover:scale-105"
+                >
                   <div className="aspect-[4/3] bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center overflow-hidden relative">
                     {entry.images.length > 0 ? (
                       <img
@@ -265,9 +268,13 @@ export default function Index() {
                   </div>
                   <CardContent className="p-4 flex-1">
                     <div className="flex items-start justify-between mb-2">
-                      <h3 className="font-semibold line-clamp-2 flex-1 mr-2">{entry.title}</h3>
+                      <h3 className="font-semibold line-clamp-2 flex-1 mr-2">
+                        {entry.title}
+                      </h3>
                       {moodData && (
-                        <span className="text-xl flex-shrink-0">{moodData.emoji}</span>
+                        <span className="text-xl flex-shrink-0">
+                          {moodData.emoji}
+                        </span>
                       )}
                     </div>
                     <div className="flex items-center space-x-1 mb-2">
@@ -276,7 +283,9 @@ export default function Index() {
                         {entry.location}
                       </p>
                     </div>
-                    <p className="text-sm text-muted-foreground line-clamp-3 mb-3">{entry.content}</p>
+                    <p className="text-sm text-muted-foreground line-clamp-3 mb-3">
+                      {entry.content}
+                    </p>
                     <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t border-gray-100">
                       <div className="flex items-center space-x-1">
                         <Calendar className="h-3 w-3" />

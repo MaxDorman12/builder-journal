@@ -101,7 +101,9 @@ export default function Journal() {
       {/* Header */}
       <div className="flex flex-col gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">Family Journal</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground">
+            Family Journal
+          </h1>
           <p className="text-muted-foreground text-sm md:text-base">
             {entries.length} adventures documented and counting!
           </p>
