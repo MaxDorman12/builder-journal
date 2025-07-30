@@ -61,6 +61,14 @@ const App = () => (
               }
             />
             <Route
+              path="/gallery"
+              element={
+                <Layout>
+                  <Gallery />
+                </Layout>
+              }
+            />
+            <Route
               path="/calendar"
               element={
                 <Layout>
