@@ -165,4 +165,54 @@ export class LocalStorage {
   static setCharlieData(data: { image: string; description: string }): void {
     localStorage.setItem(this.getKey("charlie_data"), JSON.stringify(data));
   }
+
+  // OneDrive-compatible sync methods
+  static createSyncFile(): string {
+    const timestamp = new Date().toISOString();
+    const syncData = {
+      timestamp,
+      deviceId: this.getDeviceId(),
+      data: {
+        entries: this.getJournalEntries(),
+        pins: this.getMapPins(),
+        wishlist: this.getWishlistItems(),
+        charlie: this.getCharlieData(),
+      }
+    };
+    return JSON.stringify(syncData, null, 2);
+  }
+
+  static importSyncFile(jsonContent: string): boolean {
+    try {
+      const syncData = JSON.parse(jsonContent);
+
+      // Import all data
+      if (syncData.data?.entries) {
+        syncData.data.entries.forEach((entry: any) => this.saveJournalEntry(entry));
+      }
+      if (syncData.data?.pins) {
+        syncData.data.pins.forEach((pin: any) => this.saveMapPin(pin));
+      }
+      if (syncData.data?.wishlist) {
+        syncData.data.wishlist.forEach((item: any) => this.saveWishlistItem(item));
+      }
+      if (syncData.data?.charlie) {
+        this.setCharlieData(syncData.data.charlie);
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Failed to import sync file:', error);
+      return false;
+    }
+  }
+
+  private static getDeviceId(): string {
+    let deviceId = localStorage.getItem(this.getKey("device_id"));
+    if (!deviceId) {
+      deviceId = Math.random().toString(36).substr(2, 9);
+      localStorage.setItem(this.getKey("device_id"), deviceId);
+    }
+    return deviceId;
+  }
 }
