@@ -6,6 +6,7 @@ import { HybridStorage } from "@/lib/hybridStorage";
 import { CloudStorage } from "@/lib/cloudStorage";
 import { SupabaseStorage } from "@/lib/supabaseStorage";
 import { StorageCleanup } from "@/lib/storageCleanup";
+import { StorageStatus } from "@/components/StorageStatus";
 import { initializeSampleData } from "@/lib/sampleData";
 import { FamilyStats } from "@/components/FamilyStats";
 import { Button } from "@/components/ui/button";
