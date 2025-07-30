@@ -93,7 +93,14 @@ export class CloudStorage {
     image: string;
     description: string;
   }): Promise<void> {
+    console.log("💾 Saving to Firebase path: family-data/charlie");
+    console.log("💾 Data being saved:", {
+      hasImage: !!data.image,
+      imageLength: data.image?.length || 0,
+      descriptionLength: data.description?.length || 0
+    });
     await setDoc(doc(db, "family-data", "charlie"), data);
+    console.log("✅ Save to Firebase completed");
   }
 
   static async getCharlieData(): Promise<{
