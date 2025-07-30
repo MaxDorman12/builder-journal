@@ -39,6 +39,8 @@ interface JournalEntryCardProps {
 export function JournalEntryCard({
   entry,
   onLike,
+  onEdit,
+  onDelete,
   isFamilyMember,
 }: JournalEntryCardProps) {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
