@@ -228,13 +228,8 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
   const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
 
-    files.forEach((file) => {
+    for (const file of files) {
       // Allow large videos - Firebase Storage can handle them
-      console.log(`🎥 Processing video "${file.name}":`, {
-        size: file.size,
-        type: file.type
-      });
-
       console.log(`🎥 Processing video "${file.name}":`, {
         size: file.size,
         type: file.type,
@@ -255,7 +250,7 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
         console.error("Failed to upload video to Firebase Storage:", error);
         alert(`Failed to upload video "${file.name}". Please try again.`);
       }
-    });
+    }
   };
 
   const removeImage = (index: number) => {
