@@ -106,12 +106,30 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
       };
 
       // FORCE SAVE TO FIREBASE FIRST
+      console.log("🔄 Attempting to save journal entry to Firebase...", {
+        entryId: entry.id,
+        title: entry.title,
+        imagesCount: entry.images.length,
+        videosCount: entry.videos.length,
+        totalSize: JSON.stringify(entry).length
+      });
+
       try {
         await CloudStorage.saveJournalEntry(entry);
         LocalStorage.saveJournalEntry(entry); // Backup to local
-        console.log("✅ Journal entry saved to Firebase");
+        console.log("✅ Journal entry saved to Firebase successfully");
       } catch (error) {
         console.error("❌ Firebase save failed:", error);
+        console.error("Error details:", error.message);
+
+        // Check if it's a size issue
+        if (error.message && error.message.includes("size")) {
+          alert("❌ Entry too large! Try reducing image/video sizes or count.");
+          setError("Entry too large. Try reducing media files.");
+          return;
+        }
+
+        console.log("📱 Falling back to local storage only");
         LocalStorage.saveJournalEntry(entry); // Fallback to local only
       }
       setCreatedEntryId(entryId);
