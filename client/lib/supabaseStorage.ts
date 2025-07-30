@@ -32,6 +32,13 @@ export class SupabaseStorage {
 
       if (error) {
         console.error('❌ Supabase upload error:', error)
+        if (error.message?.includes('Failed to fetch')) {
+          console.error('💡 This usually means:')
+          console.error('1. Storage bucket doesn\'t exist')
+          console.error('2. RLS policies are blocking access')
+          console.error('3. CORS configuration issues')
+          SupabaseSetup.displaySetupInstructions()
+        }
         throw error
       }
 
@@ -84,6 +91,13 @@ export class SupabaseStorage {
 
           if (error) {
             console.error('❌ Supabase compressed upload error:', error)
+            if (error.message?.includes('Failed to fetch')) {
+              console.error('💡 This usually means:')
+              console.error('1. Storage bucket doesn\'t exist')
+              console.error('2. RLS policies are blocking access')
+              console.error('3. CORS configuration issues')
+              SupabaseSetup.displaySetupInstructions()
+            }
             throw error
           }
 
