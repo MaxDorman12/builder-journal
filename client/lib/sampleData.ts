@@ -123,6 +123,8 @@ export function initializeSampleData() {
       wouldReturn: true,
       hasFreeParkingAvailable: true,
       parkingCost: "",
+      isPaidActivity: false,
+      activityCost: "",
       author: "Charlotte",
       likes: 15,
       comments: [
