@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { LocalStorage } from "@/lib/storage";
+import { HybridStorage } from "@/lib/hybridStorage";
 import { initializeSampleData } from "@/lib/sampleData";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -61,7 +62,7 @@ export default function Gallery() {
 
   const loadPhotos = () => {
     try {
-      const entries = LocalStorage.getJournalEntries();
+      const entries = HybridStorage.getJournalEntries();
       const allPhotos: PhotoItem[] = [];
 
       entries.forEach((entry) => {

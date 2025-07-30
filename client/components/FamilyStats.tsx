@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { LocalStorage } from "@/lib/storage";
+import { HybridStorage } from "@/lib/hybridStorage";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -71,8 +72,8 @@ export function FamilyStats({
 
   const calculateStats = () => {
     try {
-      const entries = LocalStorage.getJournalEntries();
-      const pins = LocalStorage.getMapPins();
+      const entries = HybridStorage.getJournalEntries();
+      const pins = HybridStorage.getMapPins();
 
       // Basic counts
       const totalEntries = entries.length;

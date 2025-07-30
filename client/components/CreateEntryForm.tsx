@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { JournalEntry, AREA_TYPES, MOOD_RATINGS } from "@shared/api";
 import { LocalStorage } from "@/lib/storage";
+import { HybridStorage } from "@/lib/hybridStorage";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface CreateEntryFormProps {
@@ -104,7 +105,7 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
         updatedAt: new Date().toISOString(),
       };
 
-      LocalStorage.saveJournalEntry(entry);
+      await HybridStorage.saveJournalEntry(entry);
       setCreatedEntryId(entryId);
 
       // Show option to place pin on map
