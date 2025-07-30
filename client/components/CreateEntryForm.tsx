@@ -253,21 +253,28 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
 
         console.log(`✅ Video "${file.name}" uploaded to Supabase:`, publicUrl);
       } catch (error) {
-        console.warn('Supabase video upload failed, using base64 fallback:', error);
-        // For small videos, fallback to base64
-        if (sizeMB < 10) {
-          const reader = new FileReader();
-          reader.onload = (event) => {
-            if (event.target?.result) {
-              setFormData((prev) => ({
-                ...prev,
-                videos: [...prev.videos, event.target!.result as string],
-              }));
-            }
-          };
-          reader.readAsDataURL(file);
+        console.warn('Supabase video upload failed:', error);
+
+        // Check if it's a size limit error
+        if (error.toString().includes('payload') || error.toString().includes('size') || sizeMB > 50) {
+          alert(`❌ Video too large: ${sizeMB.toFixed(1)}MB\n\nSupabase Free tier limit: 50MB\n\nOptions:\n1. Upgrade to Supabase Pro\n2. Compress video\n3. Record shorter/lower quality video`);
         } else {
-          alert(`❌ Upload failed for "${file.name}" (${sizeMB.toFixed(1)}MB)\n\nPlease upgrade to Supabase Pro or use a smaller video.`);
+          alert(`❌ Upload failed for "${file.name}"\nError: ${error}\n\nTrying fallback storage...`);
+
+          // For smaller videos, try base64 fallback
+          if (sizeMB < 10) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+              if (event.target?.result) {
+                setFormData((prev) => ({
+                  ...prev,
+                  videos: [...prev.videos, event.target!.result as string],
+                }));
+                alert(`✅ Video stored using fallback method`);
+              }
+            };
+            reader.readAsDataURL(file);
+          }
         }
       }
     }
