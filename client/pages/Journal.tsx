@@ -122,6 +122,21 @@ export default function Journal() {
             </DialogContent>
           </Dialog>
         )}
+
+        {/* Edit Entry Dialog */}
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Edit Journal Entry</DialogTitle>
+            </DialogHeader>
+            {editingEntry && (
+              <EditEntryForm
+                entry={editingEntry}
+                onEntryUpdated={handleEntryUpdated}
+              />
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Search and Filters */}
