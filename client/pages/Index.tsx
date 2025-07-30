@@ -233,16 +233,17 @@ export default function Index() {
       {/* Meet Charlie Section */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
         <Card className="family-card overflow-hidden">
-          <div className="aspect-[4/3] bg-gradient-to-br from-amber-50 to-orange-50 overflow-hidden">
+          <div className="aspect-[4/3] bg-gradient-to-br from-amber-50 to-orange-50 overflow-hidden relative flex items-center justify-center">
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2Fcfcab9c7e41c4c598843808fb9cdccfb%2Fd4230fee0d984ee1ac6366e4bd0605b1?format=webp&width=800"
               alt="Charlie the dog"
               className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
               onError={(e) => {
-                console.log('Image failed to load:', e.target.src);
                 e.target.style.display = 'none';
+                e.target.parentElement.innerHTML = '<div class="text-8xl">🐕</div><p class="text-lg font-medium text-amber-800 mt-4">Charlie</p>';
               }}
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-amber-900/20 to-transparent"></div>
           </div>
         </Card>
 
