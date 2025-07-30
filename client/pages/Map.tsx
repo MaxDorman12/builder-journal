@@ -156,11 +156,21 @@ export default function Map() {
       moodRating: newPin.moodRating,
       visitDate: newPin.visitDate,
       images: [],
+      journalEntryId: pendingPinData?.entryId || undefined
     };
 
     LocalStorage.saveMapPin(pin);
     setPins(LocalStorage.getMapPins());
     setIsCreatePinOpen(false);
+
+    // Clean up pin placement mode
+    if (isPinPlacementMode) {
+      localStorage.removeItem('pendingMapPin');
+      setIsPinPlacementMode(false);
+      setPendingPinData(null);
+      setSearchParams({});
+    }
+
     setNewPin({
       title: "",
       description: "",
