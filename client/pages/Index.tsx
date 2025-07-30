@@ -95,7 +95,7 @@ export default function Index() {
         <div className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-pink-200 to-purple-200 rounded-full shadow-lg bouncy">
           <Heart className="h-5 w-5 text-purple-600 fill-purple-600" />
           <span className="text-purple-700 font-medium">
-            ✨ Welcome to our magical adventures! ✨
+            �� Welcome to our magical adventures! ✨
           </span>
         </div>
 
@@ -311,7 +311,7 @@ export default function Index() {
             <CardContent className="p-8">
               <h2 className="text-2xl font-bold mb-4">Join Our Adventure</h2>
               <p className="text-muted-foreground mb-6">
-                You're viewing our family journal as a visitor. Family members
+                You're viewing our family journal as a visitor. Dorman family
                 can log in to add new entries, upload photos and videos, and
                 update our adventure map!
               </p>
