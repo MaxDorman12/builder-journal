@@ -470,6 +470,9 @@ export default function Index() {
                 ? "✅ WORKING"
                 : "❌ NOT SYNCED"}
             </div>
+            <div className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full">
+              URL: {window.location.hostname}
+            </div>
             {isAuthenticated && (
               <>
                 <Button
