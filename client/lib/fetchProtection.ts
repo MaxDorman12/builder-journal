@@ -12,21 +12,21 @@ export class FetchProtection {
     this.originalFetch = window.fetch
     this.isProtectionActive = true
 
-    // Override fetch to bypass analytics
+    // Override fetch to bypass analytics with proper binding
     window.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
-      // For critical services, use original fetch directly
+      // For critical services, use original fetch directly with proper binding
       const url = typeof input === 'string' ? input : input.toString()
-      
-      if (url.includes('firestore.googleapis.com') || 
+
+      if (url.includes('firestore.googleapis.com') ||
           url.includes('supabase.co') ||
           url.includes('firebase.googleapis.com')) {
-        
+
         console.log('🔒 Protected fetch for:', url.substring(0, 50) + '...')
-        return this.originalFetch.call(window, input, init)
+        return FetchProtection.originalFetch.bind(window)(input, init)
       }
-      
-      // For other requests, use original fetch
-      return this.originalFetch(input, init)
+
+      // For other requests, use original fetch with proper binding
+      return FetchProtection.originalFetch.bind(window)(input, init)
     }
   }
 
