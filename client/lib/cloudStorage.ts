@@ -25,7 +25,7 @@ export class CloudStorage {
         title: entry.title,
         imagesCount: entry.images?.length || 0,
         videosCount: entry.videos?.length || 0,
-        totalSize: JSON.stringify(entry).length
+        totalSize: JSON.stringify(entry).length,
       });
 
       await setDoc(doc(db, "journal-entries", entry.id), entry);

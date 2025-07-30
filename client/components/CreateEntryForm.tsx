@@ -111,7 +111,7 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
         title: entry.title,
         imagesCount: entry.images.length,
         videosCount: entry.videos.length,
-        totalSize: JSON.stringify(entry).length
+        totalSize: JSON.stringify(entry).length,
       });
 
       try {
