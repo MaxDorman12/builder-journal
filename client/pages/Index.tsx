@@ -96,6 +96,31 @@ export default function Index() {
     setTempYoutubeUrl("");
   };
 
+  const handleCharlieSave = () => {
+    if (tempCharlieData.description.trim()) {
+      LocalStorage.setCharlieData({
+        image: tempCharlieData.image.trim(),
+        description: tempCharlieData.description.trim()
+      });
+      setCharlieData({
+        image: tempCharlieData.image.trim(),
+        description: tempCharlieData.description.trim()
+      });
+      setIsCharlieDialogOpen(false);
+      setTempCharlieData({ image: "", description: "" });
+    }
+  };
+
+  const handleCharlieCancel = () => {
+    setIsCharlieDialogOpen(false);
+    setTempCharlieData({ image: "", description: "" });
+  };
+
+  const handleCharlieEdit = () => {
+    setTempCharlieData(charlieData);
+    setIsCharlieDialogOpen(true);
+  };
+
   return (
     <div className="space-y-12">
       {/* Hero Section */}
