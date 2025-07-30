@@ -254,3 +254,134 @@ function WishlistItemCard({ item, onDelete, onMarkCompleted }: WishlistItemCardP
     </Card>
   );
 }
+
+// Wishlist Form Component
+interface WishlistFormProps {
+  formData: any;
+  setFormData: (data: any) => void;
+  onSubmit: () => void;
+  onCancel: () => void;
+}
+
+function WishlistForm({ formData, setFormData, onSubmit, onCancel }: WishlistFormProps) {
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="title">Dream Destination *</Label>
+          <Input
+            id="title"
+            value={formData.title}
+            onChange={(e) => setFormData((prev: any) => ({ ...prev, title: e.target.value }))}
+            placeholder="e.g., Isle of Skye"
+            required
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="location">Location *</Label>
+          <Input
+            id="location"
+            value={formData.location}
+            onChange={(e) => setFormData((prev: any) => ({ ...prev, location: e.target.value }))}
+            placeholder="e.g., Inner Hebrides, Scotland"
+            required
+          />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="description">Description</Label>
+        <Textarea
+          id="description"
+          value={formData.description}
+          onChange={(e) => setFormData((prev: any) => ({ ...prev, description: e.target.value }))}
+          placeholder="What makes this place special? What do you want to do there?"
+          rows={3}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="space-y-2">
+          <Label>Category</Label>
+          <Select
+            value={formData.category}
+            onValueChange={(value) => setFormData((prev: any) => ({ ...prev, category: value }))}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {WISHLIST_CATEGORIES.map(category => (
+                <SelectItem key={category.value} value={category.value}>
+                  {category.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label>Priority</Label>
+          <Select
+            value={formData.priority}
+            onValueChange={(value) => setFormData((prev: any) => ({ ...prev, priority: value }))}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {WISHLIST_PRIORITIES.map(priority => (
+                <SelectItem key={priority.value} value={priority.value}>
+                  {priority.emoji} {priority.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="estimatedCost">Estimated Cost</Label>
+          <Input
+            id="estimatedCost"
+            value={formData.estimatedCost}
+            onChange={(e) => setFormData((prev: any) => ({ ...prev, estimatedCost: e.target.value }))}
+            placeholder="e.g., £200-300"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="bestTimeToVisit">Best Time to Visit</Label>
+          <Input
+            id="bestTimeToVisit"
+            value={formData.bestTimeToVisit}
+            onChange={(e) => setFormData((prev: any) => ({ ...prev, bestTimeToVisit: e.target.value }))}
+            placeholder="e.g., Spring/Summer"
+          />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="notes">Additional Notes</Label>
+        <Textarea
+          id="notes"
+          value={formData.notes}
+          onChange={(e) => setFormData((prev: any) => ({ ...prev, notes: e.target.value }))}
+          placeholder="Any special considerations, tips, or reminders..."
+          rows={2}
+        />
+      </div>
+
+      <div className="flex justify-end space-x-2">
+        <Button variant="outline" onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button onClick={onSubmit}>
+          Add to Wishlist
+        </Button>
+      </div>
+    </div>
+  );
+}
