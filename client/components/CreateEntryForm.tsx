@@ -232,19 +232,12 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
   const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
 
-    // Visual feedback - show that we're processing
-    alert(`📹 Selected ${files.length} video(s) for upload`);
-
     for (const file of files) {
       // Allow large videos - Supabase Storage can handle them
       console.log(`🎥 Processing video "${file.name}":`, {
         size: file.size,
         type: file.type,
       });
-
-      // Check file size and type
-      const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
-      alert(`📹 Processing: ${file.name}\nSize: ${sizeMB}MB\nType: ${file.type}`);
 
       // Upload large videos to Supabase Storage
       try {
@@ -256,10 +249,8 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
           videos: [...prev.videos, publicUrl],
         }));
 
-        alert(`✅ Video "${file.name}" uploaded successfully!`);
         console.log(`✅ Video "${file.name}" uploaded to Supabase:`, publicUrl);
       } catch (error) {
-        alert(`❌ Video upload failed: ${error}. Using fallback storage.`);
         console.warn('Supabase video upload failed, using base64 fallback:', error);
         // Fallback to base64 if Supabase fails
         const reader = new FileReader();
@@ -269,7 +260,6 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
               ...prev,
               videos: [...prev.videos, event.target!.result as string],
             }));
-            alert(`📦 Video stored locally as fallback`);
           }
         };
         reader.readAsDataURL(file);
