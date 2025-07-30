@@ -233,8 +233,8 @@ export default function Journal() {
         </CardContent>
       </Card>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {/* Stats - Mobile optimized */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         <Card className="family-card">
           <CardContent className="flex items-center space-x-3 p-4">
             <div className="p-2 bg-primary/10 rounded-lg">
