@@ -368,6 +368,9 @@ export default function Index() {
 
   return (
     <div className="space-y-12">
+      {/* Storage Status Warning */}
+      <StorageStatus />
+
       {/* Hero Section */}
       <section className="text-center space-y-6">
         <div className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-pink-200 to-purple-200 rounded-full shadow-lg bouncy">
