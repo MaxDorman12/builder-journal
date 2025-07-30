@@ -154,7 +154,12 @@ export class LocalStorage {
       items.push(item);
     }
 
-    localStorage.setItem(this.getKey("wishlist"), JSON.stringify(items));
+    try {
+      localStorage.setItem(this.getKey("wishlist"), JSON.stringify(items));
+    } catch (error) {
+      console.error('❌ localStorage quota exceeded when saving wishlist');
+      this.handleQuotaExceeded('wishlist', items);
+    }
   }
 
   static deleteWishlistItem(id: string): void {
