@@ -302,10 +302,12 @@ export default function Map() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-foreground">
-            Scotland Adventure Map
+            {isPinPlacementMode ? "📍 Place Your Adventure Pin" : "Scotland Adventure Map"}
           </h1>
           <p className="text-muted-foreground">
-            Explore the places we've visited across beautiful Scotland
+            {isPinPlacementMode
+              ? "Click anywhere on the map to place a pin for your journal entry"
+              : "Explore the places we've visited across beautiful Scotland"}
           </p>
         </div>
 
