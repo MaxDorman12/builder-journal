@@ -126,63 +126,12 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="pastel-stat-card from-pink-200 to-pink-300">
-          <div className="flex items-center space-x-3">
-            <div className="p-3 bg-white/60 rounded-full">
-              <MapPin className="h-6 w-6 text-pink-700" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-pink-800">{totalTrips}</p>
-              <p className="text-sm text-pink-600">🌟 Places Visited</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="pastel-stat-card from-purple-200 to-purple-300">
-          <div className="flex items-center space-x-3">
-            <div className="p-3 bg-white/60 rounded-full">
-              <BookOpen className="h-6 w-6 text-purple-700" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-purple-800">
-                {entries.length}
-              </p>
-              <p className="text-sm text-purple-600">📚 Journal Entries</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="pastel-stat-card from-blue-200 to-blue-300">
-          <div className="flex items-center space-x-3">
-            <div className="p-3 bg-white/60 rounded-full">
-              <Users className="h-6 w-6 text-blue-700" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-blue-800">5</p>
-              <p className="text-sm text-blue-600">👨‍👩‍👧‍👦 Family Members</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="pastel-stat-card from-green-200 to-green-300">
-          <div className="flex items-center space-x-3">
-            <div className="p-3 bg-white/60 rounded-full">
-              <span className="text-2xl bouncy">
-                {averageMood > 0
-                  ? MOOD_RATINGS.find((r) => r.value === averageMood)?.emoji
-                  : "😊"}
-              </span>
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-green-800">
-                {averageMood > 0 ? `${averageMood}/5` : "N/A"}
-              </p>
-              <p className="text-sm text-green-600">⭐ Average Trip Rating</p>
-            </div>
-          </div>
-        </div>
+      {/* Family Stats Section */}
+      <section>
+        <FamilyStats
+          showAll={showAllStats}
+          onViewAll={() => setShowAllStats(true)}
+        />
       </section>
 
       {/* About Section */}
