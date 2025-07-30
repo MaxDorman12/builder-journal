@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import { getStorage } from "firebase/storage";
 
 // Firebase config for Dorman Family Journal
 const firebaseConfig = {
