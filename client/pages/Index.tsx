@@ -148,40 +148,43 @@ export default function Index() {
       }
     };
 
+    const loadFreshData = async () => {
+      // FORCE FRESH DATA FROM FIREBASE ON EVERY PAGE LOAD
+      console.log("🔄 FORCING fresh data from Firebase...");
+      try {
+        const [freshCharlie, freshEntries, freshPins] = await Promise.all([
+          CloudStorage.getCharlieData(),
+          CloudStorage.getJournalEntries(),
+          CloudStorage.getMapPins()
+        ]);
+
+        console.log("✅ FRESH DATA LOADED:", {
+          charlieImage: !!freshCharlie.image,
+          entriesCount: freshEntries.length,
+          pinsCount: freshPins.length
+        });
+
+        // UPDATE UI IMMEDIATELY
+        setCharlieData(freshCharlie);
+        setEntries(freshEntries);
+        setPins(freshPins);
+
+        // Update local storage as backup
+        LocalStorage.setCharlieData(freshCharlie);
+        freshEntries.forEach(entry => LocalStorage.saveJournalEntry(entry));
+        freshPins.forEach(pin => LocalStorage.saveMapPin(pin));
+
+      } catch (error) {
+        console.error("❌ Failed to load fresh data:", error);
+        // Fallback to local data only if Firebase completely fails
+        setEntries(HybridStorage.getJournalEntries());
+        setPins(HybridStorage.getMapPins());
+        setCharlieData(HybridStorage.getCharlieData());
+      }
+    };
+
     initializeStorage();
-
-    // FORCE FRESH DATA FROM FIREBASE ON EVERY PAGE LOAD
-    console.log("🔄 FORCING fresh data from Firebase...");
-    try {
-      const [freshCharlie, freshEntries, freshPins] = await Promise.all([
-        CloudStorage.getCharlieData(),
-        CloudStorage.getJournalEntries(),
-        CloudStorage.getMapPins()
-      ]);
-
-      console.log("✅ FRESH DATA LOADED:", {
-        charlieImage: !!freshCharlie.image,
-        entriesCount: freshEntries.length,
-        pinsCount: freshPins.length
-      });
-
-      // UPDATE UI IMMEDIATELY
-      setCharlieData(freshCharlie);
-      setEntries(freshEntries);
-      setPins(freshPins);
-
-      // Update local storage as backup
-      LocalStorage.setCharlieData(freshCharlie);
-      freshEntries.forEach(entry => LocalStorage.saveJournalEntry(entry));
-      freshPins.forEach(pin => LocalStorage.saveMapPin(pin));
-
-    } catch (error) {
-      console.error("❌ Failed to load fresh data:", error);
-      // Fallback to local data only if Firebase completely fails
-      setEntries(HybridStorage.getJournalEntries());
-      setPins(HybridStorage.getMapPins());
-      setCharlieData(HybridStorage.getCharlieData());
-    }
+    loadFreshData();
 
     // Load YouTube URL from localStorage
     const savedYoutubeUrl = localStorage.getItem("familyjournal_youtube_url");
