@@ -1,5 +1,8 @@
 import "./global.css";
 
+// Enable fetch protection for Firebase/Supabase
+import "./lib/fetchProtection";
+
 import { Toaster } from "@/components/ui/toaster";
 import { createRoot } from "react-dom/client";
 import { Toaster as Sonner } from "@/components/ui/sonner";
