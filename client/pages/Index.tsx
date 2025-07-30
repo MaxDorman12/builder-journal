@@ -392,6 +392,11 @@ export default function Index() {
           <h2 className="text-3xl font-bold text-foreground flex items-center gap-3">
             <span className="text-4xl">🐕</span>
             Meet Charlie
+            {isCloudSyncEnabled && (
+              <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                🔄 Auto-sync
+              </span>
+            )}
             {isAuthenticated && (
               <Button
                 variant="ghost"
