@@ -56,16 +56,24 @@ export function JournalEntryCard({
   const handleAddComment = () => {
     if (!newComment.trim()) return;
 
+    // If not a family member, require visitor name
+    if (!isFamilyMember && !visitorName.trim()) {
+      setShowNameInput(true);
+      return;
+    }
+
     const comment: Comment = {
       id: Date.now().toString(),
       content: newComment.trim(),
-      author: "Family Member", // In a real app, this would be the current user
+      author: isFamilyMember ? "Family Member" : visitorName.trim(),
       createdAt: new Date().toISOString(),
       likes: 0,
     };
 
     LocalStorage.addComment(entry.id, comment);
     setNewComment("");
+    setVisitorName("");
+    setShowNameInput(false);
     // Refresh the entry data would happen here in a real app
   };
 
