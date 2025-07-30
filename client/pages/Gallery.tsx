@@ -402,8 +402,8 @@ export default function Gallery() {
                 )}
               </div>
               
-              <div className="p-6 pt-4 space-y-3">
-                <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="p-4 md:p-6 pt-4 space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 text-sm">
                   <div className="flex items-center space-x-2">
                     <MapPin className="h-4 w-4 text-muted-foreground" />
                     <span>{selectedPhoto.location}</span>
