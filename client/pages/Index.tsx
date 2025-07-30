@@ -89,7 +89,7 @@ export default function Index() {
     setYoutubeUrl(savedYoutubeUrl || defaultUrl);
 
     // Load Charlie data
-    const charlieInfo = LocalStorage.getCharlieData();
+    const charlieInfo = HybridStorage.getCharlieData();
     setCharlieData(charlieInfo);
 
     return () => {
