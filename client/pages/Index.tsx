@@ -77,12 +77,18 @@ export default function Index() {
           console.log("🧪 Testing Firebase write...");
           await CloudStorage.setCharlieData({
             image: firebaseCharlieData.image || "",
-            description: firebaseCharlieData.description + "\n[Test sync at " + new Date().toLocaleTimeString() + "]"
+            description:
+              firebaseCharlieData.description +
+              "\n[Test sync at " +
+              new Date().toLocaleTimeString() +
+              "]",
           });
           console.log("✅ Firebase write test successful");
-
         } catch (error) {
-          console.error("❌ Failed to read/write Charlie data from Firebase:", error);
+          console.error(
+            "❌ Failed to read/write Charlie data from Firebase:",
+            error,
+          );
         }
       }
 
@@ -245,7 +251,7 @@ export default function Index() {
         console.log("📸 Image compressed successfully:", {
           originalSize: file.size,
           compressedLength: compressedDataUrl.length,
-          dimensions: `${width}x${height}`
+          dimensions: `${width}x${height}`,
         });
 
         setTempCharlieData({
