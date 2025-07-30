@@ -462,7 +462,11 @@ export default function Index() {
             <span className="text-4xl">🐕</span>
             Meet Charlie
             <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
-              Sync: {charlieData.description.includes('[Sync test at') || charlieData.description.includes('[Test sync at') ? '✅' : '❌'}
+              Sync:{" "}
+              {charlieData.description.includes("[Sync test at") ||
+              charlieData.description.includes("[Test sync at")
+                ? "✅"
+                : "❌"}
             </span>
             {isAuthenticated && (
               <>
