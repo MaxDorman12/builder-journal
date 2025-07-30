@@ -11,13 +11,17 @@ export class HybridStorage {
     try {
       this.cloudEnabled = await CloudStorage.enableCloudSync();
       if (this.cloudEnabled) {
+        console.log("🔄 Initializing cloud sync...");
         await this.syncLocalToCloud();
         this.setupRealtimeListeners();
+        console.log("🎉 Auto-sync ready! Changes will sync across all devices.");
+      } else {
+        console.log("📱 Using local storage only - Firebase not configured");
       }
       return this.cloudEnabled;
     } catch (error) {
       console.warn(
-        "Cloud sync not available, using local storage only:",
+        "⚠️ Cloud sync initialization failed, using local storage only:",
         error,
       );
       this.cloudEnabled = false;
