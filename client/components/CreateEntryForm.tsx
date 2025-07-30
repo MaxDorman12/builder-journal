@@ -94,6 +94,8 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
         videos: formData.videos,
         hasFreeParkingAvailable: formData.hasFreeParkingAvailable,
         parkingCost: formData.parkingCost.trim(),
+        isPaidActivity: formData.isPaidActivity,
+        activityCost: formData.activityCost.trim(),
         author: currentUser || "Family Member",
         likes: 0,
         comments: [],
