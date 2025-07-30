@@ -225,7 +225,7 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
     });
   };
 
-  const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
 
     files.forEach((file) => {
