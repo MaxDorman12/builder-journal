@@ -605,7 +605,11 @@ export default function Map() {
       <Dialog open={isCreatePinOpen} onOpenChange={setIsCreatePinOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add New Adventure Pin</DialogTitle>
+            <DialogTitle>
+              {isPinPlacementMode
+                ? `📍 Place Pin for "${pendingPinData?.title || 'Your Adventure'}"`
+                : "Add New Adventure Pin"}
+            </DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4">
