@@ -36,6 +36,8 @@ export interface JournalEntry {
   wouldReturn: boolean;
   hasFreeParkingAvailable: boolean;
   parkingCost: string;
+  isPaidActivity: boolean;
+  activityCost: string;
   author: string;
   likes: number;
   comments: Comment[];
