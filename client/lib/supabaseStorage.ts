@@ -206,11 +206,9 @@ export class SupabaseStorage {
 
       console.warn('⚠️', testResult.message)
 
-      // Try to create bucket
+      // Try to create bucket with minimal configuration
       const { error: createError } = await supabase.storage.createBucket(this.BUCKET_NAME, {
-        public: true,
-        allowedMimeTypes: ['image/*', 'video/*'],
-        fileSizeLimit: 100 * 1024 * 1024 // 100MB limit
+        public: true
       })
 
       if (createError) {
