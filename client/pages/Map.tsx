@@ -62,6 +62,42 @@ export default function Map() {
     setEntries(LocalStorage.getJournalEntries());
   }, []);
 
+  // Add keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!mapContainerRef.current) return;
+
+      const moveDistance = 50;
+      let newPan = { ...pan };
+
+      switch (e.key) {
+        case 'ArrowUp':
+          newPan.y += moveDistance;
+          e.preventDefault();
+          break;
+        case 'ArrowDown':
+          newPan.y -= moveDistance;
+          e.preventDefault();
+          break;
+        case 'ArrowLeft':
+          newPan.x += moveDistance;
+          e.preventDefault();
+          break;
+        case 'ArrowRight':
+          newPan.x -= moveDistance;
+          e.preventDefault();
+          break;
+        default:
+          return;
+      }
+
+      setPan(newPan);
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [pan]);
+
   const handleMapClick = (e: React.MouseEvent<HTMLImageElement>) => {
     if (!isFamilyMember || isDragging) return;
 
