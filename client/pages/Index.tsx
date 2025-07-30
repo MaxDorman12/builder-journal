@@ -56,6 +56,10 @@ export default function Index() {
     const savedYoutubeUrl = localStorage.getItem("familyjournal_youtube_url");
     const defaultUrl = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
     setYoutubeUrl(savedYoutubeUrl || defaultUrl);
+
+    // Load Charlie data
+    const charlieInfo = LocalStorage.getCharlieData();
+    setCharlieData(charlieInfo);
   }, []);
 
   const recentEntries = entries
