@@ -101,7 +101,7 @@ export class SupabaseStorage {
     const storageAvailable = await this.checkStorageAvailability()
 
     if (!storageAvailable) {
-      console.log('⚠️ Supabase Storage unavailable, using base64 fallback')
+      console.log('⚠�� Supabase Storage unavailable, using base64 fallback')
       return this.canvasToBase64(canvas)
     }
 
@@ -206,10 +206,16 @@ export class SupabaseStorage {
 
       console.warn('⚠️', testResult.message)
 
-      // Try to create bucket with minimal configuration
-      const { error: createError } = await supabase.storage.createBucket(this.BUCKET_NAME, {
-        public: true
-      })
+      // Skip bucket creation due to RLS policy restrictions
+      // Bucket must be created manually in Supabase dashboard
+      console.log('⚠️ Skipping automatic bucket creation due to RLS policies')
+      console.log('📋 Please create bucket manually in Supabase dashboard:')
+      console.log('1. Go to Storage section')
+      console.log('2. Create bucket named "journal-media"')
+      console.log('3. Make it public')
+      console.log('4. Disable RLS or set public policies')
+
+      const createError = new Error('Bucket must be created manually in dashboard')
 
       if (createError) {
         if (createError.message?.includes('already exists')) {
