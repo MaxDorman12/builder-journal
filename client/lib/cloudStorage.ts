@@ -107,9 +107,17 @@ export class CloudStorage {
     image: string;
     description: string;
   }> {
+    console.log("📖 Reading from Firebase path: family-data/charlie");
     const snapshot = await getDoc(doc(db, "family-data", "charlie"));
+    console.log("📖 Firebase read result:", { exists: snapshot.exists() });
     if (snapshot.exists()) {
-      return snapshot.data() as { image: string; description: string };
+      const data = snapshot.data() as { image: string; description: string };
+      console.log("📖 Data retrieved from Firebase:", {
+        hasImage: !!data.image,
+        imageLength: data.image?.length || 0,
+        descriptionLength: data.description?.length || 0
+      });
+      return data;
     }
     return {
       image: "",
