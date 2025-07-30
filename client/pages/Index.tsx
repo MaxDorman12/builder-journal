@@ -243,9 +243,19 @@ export default function Index() {
         tempCharlieData.description.trim() || charlieData.description || "",
     };
 
+    // Check if image is too large for Firebase (1MB limit)
+    if (dataToSave.image && dataToSave.image.length > 800000) {
+      console.warn("⚠️ Image might be too large for Firebase:", dataToSave.image.length);
+      alert("⚠️ Image is very large (" + Math.round(dataToSave.image.length/1000) + "KB) - it might not sync properly. Try a smaller image.");
+    }
+
     // FORCE SAVE TO FIREBASE FIRST - no more local storage issues!
     try {
-      console.log("🔥 SAVING DIRECTLY TO FIREBASE...");
+      console.log("🔥 SAVING DIRECTLY TO FIREBASE...", {
+        imageSize: dataToSave.image?.length || 0,
+        descriptionSize: dataToSave.description?.length || 0,
+        totalSize: (dataToSave.image?.length || 0) + (dataToSave.description?.length || 0)
+      });
       await CloudStorage.setCharlieData(dataToSave);
       console.log("✅ FIREBASE SAVE SUCCESS");
 
@@ -254,7 +264,12 @@ export default function Index() {
       console.log("✅ Local backup updated");
     } catch (error) {
       console.error("❌ FIREBASE SAVE FAILED:", error);
-      alert("❌ Save failed! Check internet connection.");
+      console.error("Error details:", error.message);
+      if (error.message && (error.message.includes("too large") || error.message.includes("size") || error.message.includes("limit"))) {
+        alert("❌ Image too large for Firebase! Try a smaller photo or compress it more.");
+      } else {
+        alert("❌ Save failed! Error: " + (error.message || "Unknown error"));
+      }
       return;
     }
 
