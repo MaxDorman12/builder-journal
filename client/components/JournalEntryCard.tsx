@@ -47,6 +47,8 @@ export function JournalEntryCard({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [newComment, setNewComment] = useState("");
   const [showComments, setShowComments] = useState(false);
+  const [visitorName, setVisitorName] = useState("");
+  const [showNameInput, setShowNameInput] = useState(false);
 
   const moodData = MOOD_RATINGS.find((r) => r.value === entry.moodRating);
   const areaData = AREA_TYPES.find((t) => t.value === entry.areaType);
