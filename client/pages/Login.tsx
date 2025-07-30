@@ -104,7 +104,7 @@ export default function Login() {
 
           <div className="mt-6 p-4 bg-gradient-to-r from-blue-100 to-purple-100 rounded-2xl shadow-inner">
             <h4 className="font-medium text-sm mb-2 text-purple-800">
-              🌈 For Family Members:
+              🌈 For Dorman Family:
             </h4>
             <p className="text-xs text-purple-700 mb-2">
               Once logged in, you'll unlock magical powers to create journal
