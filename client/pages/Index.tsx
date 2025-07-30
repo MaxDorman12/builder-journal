@@ -451,7 +451,10 @@ export default function Index() {
               Last Updated: {new Date().toLocaleTimeString()}
             </span>
             <div className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">
-              Sync Test: {charlieData.description.includes('[Sync test at') ? '✅ WORKING' : '❌ NOT SYNCED'}
+              Sync Test:{" "}
+              {charlieData.description.includes("[Sync test at")
+                ? "✅ WORKING"
+                : "❌ NOT SYNCED"}
             </div>
             {isAuthenticated && (
               <>
@@ -462,7 +465,11 @@ export default function Index() {
                     console.log("🧪 Testing sync...");
                     await HybridStorage.setCharlieData({
                       ...charlieData,
-                      description: charlieData.description + "\n[Sync test at " + new Date().toLocaleTimeString() + "]"
+                      description:
+                        charlieData.description +
+                        "\n[Sync test at " +
+                        new Date().toLocaleTimeString() +
+                        "]",
                     });
                   }}
                   className="h-8 w-auto px-2 text-xs bg-yellow-100"
