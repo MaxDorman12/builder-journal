@@ -69,18 +69,19 @@ export default function Index() {
           console.log("🔄 Auto-syncing with Firebase on page load...");
 
           // Fetch ALL fresh data from Firebase
-          const [freshCharlieData, freshEntries, freshPins, freshWishlist] = await Promise.all([
-            CloudStorage.getCharlieData(),
-            CloudStorage.getJournalEntries(),
-            CloudStorage.getMapPins(),
-            CloudStorage.getWishlistItems()
-          ]);
+          const [freshCharlieData, freshEntries, freshPins, freshWishlist] =
+            await Promise.all([
+              CloudStorage.getCharlieData(),
+              CloudStorage.getJournalEntries(),
+              CloudStorage.getMapPins(),
+              CloudStorage.getWishlistItems(),
+            ]);
 
           console.log("📥 Fresh data received from Firebase:", {
             charlieHasImage: !!freshCharlieData.image,
             entriesCount: freshEntries.length,
             pinsCount: freshPins.length,
-            wishlistCount: freshWishlist.length
+            wishlistCount: freshWishlist.length,
           });
 
           // Update local storage with fresh Firebase data
@@ -94,8 +95,9 @@ export default function Index() {
           setEntries(freshEntries);
           setPins(freshPins);
 
-          console.log("✅ Auto-sync completed - all data refreshed from Firebase!");
-
+          console.log(
+            "✅ Auto-sync completed - all data refreshed from Firebase!",
+          );
         } catch (error) {
           console.error("❌ Auto-sync failed:", error);
           // Fallback to local data if Firebase fails
