@@ -447,6 +447,20 @@ export default function Index() {
                 🔄 Auto-sync
               </span>
             )}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={async () => {
+                console.log("🔄 Manual sync...");
+                const freshData = await CloudStorage.getCharlieData();
+                setCharlieData(freshData);
+                window.location.reload();
+              }}
+              className="h-6 w-auto px-2 text-xs bg-blue-100"
+              title="Manual Sync"
+            >
+              🔄 Sync
+            </Button>
             <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
               Last Updated: {new Date().toLocaleTimeString()}
             </span>
