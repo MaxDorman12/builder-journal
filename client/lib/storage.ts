@@ -285,6 +285,12 @@ export class LocalStorage {
   }
 
   static setCharlieData(data: { image: string; description: string }): void {
+    // Skip localStorage if disabled due to quota issues
+    if (!this.isLocalStorageUsable()) {
+      console.warn('📵 Skipping Charlie data localStorage save - storage disabled');
+      return;
+    }
+
     try {
       localStorage.setItem(this.getKey("charlie_data"), JSON.stringify(data));
     } catch (error) {
