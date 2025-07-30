@@ -95,12 +95,22 @@ export class LocalStorage {
       pins.push(pin);
     }
 
-    localStorage.setItem(this.getKey("map_pins"), JSON.stringify(pins));
+    try {
+      localStorage.setItem(this.getKey("map_pins"), JSON.stringify(pins));
+    } catch (error) {
+      console.error('❌ localStorage quota exceeded when saving map pin');
+      this.handleQuotaExceeded('map_pins', pins);
+    }
   }
 
   static deleteMapPin(id: string): void {
     const pins = this.getMapPins().filter((p) => p.id !== id);
-    localStorage.setItem(this.getKey("map_pins"), JSON.stringify(pins));
+    try {
+      localStorage.setItem(this.getKey("map_pins"), JSON.stringify(pins));
+    } catch (error) {
+      console.error('❌ localStorage quota exceeded when deleting map pin');
+      this.handleQuotaExceeded('map_pins', pins);
+    }
   }
 
   static addComment(entryId: string, comment: Comment): void {
