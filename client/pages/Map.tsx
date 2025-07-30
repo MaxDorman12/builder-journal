@@ -125,7 +125,7 @@ export default function Map() {
   }, [pan]);
 
   const handleMapClick = (e: React.MouseEvent<HTMLImageElement>) => {
-    if (!isFamilyMember || isDragging) return;
+    if ((!isFamilyMember && !isPinPlacementMode) || isDragging) return;
 
     const img = e.currentTarget;
     const rect = img.getBoundingClientRect();
