@@ -1,5 +1,10 @@
 // Firebase Storage service for large image uploads
-import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 import { storage } from "./firebase";
 
 export class ImageStorage {
@@ -10,20 +15,20 @@ export class ImageStorage {
         fileName: file.name,
         size: file.size,
         type: file.type,
-        path: path
+        path: path,
       });
 
       // Create storage reference
       const imageRef = ref(storage, path);
-      
+
       // Upload file
       const snapshot = await uploadBytes(imageRef, file);
       console.log("✅ Upload completed:", snapshot.metadata.name);
-      
+
       // Get download URL
       const downloadURL = await getDownloadURL(snapshot.ref);
       console.log("✅ Download URL created:", downloadURL);
-      
+
       return downloadURL;
     } catch (error) {
       console.error("❌ Image upload failed:", error);
@@ -32,38 +37,45 @@ export class ImageStorage {
   }
 
   // Upload compressed image from canvas
-  static async uploadCompressedImage(canvas: HTMLCanvasElement, path: string): Promise<string> {
+  static async uploadCompressedImage(
+    canvas: HTMLCanvasElement,
+    path: string,
+  ): Promise<string> {
     return new Promise((resolve, reject) => {
-      canvas.toBlob(async (blob) => {
-        if (!blob) {
-          reject(new Error("Failed to create blob from canvas"));
-          return;
-        }
+      canvas.toBlob(
+        async (blob) => {
+          if (!blob) {
+            reject(new Error("Failed to create blob from canvas"));
+            return;
+          }
 
-        try {
-          console.log("🔄 Uploading compressed image to Firebase Storage:", {
-            size: blob.size,
-            type: blob.type,
-            path: path
-          });
+          try {
+            console.log("🔄 Uploading compressed image to Firebase Storage:", {
+              size: blob.size,
+              type: blob.type,
+              path: path,
+            });
 
-          // Create storage reference
-          const imageRef = ref(storage, path);
-          
-          // Upload blob
-          const snapshot = await uploadBytes(imageRef, blob);
-          console.log("✅ Compressed upload completed");
-          
-          // Get download URL
-          const downloadURL = await getDownloadURL(snapshot.ref);
-          console.log("✅ Download URL created:", downloadURL);
-          
-          resolve(downloadURL);
-        } catch (error) {
-          console.error("❌ Compressed image upload failed:", error);
-          reject(error);
-        }
-      }, "image/jpeg", 0.8);
+            // Create storage reference
+            const imageRef = ref(storage, path);
+
+            // Upload blob
+            const snapshot = await uploadBytes(imageRef, blob);
+            console.log("✅ Compressed upload completed");
+
+            // Get download URL
+            const downloadURL = await getDownloadURL(snapshot.ref);
+            console.log("✅ Download URL created:", downloadURL);
+
+            resolve(downloadURL);
+          } catch (error) {
+            console.error("❌ Compressed image upload failed:", error);
+            reject(error);
+          }
+        },
+        "image/jpeg",
+        0.8,
+      );
     });
   }
 
@@ -76,10 +88,10 @@ export class ImageStorage {
       if (!pathMatch) {
         throw new Error("Invalid download URL");
       }
-      
+
       const path = decodeURIComponent(pathMatch[1]);
       const imageRef = ref(storage, path);
-      
+
       await deleteObject(imageRef);
       console.log("✅ Image deleted from storage:", path);
     } catch (error) {

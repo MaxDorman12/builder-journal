@@ -344,12 +344,15 @@ export default function Index() {
           const imagePath = ImageStorage.generateImagePath("charlie");
 
           // Upload compressed image to Firebase Storage
-          const downloadURL = await ImageStorage.uploadCompressedImage(canvas, imagePath);
+          const downloadURL = await ImageStorage.uploadCompressedImage(
+            canvas,
+            imagePath,
+          );
 
           console.log("✅ Image uploaded to Firebase Storage:", {
             originalSize: file.size,
             dimensions: `${width}x${height}`,
-            downloadURL: downloadURL
+            downloadURL: downloadURL,
           });
 
           setTempCharlieData({
