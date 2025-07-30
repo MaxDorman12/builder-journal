@@ -13,6 +13,7 @@ import {
   Camera,
   Calendar,
   Star,
+  Search,
 } from "lucide-react";
 
 interface LayoutProps {
