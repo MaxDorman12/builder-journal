@@ -463,14 +463,18 @@ export default function Index() {
                   size="sm"
                   onClick={async () => {
                     console.log("🧪 Testing sync...");
-                    await HybridStorage.setCharlieData({
+                    const newData = {
                       ...charlieData,
                       description:
                         charlieData.description +
                         "\n[Sync test at " +
                         new Date().toLocaleTimeString() +
                         "]",
-                    });
+                    };
+                    await HybridStorage.setCharlieData(newData);
+                    // Update local state immediately
+                    setCharlieData(newData);
+                    console.log("✅ Test complete - state updated");
                   }}
                   className="h-8 w-auto px-2 text-xs bg-yellow-100"
                   title="Test Sync"
