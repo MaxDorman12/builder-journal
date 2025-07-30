@@ -75,7 +75,7 @@ export default function Index() {
           const newCharlieData = HybridStorage.getCharlieData();
           console.log("🐕 Real-time Charlie update:", {
             hasImage: !!newCharlieData.image,
-            imageLength: newCharlieData.image?.length || 0
+            imageLength: newCharlieData.image?.length || 0,
           });
           setCharlieData(newCharlieData);
         });
@@ -99,7 +99,7 @@ export default function Index() {
     console.log("🐕 Loading Charlie data:", {
       hasImage: !!charlieInfo.image,
       imageLength: charlieInfo.image?.length || 0,
-      imageStart: charlieInfo.image?.substring(0, 50) || "none"
+      imageStart: charlieInfo.image?.substring(0, 50) || "none",
     });
     setCharlieData(charlieInfo);
 
