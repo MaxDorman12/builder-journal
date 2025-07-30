@@ -227,7 +227,6 @@ export default function Index() {
       // Update local storage as backup
       LocalStorage.setCharlieData(dataToSave);
       console.log("✅ Local backup updated");
-
     } catch (error) {
       console.error("❌ FIREBASE SAVE FAILED:", error);
       alert("❌ Save failed! Check internet connection.");
