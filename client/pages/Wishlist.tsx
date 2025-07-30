@@ -47,6 +47,8 @@ export default function Wishlist() {
   });
 
   useEffect(() => {
+    // Initialize sample data if no data exists
+    initializeSampleData();
     loadWishlistItems();
   }, []);
 
