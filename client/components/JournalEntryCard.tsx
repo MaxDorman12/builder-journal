@@ -59,7 +59,7 @@ export function JournalEntryCard({
   const moodData = MOOD_RATINGS.find((r) => r.value === entry.moodRating);
   const areaData = AREA_TYPES.find((t) => t.value === entry.areaType);
 
-  const handleAddComment = () => {
+  const handleAddComment = async () => {
     if (!newComment.trim()) return;
 
     // If not a family member, require visitor name
