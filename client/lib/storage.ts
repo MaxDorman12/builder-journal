@@ -1,4 +1,4 @@
-import { JournalEntry, MapPin, Comment } from "@shared/api";
+import { JournalEntry, MapPin, Comment, WishlistItem } from "@shared/api";
 
 export class LocalStorage {
   private static getKey(key: string): string {
