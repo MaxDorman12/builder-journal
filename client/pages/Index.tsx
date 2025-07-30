@@ -478,8 +478,8 @@ export default function Index() {
                 ? "✅ WORKING"
                 : "❌ NOT SYNCED"}
             </div>
-            <div className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full">
-              URL: {window.location.hostname}
+            <div className="text-sm bg-yellow-100 text-yellow-800 px-3 py-2 rounded-lg border-2 border-yellow-300 font-mono">
+              🌐 CURRENT URL: {window.location.href}
             </div>
             {isAuthenticated && (
               <>
