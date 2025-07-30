@@ -57,6 +57,7 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
   const [error, setError] = useState("");
   const [wantToPlacePin, setWantToPlacePin] = useState(false);
   const [showPinOption, setShowPinOption] = useState(false);
+  const [createdEntryId, setCreatedEntryId] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
