@@ -166,7 +166,7 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
       // Allow large images - Firebase Storage can handle them
       console.log(`📸 Processing image "${file.name}":`, {
         size: file.size,
-        type: file.type
+        type: file.type,
       });
 
       // Compress image for better performance
@@ -197,7 +197,10 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
         // For large images or better storage, use Supabase
         try {
           const entryId = `entry_${Date.now()}`;
-          const publicUrl = await SupabaseStorage.uploadCompressedImage(canvas, entryId);
+          const publicUrl = await SupabaseStorage.uploadCompressedImage(
+            canvas,
+            entryId,
+          );
 
           setFormData((prev) => ({
             ...prev,
@@ -207,10 +210,10 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
           console.log(`✅ Image "${file.name}" uploaded to Supabase:`, {
             originalSize: file.size,
             dimensions: `${width}x${height}`,
-            url: publicUrl
+            url: publicUrl,
           });
         } catch (error) {
-          console.warn('Supabase upload failed, using base64 fallback:', error);
+          console.warn("Supabase upload failed, using base64 fallback:", error);
           // Fallback to base64 if Supabase fails
           const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.8);
           setFormData((prev) => ({
@@ -253,13 +256,21 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
 
         console.log(`✅ Video "${file.name}" uploaded to Supabase:`, publicUrl);
       } catch (error) {
-        console.warn('Supabase video upload failed:', error);
+        console.warn("Supabase video upload failed:", error);
 
         // Check if it's a size limit error
-        if (error.toString().includes('payload') || error.toString().includes('size') || sizeMB > 50) {
-          alert(`❌ Video too large: ${sizeMB.toFixed(1)}MB\n\nSupabase Free tier limit: 50MB\n\nOptions:\n1. Upgrade to Supabase Pro\n2. Compress video\n3. Record shorter/lower quality video`);
+        if (
+          error.toString().includes("payload") ||
+          error.toString().includes("size") ||
+          sizeMB > 50
+        ) {
+          alert(
+            `❌ Video too large: ${sizeMB.toFixed(1)}MB\n\nSupabase Free tier limit: 50MB\n\nOptions:\n1. Upgrade to Supabase Pro\n2. Compress video\n3. Record shorter/lower quality video`,
+          );
         } else {
-          alert(`❌ Upload failed for "${file.name}"\nError: ${error}\n\nTrying fallback storage...`);
+          alert(
+            `❌ Upload failed for "${file.name}"\nError: ${error}\n\nTrying fallback storage...`,
+          );
 
           // For smaller videos, try base64 fallback
           if (sizeMB < 10) {
