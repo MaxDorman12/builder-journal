@@ -16,6 +16,7 @@ import { JournalEntry, MOOD_RATINGS } from "@shared/api";
 import { JournalEntryCard } from "@/components/JournalEntryCard";
 
 export default function Calendar() {
+  const { isFamilyMember } = useAuth();
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
