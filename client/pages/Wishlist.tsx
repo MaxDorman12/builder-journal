@@ -14,8 +14,20 @@ import { Plus, Star, Trash2, Check, User, MapPin as MapPinIcon } from 'lucide-re
 import { WishlistItem, WISHLIST_CATEGORIES, WISHLIST_PRIORITIES } from '@shared/api';
 
 export default function Wishlist() {
-  const { isFamilyMember } = useAuth();
+  const { isFamilyMember, currentUser } = useAuth();
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    location: '',
+    priority: 'medium' as 'low' | 'medium' | 'high',
+    category: 'adventure' as 'adventure' | 'culture' | 'food' | 'nature' | 'city' | 'historic',
+    estimatedCost: '',
+    bestTimeToVisit: '',
+    notes: ''
+  });
 
   useEffect(() => {
     try {
