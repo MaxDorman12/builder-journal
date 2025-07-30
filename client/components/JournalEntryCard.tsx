@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import { JournalEntry, MOOD_RATINGS, AREA_TYPES, Comment } from "@shared/api";
 import { LocalStorage } from "@/lib/storage";
+import { ExportUtils } from "@/lib/exportUtils";
 
 interface JournalEntryCardProps {
   entry: JournalEntry;
