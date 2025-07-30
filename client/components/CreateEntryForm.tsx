@@ -173,7 +173,7 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
       const ctx = canvas.getContext("2d");
       const img = new Image();
 
-      img.onload = () => {
+      img.onload = async () => {
         // Calculate new dimensions (max 1200px)
         const maxSize = 1200;
         let { width, height } = img;
