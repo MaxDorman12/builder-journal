@@ -103,6 +103,29 @@
   body {
     @apply bg-background text-foreground font-sans;
   }
+
+  /* Mobile optimizations */
+  @media (max-width: 768px) {
+    /* Improve touch targets */
+    button {
+      min-height: 44px;
+    }
+
+    /* Prevent zoom on iOS form inputs */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="search"],
+    textarea,
+    select {
+      font-size: 16px;
+    }
+
+    /* Better spacing for mobile cards */
+    .family-card {
+      @apply rounded-xl;
+    }
+  }
 }
 
 @layer components {
