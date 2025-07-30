@@ -214,7 +214,7 @@ export default function Index() {
             <div className="bg-gradient-to-r from-blue-200 to-cyan-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
               <Waves className="h-3 w-3 text-blue-700" />
               <span className="text-blue-800 font-medium">
-                �� Loch Explorers
+                🌊 Loch Explorers
               </span>
             </div>
             <div className="bg-gradient-to-r from-pink-200 to-purple-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
@@ -234,15 +234,28 @@ export default function Index() {
 
         <Card className="family-card">
           <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Youtube className="h-5 w-5 text-red-500" />
-              <span>Our Scotland Adventures</span>
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Youtube className="h-5 w-5 text-red-500" />
+                <span>Our Scotland Adventures</span>
+              </div>
+              {isFamilyMember && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleYoutubeEdit}
+                  className="h-8 w-8 p-0"
+                  title="Edit YouTube video"
+                >
+                  <Edit2 className="h-4 w-4" />
+                </Button>
+              )}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="aspect-video bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg flex items-center justify-center">
               <a
-                href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                href={youtubeUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex flex-col items-center space-y-2 text-center p-6 hover:scale-105 transition-transform"
