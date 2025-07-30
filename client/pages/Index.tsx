@@ -90,6 +90,11 @@ export default function Index() {
 
     // Load Charlie data
     const charlieInfo = HybridStorage.getCharlieData();
+    console.log("🐕 Loading Charlie data:", {
+      hasImage: !!charlieInfo.image,
+      imageLength: charlieInfo.image?.length || 0,
+      imageStart: charlieInfo.image?.substring(0, 50) || "none"
+    });
     setCharlieData(charlieInfo);
 
     return () => {
