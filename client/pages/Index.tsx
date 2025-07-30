@@ -242,6 +242,12 @@ export default function Index() {
         // Convert to base64 with compression
         const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.8);
 
+        console.log("📸 Image compressed successfully:", {
+          originalSize: file.size,
+          compressedLength: compressedDataUrl.length,
+          dimensions: `${width}x${height}`
+        });
+
         setTempCharlieData({
           ...tempCharlieData,
           image: compressedDataUrl,
