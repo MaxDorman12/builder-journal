@@ -80,8 +80,8 @@ export default function Index() {
 
     initializeStorage();
 
-    setEntries(LocalStorage.getJournalEntries());
-    setPins(LocalStorage.getMapPins());
+    setEntries(HybridStorage.getJournalEntries());
+    setPins(HybridStorage.getMapPins());
 
     // Load YouTube URL from localStorage
     const savedYoutubeUrl = localStorage.getItem("familyjournal_youtube_url");

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { LocalStorage } from "@/lib/storage";
+import { HybridStorage } from "@/lib/hybridStorage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -43,7 +44,7 @@ export default function Journal() {
   }, []);
 
   const loadEntries = () => {
-    const allEntries = LocalStorage.getJournalEntries();
+    const allEntries = HybridStorage.getJournalEntries();
     setEntries(
       allEntries.sort(
         (a, b) =>
@@ -71,8 +72,15 @@ export default function Journal() {
     setIsCreateDialogOpen(false);
   };
 
-  const handleLike = (entryId: string) => {
+  const handleLike = async (entryId: string) => {
     LocalStorage.toggleLike(entryId);
+    // Update in cloud if available
+    if (HybridStorage.isCloudEnabled()) {
+      const entry = HybridStorage.getJournalEntries().find(e => e.id === entryId);
+      if (entry) {
+        await HybridStorage.saveJournalEntry(entry);
+      }
+    }
     loadEntries();
   };
 
@@ -85,8 +93,8 @@ export default function Journal() {
     setIsEditDialogOpen(true);
   };
 
-  const handleDelete = (entryId: string) => {
-    LocalStorage.deleteJournalEntry(entryId);
+  const handleDelete = async (entryId: string) => {
+    await HybridStorage.deleteJournalEntry(entryId);
     loadEntries();
   };
 

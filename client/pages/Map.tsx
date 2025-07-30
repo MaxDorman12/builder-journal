@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { LocalStorage } from "@/lib/storage";
+import { HybridStorage } from "@/lib/hybridStorage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -62,8 +63,8 @@ export default function Map() {
   const [pendingPinData, setPendingPinData] = useState<any>(null);
 
   useEffect(() => {
-    setPins(LocalStorage.getMapPins());
-    setEntries(LocalStorage.getJournalEntries());
+    setPins(HybridStorage.getMapPins());
+    setEntries(HybridStorage.getJournalEntries());
 
     // Check if we're in pin placement mode
     const mode = searchParams.get("mode");
@@ -159,8 +160,8 @@ export default function Map() {
       journalEntryId: pendingPinData?.entryId || undefined,
     };
 
-    LocalStorage.saveMapPin(pin);
-    setPins(LocalStorage.getMapPins());
+    await HybridStorage.saveMapPin(pin);
+    setPins(HybridStorage.getMapPins());
     setIsCreatePinOpen(false);
 
     // Clean up pin placement mode
@@ -385,7 +386,7 @@ export default function Map() {
                   draggable={false}
                   onLoad={() => {
                     // Force re-render of pins when image loads
-                    setPins(LocalStorage.getMapPins());
+                    setPins(HybridStorage.getMapPins());
                   }}
                 />
 
