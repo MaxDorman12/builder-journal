@@ -101,7 +101,7 @@ export default function Index() {
           console.log("👀 New visitors will see:", {
             charlieHasImage: !!freshCharlieData.image,
             entriesCount: freshEntries.length,
-            pinsCount: freshPins.length
+            pinsCount: freshPins.length,
           });
         } catch (error) {
           console.error("❌ Auto-sync failed:", error);
