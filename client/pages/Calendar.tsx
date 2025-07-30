@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { LocalStorage } from "@/lib/storage";
+import { HybridStorage } from "@/lib/hybridStorage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -23,7 +24,7 @@ export default function Calendar() {
   const [selectedEntries, setSelectedEntries] = useState<JournalEntry[]>([]);
 
   useEffect(() => {
-    setEntries(LocalStorage.getJournalEntries());
+    setEntries(HybridStorage.getJournalEntries());
   }, []);
 
   const currentMonth = currentDate.getMonth();
@@ -103,12 +104,19 @@ export default function Calendar() {
   const daysInMonth = getDaysInMonth(currentDate);
   const firstDay = getFirstDayOfMonth(currentDate);
 
-  const handleLike = (entryId: string) => {
+  const handleLike = async (entryId: string) => {
     LocalStorage.toggleLike(entryId);
-    setEntries(LocalStorage.getJournalEntries());
+    // Update in cloud if available
+    if (HybridStorage.isCloudEnabled()) {
+      const entry = HybridStorage.getJournalEntries().find(e => e.id === entryId);
+      if (entry) {
+        await HybridStorage.saveJournalEntry(entry);
+      }
+    }
+    setEntries(HybridStorage.getJournalEntries());
     // Update selected entries if viewing a specific date
     if (selectedDate) {
-      const updatedEntries = LocalStorage.getJournalEntries();
+      const updatedEntries = HybridStorage.getJournalEntries();
       setSelectedEntries(updatedEntries.filter((e) => e.date === selectedDate));
     }
   };

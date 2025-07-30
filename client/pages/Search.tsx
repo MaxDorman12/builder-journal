@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { LocalStorage } from "@/lib/storage";
+import { HybridStorage } from "@/lib/hybridStorage";
 import { initializeSampleData } from "@/lib/sampleData";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -61,9 +62,9 @@ export default function Search() {
   }, []);
 
   const allData = useMemo(() => {
-    const entries = LocalStorage.getJournalEntries();
-    const wishlistItems = LocalStorage.getWishlistItems();
-    const pins = LocalStorage.getMapPins();
+    const entries = HybridStorage.getJournalEntries();
+    const wishlistItems = HybridStorage.getWishlistItems();
+    const pins = HybridStorage.getMapPins();
 
     const searchableData: SearchResult[] = [];
 
