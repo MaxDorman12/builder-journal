@@ -38,6 +38,11 @@ export default function Index() {
 
     setEntries(LocalStorage.getJournalEntries());
     setPins(LocalStorage.getMapPins());
+
+    // Load YouTube URL from localStorage
+    const savedYoutubeUrl = localStorage.getItem('familyjournal_youtube_url');
+    const defaultUrl = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+    setYoutubeUrl(savedYoutubeUrl || defaultUrl);
   }, []);
 
   const recentEntries = entries
