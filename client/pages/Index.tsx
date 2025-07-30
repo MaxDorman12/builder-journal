@@ -487,24 +487,33 @@ export default function Index() {
                   variant="ghost"
                   size="sm"
                   onClick={async () => {
-                    console.log("🧪 Testing sync...");
-                    const newData = {
-                      ...charlieData,
-                      description:
-                        charlieData.description +
-                        "\n[Sync test at " +
-                        new Date().toLocaleTimeString() +
-                        "]",
-                    };
-                    await HybridStorage.setCharlieData(newData);
-                    // Update local state immediately
-                    setCharlieData(newData);
-                    console.log("✅ Test complete - state updated");
+                    console.log("🔄 FORCE SYNC - Clearing cache and re-syncing...");
+
+                    // Clear all local storage
+                    localStorage.clear();
+
+                    // Force fresh fetch from Firebase
+                    const freshData = await CloudStorage.getCharlieData();
+                    const freshEntries = await CloudStorage.getJournalEntries();
+                    const freshPins = await CloudStorage.getMapPins();
+
+                    // Update everything
+                    setCharlieData(freshData);
+                    setEntries(freshEntries);
+                    setPins(freshPins);
+
+                    console.log("✅ FORCE SYNC complete:", {
+                      charlieHasImage: !!freshData.image,
+                      imageLength: freshData.image?.length || 0,
+                      timestamp: new Date().toISOString()
+                    });
+
+                    alert("🔄 Force sync complete! Latest data loaded from Firebase.");
                   }}
-                  className="h-8 w-auto px-2 text-xs bg-yellow-100"
-                  title="Test Sync"
+                  className="h-8 w-auto px-2 text-xs bg-red-100"
+                  title="Force Sync"
                 >
-                  🧪 Test
+                  🔄 FORCE
                 </Button>
                 <Button
                   variant="ghost"
