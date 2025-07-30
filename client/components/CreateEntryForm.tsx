@@ -203,7 +203,19 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
 
   const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
+
     files.forEach((file) => {
+      // Check file size (limit to 50MB per video)
+      if (file.size > 50 * 1024 * 1024) {
+        alert(`Video "${file.name}" is too large. Please choose videos under 50MB.`);
+        return;
+      }
+
+      console.log(`🎥 Processing video "${file.name}":`, {
+        size: file.size,
+        type: file.type
+      });
+
       const reader = new FileReader();
       reader.onload = (event) => {
         if (event.target?.result) {
@@ -211,6 +223,8 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
             ...prev,
             videos: [...prev.videos, event.target!.result as string],
           }));
+
+          console.log(`✅ Video "${file.name}" uploaded successfully`);
         }
       };
       reader.readAsDataURL(file);
