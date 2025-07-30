@@ -29,6 +29,7 @@ export function Layout({ children }: LayoutProps) {
     { name: "Journal", href: "/journal", icon: BookOpen },
     { name: "Map", href: "/map", icon: Map },
     { name: "Gallery", href: "/gallery", icon: Camera },
+    { name: "Search", href: "/search", icon: Search },
     { name: "Wishlist", href: "/wishlist", icon: Star },
     { name: "Calendar", href: "/calendar", icon: Calendar },
   ];
