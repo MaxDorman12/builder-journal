@@ -6,7 +6,13 @@ import { initializeSampleData } from "@/lib/sampleData";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -40,7 +46,7 @@ export default function Index() {
     setPins(LocalStorage.getMapPins());
 
     // Load YouTube URL from localStorage
-    const savedYoutubeUrl = localStorage.getItem('familyjournal_youtube_url');
+    const savedYoutubeUrl = localStorage.getItem("familyjournal_youtube_url");
     const defaultUrl = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
     setYoutubeUrl(savedYoutubeUrl || defaultUrl);
   }, []);
@@ -67,7 +73,7 @@ export default function Index() {
 
   const handleYoutubeSave = () => {
     if (tempYoutubeUrl.trim()) {
-      localStorage.setItem('familyjournal_youtube_url', tempYoutubeUrl.trim());
+      localStorage.setItem("familyjournal_youtube_url", tempYoutubeUrl.trim());
       setYoutubeUrl(tempYoutubeUrl.trim());
       setIsYoutubeDialogOpen(false);
       setTempYoutubeUrl("");
@@ -361,13 +367,19 @@ export default function Index() {
               />
             </div>
             <div className="text-sm text-muted-foreground">
-              <p>📝 Paste a YouTube video URL to update your latest adventure video.</p>
+              <p>
+                📝 Paste a YouTube video URL to update your latest adventure
+                video.
+              </p>
             </div>
             <div className="flex justify-end space-x-2">
               <Button variant="outline" onClick={handleYoutubeCancel}>
                 Cancel
               </Button>
-              <Button onClick={handleYoutubeSave} disabled={!tempYoutubeUrl.trim()}>
+              <Button
+                onClick={handleYoutubeSave}
+                disabled={!tempYoutubeUrl.trim()}
+              >
                 Update Video
               </Button>
             </div>
