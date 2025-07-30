@@ -461,9 +461,13 @@ export default function Index() {
 
                   // Update local storage with fresh data
                   LocalStorage.setCharlieData(freshCharlieData);
-                  freshEntries.forEach(entry => LocalStorage.saveJournalEntry(entry));
-                  freshPins.forEach(pin => LocalStorage.saveMapPin(pin));
-                  freshWishlist.forEach(item => LocalStorage.saveWishlistItem(item));
+                  freshEntries.forEach((entry) =>
+                    LocalStorage.saveJournalEntry(entry),
+                  );
+                  freshPins.forEach((pin) => LocalStorage.saveMapPin(pin));
+                  freshWishlist.forEach((item) =>
+                    LocalStorage.saveWishlistItem(item),
+                  );
 
                   // Update UI state
                   setCharlieData(freshCharlieData);

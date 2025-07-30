@@ -97,7 +97,7 @@ export class CloudStorage {
     console.log("💾 Data being saved:", {
       hasImage: !!data.image,
       imageLength: data.image?.length || 0,
-      descriptionLength: data.description?.length || 0
+      descriptionLength: data.description?.length || 0,
     });
     await setDoc(doc(db, "family-data", "charlie"), data);
     console.log("✅ Save to Firebase completed");
@@ -115,7 +115,7 @@ export class CloudStorage {
       console.log("📖 Data retrieved from Firebase:", {
         hasImage: !!data.image,
         imageLength: data.image?.length || 0,
-        descriptionLength: data.description?.length || 0
+        descriptionLength: data.description?.length || 0,
       });
       return data;
     }
