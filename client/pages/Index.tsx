@@ -451,10 +451,31 @@ export default function Index() {
               variant="ghost"
               size="sm"
               onClick={async () => {
-                console.log("🔄 Manual sync...");
-                const freshData = await CloudStorage.getCharlieData();
-                setCharlieData(freshData);
-                window.location.reload();
+                console.log("🔄 Manual sync starting...");
+                try {
+                  // Force fresh read from Firebase
+                  const freshCharlieData = await CloudStorage.getCharlieData();
+                  const freshEntries = await CloudStorage.getJournalEntries();
+                  const freshPins = await CloudStorage.getMapPins();
+                  const freshWishlist = await CloudStorage.getWishlistItems();
+
+                  // Update local storage with fresh data
+                  LocalStorage.setCharlieData(freshCharlieData);
+                  freshEntries.forEach(entry => LocalStorage.saveJournalEntry(entry));
+                  freshPins.forEach(pin => LocalStorage.saveMapPin(pin));
+                  freshWishlist.forEach(item => LocalStorage.saveWishlistItem(item));
+
+                  // Update UI state
+                  setCharlieData(freshCharlieData);
+                  setEntries(freshEntries);
+                  setPins(freshPins);
+
+                  console.log("✅ Manual sync complete - data refreshed");
+                  alert("✅ Sync complete! Latest data loaded.");
+                } catch (error) {
+                  console.error("❌ Sync failed:", error);
+                  alert("❌ Sync failed. Check connection.");
+                }
               }}
               className="h-6 w-auto px-2 text-xs bg-blue-100"
               title="Manual Sync"
