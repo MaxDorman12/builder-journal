@@ -63,7 +63,9 @@ export default function Index() {
       setIsCloudSyncEnabled(cloudEnabled);
 
       if (cloudEnabled) {
-        console.log('🔄 Auto-sync enabled! Changes will sync across all devices.');
+        console.log(
+          "🔄 Auto-sync enabled! Changes will sync across all devices.",
+        );
 
         // Setup listener for real-time updates
         const unsubscribe = HybridStorage.onUpdate(() => {

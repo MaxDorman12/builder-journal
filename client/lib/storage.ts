@@ -177,7 +177,7 @@ export class LocalStorage {
         pins: this.getMapPins(),
         wishlist: this.getWishlistItems(),
         charlie: this.getCharlieData(),
-      }
+      },
     };
     return JSON.stringify(syncData, null, 2);
   }
@@ -188,13 +188,17 @@ export class LocalStorage {
 
       // Import all data
       if (syncData.data?.entries) {
-        syncData.data.entries.forEach((entry: any) => this.saveJournalEntry(entry));
+        syncData.data.entries.forEach((entry: any) =>
+          this.saveJournalEntry(entry),
+        );
       }
       if (syncData.data?.pins) {
         syncData.data.pins.forEach((pin: any) => this.saveMapPin(pin));
       }
       if (syncData.data?.wishlist) {
-        syncData.data.wishlist.forEach((item: any) => this.saveWishlistItem(item));
+        syncData.data.wishlist.forEach((item: any) =>
+          this.saveWishlistItem(item),
+        );
       }
       if (syncData.data?.charlie) {
         this.setCharlieData(syncData.data.charlie);
@@ -202,7 +206,7 @@ export class LocalStorage {
 
       return true;
     } catch (error) {
-      console.error('Failed to import sync file:', error);
+      console.error("Failed to import sync file:", error);
       return false;
     }
   }

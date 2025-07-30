@@ -1,7 +1,7 @@
 // Hybrid storage that uses both localStorage and Firebase for real-time sync
-import { LocalStorage } from './storage';
-import { CloudStorage } from './cloudStorage';
-import { JournalEntry, MapPin, WishlistItem } from '@shared/api';
+import { LocalStorage } from "./storage";
+import { CloudStorage } from "./cloudStorage";
+import { JournalEntry, MapPin, WishlistItem } from "@shared/api";
 
 export class HybridStorage {
   private static cloudEnabled = false;
@@ -16,7 +16,10 @@ export class HybridStorage {
       }
       return this.cloudEnabled;
     } catch (error) {
-      console.warn('Cloud sync not available, using local storage only:', error);
+      console.warn(
+        "Cloud sync not available, using local storage only:",
+        error,
+      );
       this.cloudEnabled = false;
       return false;
     }
@@ -26,13 +29,13 @@ export class HybridStorage {
   static async saveJournalEntry(entry: JournalEntry): Promise<void> {
     // Always save locally first (instant)
     LocalStorage.saveJournalEntry(entry);
-    
+
     // Then sync to cloud if available
     if (this.cloudEnabled) {
       try {
         await CloudStorage.saveJournalEntry(entry);
       } catch (error) {
-        console.warn('Failed to sync entry to cloud:', error);
+        console.warn("Failed to sync entry to cloud:", error);
       }
     }
   }
@@ -47,7 +50,7 @@ export class HybridStorage {
       try {
         await CloudStorage.deleteJournalEntry(id);
       } catch (error) {
-        console.warn('Failed to delete entry from cloud:', error);
+        console.warn("Failed to delete entry from cloud:", error);
       }
     }
   }
@@ -59,7 +62,7 @@ export class HybridStorage {
       try {
         await CloudStorage.saveMapPin(pin);
       } catch (error) {
-        console.warn('Failed to sync pin to cloud:', error);
+        console.warn("Failed to sync pin to cloud:", error);
       }
     }
   }
@@ -74,7 +77,7 @@ export class HybridStorage {
       try {
         await CloudStorage.deleteMapPin(id);
       } catch (error) {
-        console.warn('Failed to delete pin from cloud:', error);
+        console.warn("Failed to delete pin from cloud:", error);
       }
     }
   }
@@ -86,7 +89,7 @@ export class HybridStorage {
       try {
         await CloudStorage.saveWishlistItem(item);
       } catch (error) {
-        console.warn('Failed to sync wishlist item to cloud:', error);
+        console.warn("Failed to sync wishlist item to cloud:", error);
       }
     }
   }
@@ -101,19 +104,22 @@ export class HybridStorage {
       try {
         await CloudStorage.deleteWishlistItem(id);
       } catch (error) {
-        console.warn('Failed to delete wishlist item from cloud:', error);
+        console.warn("Failed to delete wishlist item from cloud:", error);
       }
     }
   }
 
   // Charlie Data
-  static async setCharlieData(data: { image: string; description: string }): Promise<void> {
+  static async setCharlieData(data: {
+    image: string;
+    description: string;
+  }): Promise<void> {
     LocalStorage.setCharlieData(data);
     if (this.cloudEnabled) {
       try {
         await CloudStorage.setCharlieData(data);
       } catch (error) {
-        console.warn('Failed to sync Charlie data to cloud:', error);
+        console.warn("Failed to sync Charlie data to cloud:", error);
       }
     }
   }
@@ -142,9 +148,9 @@ export class HybridStorage {
       }
       await CloudStorage.setCharlieData(charlie);
 
-      console.log('Local data synced to cloud successfully');
+      console.log("Local data synced to cloud successfully");
     } catch (error) {
-      console.warn('Failed to sync local data to cloud:', error);
+      console.warn("Failed to sync local data to cloud:", error);
     }
   }
 
@@ -153,48 +159,52 @@ export class HybridStorage {
     if (!this.cloudEnabled) return;
 
     // Listen for journal entry changes
-    const entriesListener = CloudStorage.listenToJournalEntries((cloudEntries) => {
-      const localEntries = LocalStorage.getJournalEntries();
-      const localIds = new Set(localEntries.map(e => e.id));
-      
-      // Add new entries from cloud
-      cloudEntries.forEach(entry => {
-        if (!localIds.has(entry.id)) {
-          LocalStorage.saveJournalEntry(entry);
-        }
-      });
-      
-      // Trigger update event
-      this.notifyListeners();
-    });
+    const entriesListener = CloudStorage.listenToJournalEntries(
+      (cloudEntries) => {
+        const localEntries = LocalStorage.getJournalEntries();
+        const localIds = new Set(localEntries.map((e) => e.id));
+
+        // Add new entries from cloud
+        cloudEntries.forEach((entry) => {
+          if (!localIds.has(entry.id)) {
+            LocalStorage.saveJournalEntry(entry);
+          }
+        });
+
+        // Trigger update event
+        this.notifyListeners();
+      },
+    );
 
     // Listen for map pin changes
     const pinsListener = CloudStorage.listenToMapPins((cloudPins) => {
       const localPins = LocalStorage.getMapPins();
-      const localIds = new Set(localPins.map(p => p.id));
-      
-      cloudPins.forEach(pin => {
+      const localIds = new Set(localPins.map((p) => p.id));
+
+      cloudPins.forEach((pin) => {
         if (!localIds.has(pin.id)) {
           LocalStorage.saveMapPin(pin);
         }
       });
-      
+
       this.notifyListeners();
     });
 
     // Listen for wishlist changes
-    const wishlistListener = CloudStorage.listenToWishlistItems((cloudItems) => {
-      const localItems = LocalStorage.getWishlistItems();
-      const localIds = new Set(localItems.map(i => i.id));
-      
-      cloudItems.forEach(item => {
-        if (!localIds.has(item.id)) {
-          LocalStorage.saveWishlistItem(item);
-        }
-      });
-      
-      this.notifyListeners();
-    });
+    const wishlistListener = CloudStorage.listenToWishlistItems(
+      (cloudItems) => {
+        const localItems = LocalStorage.getWishlistItems();
+        const localIds = new Set(localItems.map((i) => i.id));
+
+        cloudItems.forEach((item) => {
+          if (!localIds.has(item.id)) {
+            LocalStorage.saveWishlistItem(item);
+          }
+        });
+
+        this.notifyListeners();
+      },
+    );
 
     // Listen for Charlie data changes
     const charlieListener = CloudStorage.listenToCharlieData((charlieData) => {
@@ -202,7 +212,12 @@ export class HybridStorage {
       this.notifyListeners();
     });
 
-    this.listeners.push(entriesListener, pinsListener, wishlistListener, charlieListener);
+    this.listeners.push(
+      entriesListener,
+      pinsListener,
+      wishlistListener,
+      charlieListener,
+    );
   }
 
   // Add listener for updates
@@ -217,8 +232,8 @@ export class HybridStorage {
   }
 
   private static notifyListeners(): void {
-    this.listeners.forEach(listener => {
-      if (typeof listener === 'function') {
+    this.listeners.forEach((listener) => {
+      if (typeof listener === "function") {
         listener();
       }
     });
