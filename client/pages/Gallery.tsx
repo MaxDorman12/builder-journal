@@ -374,7 +374,7 @@ export default function Gallery() {
                     <Button
                       variant="outline"
                       size="icon"
-                      className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white"
+                      className="absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white z-10"
                       onClick={() => navigatePhoto('prev')}
                     >
                       <ChevronLeft className="h-4 w-4" />
@@ -382,17 +382,24 @@ export default function Gallery() {
                     <Button
                       variant="outline"
                       size="icon"
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white"
+                      className="absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white z-10"
                       onClick={() => navigatePhoto('next')}
                     >
                       <ChevronRight className="h-4 w-4" />
                     </Button>
                   </>
                 )}
-                
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+
+                <div className="absolute bottom-2 md:bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-2 md:px-3 py-1 rounded-full text-xs md:text-sm">
                   {currentPhotoIndex + 1} / {photos.length}
                 </div>
+
+                {/* Mobile swipe hint */}
+                {photos.length > 1 && (
+                  <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-xs md:hidden">
+                    👈 Swipe to navigate 👉
+                  </div>
+                )}
               </div>
               
               <div className="p-6 pt-4 space-y-3">
