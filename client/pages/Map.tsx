@@ -359,7 +359,7 @@ export default function Map() {
             {/* Map Container */}
             <div
               ref={mapContainerRef}
-              className={`relative w-full h-[70vh] min-h-[500px] max-h-[800px] overflow-hidden select-none ${
+              className={`relative w-full h-[calc(100vh-12rem)] min-h-[600px] overflow-hidden select-none ${
                 isDragging ? "cursor-grabbing" : "cursor-grab"
               } ${zoom > 1 ? "cursor-grab" : "cursor-pointer"}`}
               onMouseDown={handleMouseDown}
