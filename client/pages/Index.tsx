@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { LocalStorage } from "@/lib/storage";
 import { HybridStorage } from "@/lib/hybridStorage";
+import { CloudStorage } from "@/lib/cloudStorage";
 import { initializeSampleData } from "@/lib/sampleData";
 import { FamilyStats } from "@/components/FamilyStats";
 import { Button } from "@/components/ui/button";
