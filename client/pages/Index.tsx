@@ -87,13 +87,19 @@ export default function Index() {
             wishlistCount: freshWishlist.length,
           });
 
-          // Update local storage with fresh Firebase data
+          // Try to save to localStorage (will fail gracefully if disabled)
           LocalStorage.setCharlieData(freshCharlieData);
           freshEntries.forEach((entry) => LocalStorage.saveJournalEntry(entry));
           freshPins.forEach((pin) => LocalStorage.saveMapPin(pin));
           freshWishlist.forEach((item) => LocalStorage.saveWishlistItem(item));
 
-          // Update UI with fresh data
+          // ALWAYS update UI with fresh Firebase data (even if localStorage fails)
+          console.log("📱 Setting UI state with Firebase data:", {
+            entriesCount: freshEntries.length,
+            pinsCount: freshPins.length,
+            charlieHasImage: !!freshCharlieData.image
+          });
+
           setCharlieData(freshCharlieData);
           setEntries(freshEntries);
           setPins(freshPins);
