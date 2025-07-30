@@ -583,7 +583,7 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
                       location: formData.location.trim(),
                       moodRating: formData.moodRating,
                       visitDate: formData.date,
-                      entryId: entryId
+                      entryId: createdEntryId
                     };
                     localStorage.setItem('pendingMapPin', JSON.stringify(entryData));
                     navigate('/map?mode=place-pin');
