@@ -88,7 +88,7 @@ export function JournalEntryCard({
     try {
       ExportUtils.exportSingleEntry(entry.id);
     } catch (error) {
-      console.error('Failed to export entry:', error);
+      console.error("Failed to export entry:", error);
     }
   };
 

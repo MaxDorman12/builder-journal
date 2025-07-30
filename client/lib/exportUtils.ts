@@ -1,5 +1,5 @@
-import { LocalStorage } from './storage';
-import { JournalEntry, MapPin, WishlistItem } from '@shared/api';
+import { LocalStorage } from "./storage";
+import { JournalEntry, MapPin, WishlistItem } from "@shared/api";
 
 interface ExportData {
   entries: JournalEntry[];
@@ -12,17 +12,17 @@ interface ExportData {
 
 export class ExportUtils {
   private static formatDate(date: string | Date): string {
-    return new Date(date).toLocaleDateString('en-GB', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return new Date(date).toLocaleDateString("en-GB", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   }
 
   private static formatCurrency(amount: string): string {
-    if (!amount) return '';
-    return amount.startsWith('£') ? amount : `£${amount}`;
+    if (!amount) return "";
+    return amount.startsWith("£") ? amount : `£${amount}`;
   }
 
   // Full JSON backup of all data
@@ -33,24 +33,24 @@ export class ExportUtils {
         pins: LocalStorage.getMapPins(),
         wishlist: LocalStorage.getWishlistItems(),
         exportDate: new Date().toISOString(),
-        version: '1.0',
-        familyName: 'Dorman Family'
+        version: "1.0",
+        familyName: "Dorman Family",
       };
 
       const dataStr = JSON.stringify(exportData, null, 2);
-      const dataBlob = new Blob([dataStr], { type: 'application/json' });
-      
-      const link = document.createElement('a');
+      const dataBlob = new Blob([dataStr], { type: "application/json" });
+
+      const link = document.createElement("a");
       link.href = URL.createObjectURL(dataBlob);
-      link.download = `dorman-family-journal-backup-${new Date().toISOString().split('T')[0]}.json`;
+      link.download = `dorman-family-journal-backup-${new Date().toISOString().split("T")[0]}.json`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      
-      console.log('Backup exported successfully');
+
+      console.log("Backup exported successfully");
     } catch (error) {
-      console.error('Error exporting backup:', error);
-      throw new Error('Failed to export backup');
+      console.error("Error exporting backup:", error);
+      throw new Error("Failed to export backup");
     }
   }
 
@@ -62,30 +62,34 @@ export class ExportUtils {
         try {
           const result = e.target?.result as string;
           const importData: ExportData = JSON.parse(result);
-          
+
           // Validate the data structure
           if (!importData.entries || !importData.pins || !importData.wishlist) {
-            throw new Error('Invalid backup file format');
+            throw new Error("Invalid backup file format");
           }
 
           // Import data
           if (importData.entries.length > 0) {
-            importData.entries.forEach(entry => LocalStorage.saveJournalEntry(entry));
+            importData.entries.forEach((entry) =>
+              LocalStorage.saveJournalEntry(entry),
+            );
           }
           if (importData.pins.length > 0) {
-            importData.pins.forEach(pin => LocalStorage.saveMapPin(pin));
+            importData.pins.forEach((pin) => LocalStorage.saveMapPin(pin));
           }
           if (importData.wishlist.length > 0) {
-            importData.wishlist.forEach(item => LocalStorage.saveWishlistItem(item));
+            importData.wishlist.forEach((item) =>
+              LocalStorage.saveWishlistItem(item),
+            );
           }
 
           resolve(true);
         } catch (error) {
-          console.error('Error importing backup:', error);
-          reject(new Error('Failed to import backup file'));
+          console.error("Error importing backup:", error);
+          reject(new Error("Failed to import backup file"));
         }
       };
-      reader.onerror = () => reject(new Error('Failed to read backup file'));
+      reader.onerror = () => reject(new Error("Failed to read backup file"));
       reader.readAsText(file);
     });
   }
@@ -320,7 +324,9 @@ export class ExportUtils {
 
         <div class="section">
             <h2 class="section-title">📖 Our Adventure Journal</h2>
-            ${entries.map(entry => `
+            ${entries
+              .map(
+                (entry) => `
                 <div class="entry-card">
                     <div class="entry-header">
                         <h3 class="entry-title">${entry.title}</h3>
@@ -344,66 +350,92 @@ export class ExportUtils {
                             <span>❤️</span>
                             <span>${entry.likes} likes</span>
                         </div>
-                        ${entry.isPaidActivity ? `
+                        ${
+                          entry.isPaidActivity
+                            ? `
                         <div class="meta-item">
                             <span>💳</span>
-                            <span>Paid Activity ${entry.activityCost ? `(${entry.activityCost})` : ''}</span>
+                            <span>Paid Activity ${entry.activityCost ? `(${entry.activityCost})` : ""}</span>
                         </div>
-                        ` : ''}
-                        ${!entry.hasFreeParkingAvailable ? `
+                        `
+                            : ""
+                        }
+                        ${
+                          !entry.hasFreeParkingAvailable
+                            ? `
                         <div class="meta-item">
                             <span>🅿️</span>
-                            <span>Paid Parking ${entry.parkingCost ? `(${entry.parkingCost})` : ''}</span>
+                            <span>Paid Parking ${entry.parkingCost ? `(${entry.parkingCost})` : ""}</span>
                         </div>
-                        ` : `
+                        `
+                            : `
                         <div class="meta-item">
                             <span>🅿️</span>
                             <span>Free Parking</span>
                         </div>
-                        `}
+                        `
+                        }
                     </div>
                     
                     <div class="entry-content">
-                        ${entry.content.replace(/\n/g, '<br>')}
+                        ${entry.content.replace(/\n/g, "<br>")}
                     </div>
                     
-                    ${entry.greatFor.length > 0 ? `
+                    ${
+                      entry.greatFor.length > 0
+                        ? `
                     <div class="tags">
-                        ${entry.greatFor.map(activity => `<span class="tag">${activity}</span>`).join('')}
+                        ${entry.greatFor.map((activity) => `<span class="tag">${activity}</span>`).join("")}
                     </div>
-                    ` : ''}
+                    `
+                        : ""
+                    }
                     
-                    ${entry.wouldReturnReason ? `
+                    ${
+                      entry.wouldReturnReason
+                        ? `
                     <div style="margin-top: 15px; padding: 15px; background: #f0f8ff; border-radius: 8px;">
-                        <strong>${entry.wouldReturn ? 'Would Return:' : 'Would Not Return:'}</strong>
+                        <strong>${entry.wouldReturn ? "Would Return:" : "Would Not Return:"}</strong>
                         <p style="margin-top: 5px;">${entry.wouldReturnReason}</p>
                     </div>
-                    ` : ''}
+                    `
+                        : ""
+                    }
                 </div>
-            `).join('')}
+            `,
+              )
+              .join("")}
         </div>
 
-        ${wishlist.length > 0 ? `
+        ${
+          wishlist.length > 0
+            ? `
         <div class="section">
             <h2 class="section-title">⭐ Our Dream Destinations</h2>
-            ${wishlist.map(item => `
-                <div class="wishlist-item ${item.isCompleted ? 'completed' : ''}">
+            ${wishlist
+              .map(
+                (item) => `
+                <div class="wishlist-item ${item.isCompleted ? "completed" : ""}">
                     <h4 style="margin-bottom: 10px; font-weight: 600;">
-                        ${item.isCompleted ? '✅' : '⏳'} ${item.title}
+                        ${item.isCompleted ? "✅" : "⏳"} ${item.title}
                     </h4>
                     <p style="color: #666; margin-bottom: 10px;">📍 ${item.location}</p>
-                    ${item.description ? `<p style="margin-bottom: 10px;">${item.description}</p>` : ''}
+                    ${item.description ? `<p style="margin-bottom: 10px;">${item.description}</p>` : ""}
                     <div style="display: flex; gap: 15px; font-size: 0.9rem; color: #666; flex-wrap: wrap;">
                         <span>Priority: ${item.priority}</span>
                         <span>Category: ${item.category}</span>
-                        ${item.estimatedCost ? `<span>Cost: ${item.estimatedCost}</span>` : ''}
-                        ${item.bestTimeToVisit ? `<span>Best Time: ${item.bestTimeToVisit}</span>` : ''}
+                        ${item.estimatedCost ? `<span>Cost: ${item.estimatedCost}</span>` : ""}
+                        ${item.bestTimeToVisit ? `<span>Best Time: ${item.bestTimeToVisit}</span>` : ""}
                     </div>
-                    ${item.notes ? `<p style="margin-top: 10px; font-style: italic; color: #666;">"${item.notes}"</p>` : ''}
+                    ${item.notes ? `<p style="margin-top: 10px; font-style: italic; color: #666;">"${item.notes}"</p>` : ""}
                 </div>
-            `).join('')}
+            `,
+              )
+              .join("")}
         </div>
-        ` : ''}
+        `
+            : ""
+        }
 
         <div class="footer">
             <p><strong>Made with ❤️ for the Dorman Family</strong></p>
@@ -419,18 +451,18 @@ export class ExportUtils {
 </body>
 </html>`;
 
-      const blob = new Blob([html], { type: 'text/html' });
-      const link = document.createElement('a');
+      const blob = new Blob([html], { type: "text/html" });
+      const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = `dorman-family-adventures-${new Date().toISOString().split('T')[0]}.html`;
+      link.download = `dorman-family-adventures-${new Date().toISOString().split("T")[0]}.html`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      
-      console.log('Journal exported as HTML successfully');
+
+      console.log("Journal exported as HTML successfully");
     } catch (error) {
-      console.error('Error exporting journal as HTML:', error);
-      throw new Error('Failed to export journal');
+      console.error("Error exporting journal as HTML:", error);
+      throw new Error("Failed to export journal");
     }
   }
 
@@ -438,10 +470,10 @@ export class ExportUtils {
   static exportSingleEntry(entryId: string): void {
     try {
       const entries = LocalStorage.getJournalEntries();
-      const entry = entries.find(e => e.id === entryId);
-      
+      const entry = entries.find((e) => e.id === entryId);
+
       if (!entry) {
-        throw new Error('Entry not found');
+        throw new Error("Entry not found");
       }
 
       const html = `
@@ -514,26 +546,34 @@ export class ExportUtils {
             <div><strong>📅 Date:</strong> ${this.formatDate(entry.date)}</div>
             <div><strong>👤 Author:</strong> ${entry.author}</div>
             <div><strong>❤️ Likes:</strong> ${entry.likes}</div>
-            ${entry.isPaidActivity ? `<div><strong>💳 Activity Cost:</strong> ${entry.activityCost || 'Paid activity'}</div>` : ''}
-            <div><strong>🅿️ Parking:</strong> ${entry.hasFreeParkingAvailable ? 'Free' : `Paid ${entry.parkingCost || ''}`}</div>
+            ${entry.isPaidActivity ? `<div><strong>💳 Activity Cost:</strong> ${entry.activityCost || "Paid activity"}</div>` : ""}
+            <div><strong>🅿️ Parking:</strong> ${entry.hasFreeParkingAvailable ? "Free" : `Paid ${entry.parkingCost || ""}`}</div>
         </div>
         
         <div class="content">
-            ${entry.content.replace(/\n/g, '<br>')}
+            ${entry.content.replace(/\n/g, "<br>")}
         </div>
         
-        ${entry.greatFor.length > 0 ? `
+        ${
+          entry.greatFor.length > 0
+            ? `
         <div style="margin: 20px 0;">
-            <strong>Great for:</strong> ${entry.greatFor.join(', ')}
+            <strong>Great for:</strong> ${entry.greatFor.join(", ")}
         </div>
-        ` : ''}
+        `
+            : ""
+        }
         
-        ${entry.wouldReturnReason ? `
+        ${
+          entry.wouldReturnReason
+            ? `
         <div style="margin: 20px 0; padding: 15px; background: #e8f5e8; border-radius: 8px;">
-            <strong>${entry.wouldReturn ? 'Would Return:' : 'Would Not Return:'}</strong>
+            <strong>${entry.wouldReturn ? "Would Return:" : "Would Not Return:"}</strong>
             <p style="margin-top: 10px;">${entry.wouldReturnReason}</p>
         </div>
-        ` : ''}
+        `
+            : ""
+        }
         
         <div class="footer">
             <p>Exported on ${this.formatDate(new Date())}</p>
@@ -543,18 +583,18 @@ export class ExportUtils {
 </body>
 </html>`;
 
-      const blob = new Blob([html], { type: 'text/html' });
-      const link = document.createElement('a');
+      const blob = new Blob([html], { type: "text/html" });
+      const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = `${entry.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.html`;
+      link.download = `${entry.title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}.html`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      
-      console.log('Entry exported successfully');
+
+      console.log("Entry exported successfully");
     } catch (error) {
-      console.error('Error exporting entry:', error);
-      throw new Error('Failed to export entry');
+      console.error("Error exporting entry:", error);
+      throw new Error("Failed to export entry");
     }
   }
 
@@ -563,29 +603,39 @@ export class ExportUtils {
     const entries = LocalStorage.getJournalEntries();
     const pins = LocalStorage.getMapPins();
     const wishlist = LocalStorage.getWishlistItems();
-    
+
     return {
       totalEntries: entries.length,
       totalPins: pins.length,
       totalWishlistItems: wishlist.length,
       totalPhotos: entries.reduce((sum, entry) => sum + entry.images.length, 0),
       totalLikes: entries.reduce((sum, entry) => sum + entry.likes, 0),
-      totalComments: entries.reduce((sum, entry) => sum + entry.comments.length, 0),
-      dateRange: entries.length > 0 ? {
-        earliest: new Date(Math.min(...entries.map(e => new Date(e.date).getTime()))),
-        latest: new Date(Math.max(...entries.map(e => new Date(e.date).getTime())))
-      } : null
+      totalComments: entries.reduce(
+        (sum, entry) => sum + entry.comments.length,
+        0,
+      ),
+      dateRange:
+        entries.length > 0
+          ? {
+              earliest: new Date(
+                Math.min(...entries.map((e) => new Date(e.date).getTime())),
+              ),
+              latest: new Date(
+                Math.max(...entries.map((e) => new Date(e.date).getTime())),
+              ),
+            }
+          : null,
     };
   }
 
   private static getMoodEmoji(rating: number): string {
     const moodMap: { [key: number]: string } = {
-      1: '😞',
-      2: '😐',
-      3: '🙂',
-      4: '😊',
-      5: '🤩'
+      1: "😞",
+      2: "😐",
+      3: "🙂",
+      4: "😊",
+      5: "🤩",
     };
-    return moodMap[rating] || '😊';
+    return moodMap[rating] || "😊";
   }
 }
