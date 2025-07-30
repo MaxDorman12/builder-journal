@@ -1,5 +1,6 @@
 // Supabase Storage service for large images and videos
 import { supabase } from './supabase'
+import { SupabaseSetup } from './supabaseSetup'
 
 export class SupabaseStorage {
   private static BUCKET_NAME = 'journal-media'
