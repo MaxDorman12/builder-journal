@@ -116,12 +116,44 @@ export function JournalEntryCard({
 
         <CardContent className="p-4">
           <div className="flex items-start justify-between mb-2">
-            <h3 className="font-semibold text-lg line-clamp-2">
+            <h3 className="font-semibold text-lg line-clamp-2 flex-1">
               {entry.title}
             </h3>
-            {moodData && (
-              <span className="text-2xl ml-2">{moodData.emoji}</span>
-            )}
+            <div className="flex items-center space-x-2 ml-2">
+              {moodData && (
+                <span className="text-2xl">{moodData.emoji}</span>
+              )}
+              {isFamilyMember && (onEdit || onDelete) && (
+                <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  {onEdit && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onEdit(entry);
+                      }}
+                      className="p-1 hover:bg-blue-100 rounded-full transition-colors"
+                      title="Edit entry"
+                    >
+                      <Edit2 className="h-3 w-3 text-blue-600" />
+                    </button>
+                  )}
+                  {onDelete && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (window.confirm('Are you sure you want to delete this journal entry?')) {
+                          onDelete(entry.id);
+                        }
+                      }}
+                      className="p-1 hover:bg-red-100 rounded-full transition-colors"
+                      title="Delete entry"
+                    >
+                      <Trash2 className="h-3 w-3 text-red-600" />
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="flex items-center text-sm text-muted-foreground mb-2 space-x-3">
