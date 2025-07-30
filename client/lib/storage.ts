@@ -61,12 +61,23 @@ export class LocalStorage {
       entries.push(entry);
     }
 
-    localStorage.setItem(this.getKey("entries"), JSON.stringify(entries));
+    try {
+      localStorage.setItem(this.getKey("entries"), JSON.stringify(entries));
+    } catch (error) {
+      console.error('❌ localStorage quota exceeded when saving journal entry');
+      // Try emergency cleanup and retry
+      this.handleQuotaExceeded('entries', entries);
+    }
   }
 
   static deleteJournalEntry(id: string): void {
     const entries = this.getJournalEntries().filter((e) => e.id !== id);
-    localStorage.setItem(this.getKey("entries"), JSON.stringify(entries));
+    try {
+      localStorage.setItem(this.getKey("entries"), JSON.stringify(entries));
+    } catch (error) {
+      console.error('❌ localStorage quota exceeded when deleting journal entry');
+      this.handleQuotaExceeded('entries', entries);
+    }
   }
 
   static getMapPins(): MapPin[] {
