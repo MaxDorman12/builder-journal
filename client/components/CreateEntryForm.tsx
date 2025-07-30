@@ -35,6 +35,7 @@ interface CreateEntryFormProps {
 
 export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
   const { currentUser } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",
     content: "",
