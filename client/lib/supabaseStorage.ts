@@ -120,21 +120,25 @@ export class SupabaseStorage {
             entryId: entryId
           })
 
-          // Create unique file path
-          const fileName = `${entryId}/${Date.now()}_compressed.jpg`
+          // Create unique file path with PNG extension
+          const fileName = `${entryId}/${Date.now()}_compressed.png`
 
-          // Upload blob to Supabase Storage
+          // Upload blob to Supabase Storage with content type override
           const { data, error } = await supabase.storage
             .from(this.BUCKET_NAME)
             .upload(fileName, blob, {
               cacheControl: '3600',
-              upsert: true // Allow overwrite if file exists
+              upsert: true, // Allow overwrite if file exists
+              contentType: 'image/png' // Use PNG instead of JPEG to avoid MIME restrictions
             })
 
           if (error) {
             console.error('❌ Supabase compressed upload error:', error)
-            if (error.message?.includes('Failed to fetch')) {
-              console.error('💡 Falling back to base64 storage')
+            if (error.message?.includes('Failed to fetch') || error.message?.includes('mime type')) {
+              console.error('💡 MIME type or connection issue, falling back to base64 storage')
+              if (error.message?.includes('mime type')) {
+                console.error('Bucket MIME type restrictions detected. Please configure bucket to allow image files.')
+              }
               SupabaseSetup.displaySetupInstructions()
               resolve(this.canvasToBase64(canvas))
               return
@@ -153,7 +157,7 @@ export class SupabaseStorage {
           console.error('❌ Supabase compressed upload failed, using base64 fallback:', error)
           resolve(this.canvasToBase64(canvas))
         }
-      }, 'image/jpeg', 0.8)
+      }, 'image/png', 0.8) // Use PNG format to avoid MIME restrictions
     })
   }
 
