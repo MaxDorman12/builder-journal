@@ -97,16 +97,16 @@ export default function Journal() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="flex flex-col gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Family Journal</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground">Family Journal</h1>
+          <p className="text-muted-foreground text-sm md:text-base">
             {entries.length} adventures documented and counting!
           </p>
           {!isFamilyMember && (
-            <p className="text-sm text-blue-600 bg-blue-50 px-3 py-1 rounded-full inline-block mt-2">
+            <p className="text-xs md:text-sm text-blue-600 bg-blue-50 px-3 py-1 rounded-full inline-block mt-2">
               💭 Visitors can like and comment on our adventures!
             </p>
           )}
