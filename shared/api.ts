@@ -97,7 +97,7 @@ export const FAMILY_MEMBERS: FamilyMember[] = [
 ];
 
 export const AREA_TYPES = [
-  { value: "town", label: "🏘️ Town", emoji: "🏘️" },
+  { value: "town", label: "🏘️ Town", emoji: "��️" },
   { value: "city", label: "🏙️ City", emoji: "🏙️" },
   { value: "loch", label: "🌊 Loch", emoji: "🌊" },
   { value: "mountain", label: "⛰️ Mountain", emoji: "⛰️" },
@@ -133,4 +133,19 @@ export const MOOD_RATINGS = [
     emoji: "🤩",
     color: "bg-purple-100 text-purple-700",
   },
+] as const;
+
+export const WISHLIST_CATEGORIES = [
+  { value: "adventure", label: "🏔️ Adventure", emoji: "🏔️" },
+  { value: "culture", label: "🎭 Culture", emoji: "🎭" },
+  { value: "food", label: "🍽️ Food & Drink", emoji: "🍽️" },
+  { value: "nature", label: "🌿 Nature", emoji: "🌿" },
+  { value: "city", label: "🏙️ City Experience", emoji: "🏙️" },
+  { value: "historic", label: "🏰 Historic Sites", emoji: "🏰" },
+] as const;
+
+export const WISHLIST_PRIORITIES = [
+  { value: "low", label: "Low", emoji: "🟢", color: "bg-green-100 text-green-700" },
+  { value: "medium", label: "Medium", emoji: "🟡", color: "bg-yellow-100 text-yellow-700" },
+  { value: "high", label: "High", emoji: "🔴", color: "bg-red-100 text-red-700" },
 ] as const;
