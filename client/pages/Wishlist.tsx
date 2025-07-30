@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { LocalStorage } from "@/lib/storage";
+import { HybridStorage } from "@/lib/hybridStorage";
 import { initializeSampleData } from "@/lib/sampleData";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -70,7 +71,7 @@ export default function Wishlist() {
 
   const loadWishlistItems = () => {
     try {
-      const items = LocalStorage.getWishlistItems();
+      const items = HybridStorage.getWishlistItems();
       setWishlistItems(items);
     } catch (error) {
       console.error("Error loading wishlist items:", error);
@@ -78,19 +79,26 @@ export default function Wishlist() {
     }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (
       window.confirm(
         "Are you sure you want to remove this item from your wishlist?",
       )
     ) {
-      LocalStorage.deleteWishlistItem(id);
+      await HybridStorage.deleteWishlistItem(id);
       loadWishlistItems();
     }
   };
 
-  const handleMarkCompleted = (id: string) => {
+  const handleMarkCompleted = async (id: string) => {
     LocalStorage.markWishlistItemCompleted(id);
+    // Update in cloud if available
+    if (HybridStorage.isCloudEnabled()) {
+      const item = HybridStorage.getWishlistItems().find(i => i.id === id);
+      if (item) {
+        await HybridStorage.saveWishlistItem(item);
+      }
+    }
     loadWishlistItems();
   };
 
@@ -113,7 +121,7 @@ export default function Wishlist() {
       updatedAt: new Date().toISOString(),
     };
 
-    LocalStorage.saveWishlistItem(item);
+    await HybridStorage.saveWishlistItem(item);
     loadWishlistItems();
     setIsCreateDialogOpen(false);
     resetForm();
