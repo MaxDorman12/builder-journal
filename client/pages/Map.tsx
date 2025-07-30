@@ -66,23 +66,23 @@ export default function Map() {
     setEntries(LocalStorage.getJournalEntries());
 
     // Check if we're in pin placement mode
-    const mode = searchParams.get('mode');
-    if (mode === 'place-pin') {
+    const mode = searchParams.get("mode");
+    if (mode === "place-pin") {
       setIsPinPlacementMode(true);
 
       // Load pending pin data from localStorage
-      const pendingData = localStorage.getItem('pendingMapPin');
+      const pendingData = localStorage.getItem("pendingMapPin");
       if (pendingData) {
         const parsedData = JSON.parse(pendingData);
         setPendingPinData(parsedData);
 
         // Pre-fill the new pin form with the journal entry data
-        setNewPin(prev => ({
+        setNewPin((prev) => ({
           ...prev,
           title: parsedData.title,
           description: parsedData.description,
           moodRating: parsedData.moodRating,
-          visitDate: parsedData.visitDate
+          visitDate: parsedData.visitDate,
         }));
       }
     }
@@ -97,19 +97,19 @@ export default function Map() {
       let newPan = { ...pan };
 
       switch (e.key) {
-        case 'ArrowUp':
+        case "ArrowUp":
           newPan.y += moveDistance;
           e.preventDefault();
           break;
-        case 'ArrowDown':
+        case "ArrowDown":
           newPan.y -= moveDistance;
           e.preventDefault();
           break;
-        case 'ArrowLeft':
+        case "ArrowLeft":
           newPan.x += moveDistance;
           e.preventDefault();
           break;
-        case 'ArrowRight':
+        case "ArrowRight":
           newPan.x -= moveDistance;
           e.preventDefault();
           break;
@@ -120,8 +120,8 @@ export default function Map() {
       setPan(newPan);
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [pan]);
 
   const handleMapClick = (e: React.MouseEvent<HTMLImageElement>) => {
@@ -156,7 +156,7 @@ export default function Map() {
       moodRating: newPin.moodRating,
       visitDate: newPin.visitDate,
       images: [],
-      journalEntryId: pendingPinData?.entryId || undefined
+      journalEntryId: pendingPinData?.entryId || undefined,
     };
 
     LocalStorage.saveMapPin(pin);
@@ -165,7 +165,7 @@ export default function Map() {
 
     // Clean up pin placement mode
     if (isPinPlacementMode) {
-      localStorage.removeItem('pendingMapPin');
+      localStorage.removeItem("pendingMapPin");
       setIsPinPlacementMode(false);
       setPendingPinData(null);
       setSearchParams({});
@@ -302,7 +302,9 @@ export default function Map() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-foreground">
-            {isPinPlacementMode ? "📍 Place Your Adventure Pin" : "Scotland Adventure Map"}
+            {isPinPlacementMode
+              ? "📍 Place Your Adventure Pin"
+              : "Scotland Adventure Map"}
           </h1>
           <p className="text-muted-foreground">
             {isPinPlacementMode
@@ -358,8 +360,8 @@ export default function Map() {
             <div
               ref={mapContainerRef}
               className={`relative w-full h-[70vh] min-h-[500px] max-h-[800px] overflow-hidden select-none ${
-                isDragging ? 'cursor-grabbing' : 'cursor-grab'
-              } ${zoom > 1 ? 'cursor-grab' : 'cursor-pointer'}`}
+                isDragging ? "cursor-grabbing" : "cursor-grab"
+              } ${zoom > 1 ? "cursor-grab" : "cursor-pointer"}`}
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUp}
@@ -443,7 +445,8 @@ export default function Map() {
 
             {/* Instructions */}
             <div className="absolute bottom-4 right-4 bg-white/90 px-3 py-1 rounded-lg shadow-md text-xs text-gray-600">
-              🖱️ Click to add pin • 🔍 Scroll to zoom • ✋ Drag to move • ⌨️ Arrow keys to navigate
+              🖱️ Click to add pin • 🔍 Scroll to zoom • ✋ Drag to move • ⌨️
+              Arrow keys to navigate
             </div>
           </div>
 
@@ -607,7 +610,7 @@ export default function Map() {
           <DialogHeader>
             <DialogTitle>
               {isPinPlacementMode
-                ? `📍 Place Pin for "${pendingPinData?.title || 'Your Adventure'}"`
+                ? `📍 Place Pin for "${pendingPinData?.title || "Your Adventure"}"`
                 : "Add New Adventure Pin"}
             </DialogTitle>
           </DialogHeader>

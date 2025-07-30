@@ -100,10 +100,7 @@ export class LocalStorage {
     localStorage.setItem(this.getKey("wishlist"), JSON.stringify(items));
   }
 
-  static markWishlistItemCompleted(
-    id: string,
-    journalEntryId?: string,
-  ): void {
+  static markWishlistItemCompleted(id: string, journalEntryId?: string): void {
     const items = this.getWishlistItems();
     const item = items.find((i) => i.id === id);
 

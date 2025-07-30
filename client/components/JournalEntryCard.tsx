@@ -134,9 +134,7 @@ export function JournalEntryCard({
               {entry.title}
             </h3>
             <div className="flex items-center space-x-2 ml-2">
-              {moodData && (
-                <span className="text-2xl">{moodData.emoji}</span>
-              )}
+              {moodData && <span className="text-2xl">{moodData.emoji}</span>}
               {isFamilyMember && (onEdit || onDelete) && (
                 <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   {onEdit && (
@@ -155,7 +153,11 @@ export function JournalEntryCard({
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (window.confirm('Are you sure you want to delete this journal entry?')) {
+                        if (
+                          window.confirm(
+                            "Are you sure you want to delete this journal entry?",
+                          )
+                        ) {
                           onDelete(entry.id);
                         }
                       }}
@@ -270,9 +272,15 @@ export function JournalEntryCard({
                         value={visitorName}
                         onChange={(e) => setVisitorName(e.target.value)}
                         className="text-xs"
-                        onKeyPress={(e) => e.key === 'Enter' && handleAddComment()}
+                        onKeyPress={(e) =>
+                          e.key === "Enter" && handleAddComment()
+                        }
                       />
-                      <Button size="sm" onClick={handleAddComment} disabled={!visitorName.trim()}>
+                      <Button
+                        size="sm"
+                        onClick={handleAddComment}
+                        disabled={!visitorName.trim()}
+                      >
                         ✨ Post
                       </Button>
                     </div>
@@ -281,20 +289,25 @@ export function JournalEntryCard({
 
                 <div className="flex gap-2">
                   <Textarea
-                    placeholder={isFamilyMember ? "Add a comment..." : "Share your thoughts about this adventure..."}
+                    placeholder={
+                      isFamilyMember
+                        ? "Add a comment..."
+                        : "Share your thoughts about this adventure..."
+                    }
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                     className="text-xs"
                     rows={2}
                   />
                   <Button size="sm" onClick={handleAddComment}>
-                    {isFamilyMember ? 'Post' : '💭 Comment'}
+                    {isFamilyMember ? "Post" : "💭 Comment"}
                   </Button>
                 </div>
 
                 {!isFamilyMember && (
                   <p className="text-xs text-muted-foreground">
-                    🌟 Visitors can share their thoughts! We'd love to hear from you.
+                    🌟 Visitors can share their thoughts! We'd love to hear from
+                    you.
                   </p>
                 )}
               </div>

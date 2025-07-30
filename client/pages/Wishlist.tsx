@@ -1,17 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { LocalStorage } from '@/lib/storage';
-import { initializeSampleData } from '@/lib/sampleData';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Star, Trash2, Check, User, MapPin as MapPinIcon } from 'lucide-react';
-import { WishlistItem, WISHLIST_CATEGORIES, WISHLIST_PRIORITIES } from '@shared/api';
+import React, { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { LocalStorage } from "@/lib/storage";
+import { initializeSampleData } from "@/lib/sampleData";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Plus,
+  Star,
+  Trash2,
+  Check,
+  User,
+  MapPin as MapPinIcon,
+} from "lucide-react";
+import {
+  WishlistItem,
+  WISHLIST_CATEGORIES,
+  WISHLIST_PRIORITIES,
+} from "@shared/api";
 
 export default function Wishlist() {
   const { isFamilyMember, currentUser } = useAuth();
@@ -19,14 +42,20 @@ export default function Wishlist() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    location: '',
-    priority: 'medium' as 'low' | 'medium' | 'high',
-    category: 'adventure' as 'adventure' | 'culture' | 'food' | 'nature' | 'city' | 'historic',
-    estimatedCost: '',
-    bestTimeToVisit: '',
-    notes: ''
+    title: "",
+    description: "",
+    location: "",
+    priority: "medium" as "low" | "medium" | "high",
+    category: "adventure" as
+      | "adventure"
+      | "culture"
+      | "food"
+      | "nature"
+      | "city"
+      | "historic",
+    estimatedCost: "",
+    bestTimeToVisit: "",
+    notes: "",
   });
 
   useEffect(() => {
@@ -35,7 +64,7 @@ export default function Wishlist() {
       initializeSampleData();
       loadWishlistItems();
     } catch (error) {
-      console.error('Error loading wishlist:', error);
+      console.error("Error loading wishlist:", error);
     }
   }, []);
 
@@ -44,13 +73,17 @@ export default function Wishlist() {
       const items = LocalStorage.getWishlistItems();
       setWishlistItems(items);
     } catch (error) {
-      console.error('Error loading wishlist items:', error);
+      console.error("Error loading wishlist items:", error);
       setWishlistItems([]);
     }
   };
 
   const handleDelete = (id: string) => {
-    if (window.confirm('Are you sure you want to remove this item from your wishlist?')) {
+    if (
+      window.confirm(
+        "Are you sure you want to remove this item from your wishlist?",
+      )
+    ) {
       LocalStorage.deleteWishlistItem(id);
       loadWishlistItems();
     }
@@ -75,9 +108,9 @@ export default function Wishlist() {
       bestTimeToVisit: formData.bestTimeToVisit.trim(),
       notes: formData.notes.trim(),
       isCompleted: false,
-      addedBy: currentUser || 'Family Member',
+      addedBy: currentUser || "Family Member",
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
 
     LocalStorage.saveWishlistItem(item);
@@ -88,14 +121,14 @@ export default function Wishlist() {
 
   const resetForm = () => {
     setFormData({
-      title: '',
-      description: '',
-      location: '',
-      priority: 'medium',
-      category: 'adventure',
-      estimatedCost: '',
-      bestTimeToVisit: '',
-      notes: ''
+      title: "",
+      description: "",
+      location: "",
+      priority: "medium",
+      category: "adventure",
+      estimatedCost: "",
+      bestTimeToVisit: "",
+      notes: "",
     });
   };
 
@@ -109,9 +142,12 @@ export default function Wishlist() {
             Places we dream of visiting across beautiful Scotland
           </p>
         </div>
-        
+
         {isFamilyMember && (
-          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+          <Dialog
+            open={isCreateDialogOpen}
+            onOpenChange={setIsCreateDialogOpen}
+          >
             <DialogTrigger asChild>
               <Button size="lg" className="flex items-center space-x-2">
                 <Plus className="h-5 w-5" />
@@ -154,7 +190,9 @@ export default function Wishlist() {
         <Card>
           <CardContent className="text-center py-12">
             <Star className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No Dream Destinations Yet</h3>
+            <h3 className="text-lg font-semibold mb-2">
+              No Dream Destinations Yet
+            </h3>
             <p className="text-muted-foreground mb-4">
               Start building your Scotland adventure wishlist!
             </p>
@@ -183,18 +221,29 @@ interface WishlistItemCardProps {
   onMarkCompleted?: (id: string) => void;
 }
 
-function WishlistItemCard({ item, onDelete, onMarkCompleted }: WishlistItemCardProps) {
-  const categoryData = WISHLIST_CATEGORIES.find(c => c.value === item.category);
-  const priorityData = WISHLIST_PRIORITIES.find(p => p.value === item.priority);
+function WishlistItemCard({
+  item,
+  onDelete,
+  onMarkCompleted,
+}: WishlistItemCardProps) {
+  const categoryData = WISHLIST_CATEGORIES.find(
+    (c) => c.value === item.category,
+  );
+  const priorityData = WISHLIST_PRIORITIES.find(
+    (p) => p.value === item.priority,
+  );
 
   return (
-    <Card className={`group relative ${item.isCompleted ? 'opacity-75' : ''}`}>
+    <Card className={`group relative ${item.isCompleted ? "opacity-75" : ""}`}>
       <CardContent className="p-4">
         <div className="flex items-start justify-between mb-2">
-          <h3 className={`font-semibold text-lg line-clamp-2 flex-1 ${item.isCompleted ? 'line-through text-muted-foreground' : ''}`}>
-            {item.isCompleted && '✅ '}{item.title}
+          <h3
+            className={`font-semibold text-lg line-clamp-2 flex-1 ${item.isCompleted ? "line-through text-muted-foreground" : ""}`}
+          >
+            {item.isCompleted && "✅ "}
+            {item.title}
           </h3>
-          
+
           {(onDelete || onMarkCompleted) && (
             <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity ml-2">
               {!item.isCompleted && onMarkCompleted && (
@@ -263,7 +312,12 @@ interface WishlistFormProps {
   onCancel: () => void;
 }
 
-function WishlistForm({ formData, setFormData, onSubmit, onCancel }: WishlistFormProps) {
+function WishlistForm({
+  formData,
+  setFormData,
+  onSubmit,
+  onCancel,
+}: WishlistFormProps) {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -272,7 +326,9 @@ function WishlistForm({ formData, setFormData, onSubmit, onCancel }: WishlistFor
           <Input
             id="title"
             value={formData.title}
-            onChange={(e) => setFormData((prev: any) => ({ ...prev, title: e.target.value }))}
+            onChange={(e) =>
+              setFormData((prev: any) => ({ ...prev, title: e.target.value }))
+            }
             placeholder="e.g., Isle of Skye"
             required
           />
@@ -283,7 +339,12 @@ function WishlistForm({ formData, setFormData, onSubmit, onCancel }: WishlistFor
           <Input
             id="location"
             value={formData.location}
-            onChange={(e) => setFormData((prev: any) => ({ ...prev, location: e.target.value }))}
+            onChange={(e) =>
+              setFormData((prev: any) => ({
+                ...prev,
+                location: e.target.value,
+              }))
+            }
             placeholder="e.g., Inner Hebrides, Scotland"
             required
           />
@@ -295,7 +356,12 @@ function WishlistForm({ formData, setFormData, onSubmit, onCancel }: WishlistFor
         <Textarea
           id="description"
           value={formData.description}
-          onChange={(e) => setFormData((prev: any) => ({ ...prev, description: e.target.value }))}
+          onChange={(e) =>
+            setFormData((prev: any) => ({
+              ...prev,
+              description: e.target.value,
+            }))
+          }
           placeholder="What makes this place special? What do you want to do there?"
           rows={3}
         />
@@ -306,13 +372,15 @@ function WishlistForm({ formData, setFormData, onSubmit, onCancel }: WishlistFor
           <Label>Category</Label>
           <Select
             value={formData.category}
-            onValueChange={(value) => setFormData((prev: any) => ({ ...prev, category: value }))}
+            onValueChange={(value) =>
+              setFormData((prev: any) => ({ ...prev, category: value }))
+            }
           >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {WISHLIST_CATEGORIES.map(category => (
+              {WISHLIST_CATEGORIES.map((category) => (
                 <SelectItem key={category.value} value={category.value}>
                   {category.label}
                 </SelectItem>
@@ -325,13 +393,15 @@ function WishlistForm({ formData, setFormData, onSubmit, onCancel }: WishlistFor
           <Label>Priority</Label>
           <Select
             value={formData.priority}
-            onValueChange={(value) => setFormData((prev: any) => ({ ...prev, priority: value }))}
+            onValueChange={(value) =>
+              setFormData((prev: any) => ({ ...prev, priority: value }))
+            }
           >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {WISHLIST_PRIORITIES.map(priority => (
+              {WISHLIST_PRIORITIES.map((priority) => (
                 <SelectItem key={priority.value} value={priority.value}>
                   {priority.emoji} {priority.label}
                 </SelectItem>
@@ -345,7 +415,12 @@ function WishlistForm({ formData, setFormData, onSubmit, onCancel }: WishlistFor
           <Input
             id="estimatedCost"
             value={formData.estimatedCost}
-            onChange={(e) => setFormData((prev: any) => ({ ...prev, estimatedCost: e.target.value }))}
+            onChange={(e) =>
+              setFormData((prev: any) => ({
+                ...prev,
+                estimatedCost: e.target.value,
+              }))
+            }
             placeholder="e.g., £200-300"
           />
         </div>
@@ -357,7 +432,12 @@ function WishlistForm({ formData, setFormData, onSubmit, onCancel }: WishlistFor
           <Input
             id="bestTimeToVisit"
             value={formData.bestTimeToVisit}
-            onChange={(e) => setFormData((prev: any) => ({ ...prev, bestTimeToVisit: e.target.value }))}
+            onChange={(e) =>
+              setFormData((prev: any) => ({
+                ...prev,
+                bestTimeToVisit: e.target.value,
+              }))
+            }
             placeholder="e.g., Spring/Summer"
           />
         </div>
@@ -368,7 +448,9 @@ function WishlistForm({ formData, setFormData, onSubmit, onCancel }: WishlistFor
         <Textarea
           id="notes"
           value={formData.notes}
-          onChange={(e) => setFormData((prev: any) => ({ ...prev, notes: e.target.value }))}
+          onChange={(e) =>
+            setFormData((prev: any) => ({ ...prev, notes: e.target.value }))
+          }
           placeholder="Any special considerations, tips, or reminders..."
           rows={2}
         />
@@ -378,9 +460,7 @@ function WishlistForm({ formData, setFormData, onSubmit, onCancel }: WishlistFor
         <Button variant="outline" onClick={onCancel}>
           Cancel
         </Button>
-        <Button onClick={onSubmit}>
-          Add to Wishlist
-        </Button>
+        <Button onClick={onSubmit}>Add to Wishlist</Button>
       </div>
     </div>
   );

@@ -7,7 +7,11 @@ export function initializeSampleData() {
   const existingPins = LocalStorage.getMapPins();
   const existingWishlist = LocalStorage.getWishlistItems();
 
-  if (existingEntries.length > 0 || existingPins.length > 0 || existingWishlist.length > 0) {
+  if (
+    existingEntries.length > 0 ||
+    existingPins.length > 0 ||
+    existingWishlist.length > 0
+  ) {
     return; // Don't overwrite existing data
   }
 
@@ -43,14 +47,16 @@ export function initializeSampleData() {
         },
         {
           id: "2",
-          content: "What a beautiful place! We visited last summer and loved it too. The Highland cattle are so cute! 🐄",
+          content:
+            "What a beautiful place! We visited last summer and loved it too. The Highland cattle are so cute! 🐄",
           author: "Sarah from Edinburgh",
           createdAt: "2024-08-17T14:30:00Z",
           likes: 0,
         },
         {
           id: "3",
-          content: "Thanks for sharing this! Adding Loch Lomond to our family bucket list now 😍",
+          content:
+            "Thanks for sharing this! Adding Loch Lomond to our family bucket list now 😍",
           author: "Mike & Family",
           createdAt: "2024-08-18T09:15:00Z",
           likes: 0,
@@ -192,81 +198,89 @@ export function initializeSampleData() {
   // Sample wishlist items
   const sampleWishlistItems: WishlistItem[] = [
     {
-      id: '1',
-      title: 'Isle of Skye Fairy Pools',
-      description: 'Crystal clear pools and waterfalls in the heart of Skye - perfect for a magical family adventure!',
-      location: 'Isle of Skye, Inner Hebrides',
-      priority: 'high',
-      category: 'nature',
-      estimatedCost: '£150-200',
-      bestTimeToVisit: 'Late Spring/Summer',
-      notes: 'Bring waterproof boots and camera. Check weather conditions before going.',
+      id: "1",
+      title: "Isle of Skye Fairy Pools",
+      description:
+        "Crystal clear pools and waterfalls in the heart of Skye - perfect for a magical family adventure!",
+      location: "Isle of Skye, Inner Hebrides",
+      priority: "high",
+      category: "nature",
+      estimatedCost: "£150-200",
+      bestTimeToVisit: "Late Spring/Summer",
+      notes:
+        "Bring waterproof boots and camera. Check weather conditions before going.",
       isCompleted: false,
-      addedBy: 'Charlotte',
-      createdAt: '2024-01-15T10:00:00Z',
-      updatedAt: '2024-01-15T10:00:00Z'
+      addedBy: "Charlotte",
+      createdAt: "2024-01-15T10:00:00Z",
+      updatedAt: "2024-01-15T10:00:00Z",
     },
     {
-      id: '2',
-      title: 'Edinburgh Castle at Christmas',
-      description: 'Experience the magic of Edinburgh Castle during the festive season with Christmas markets.',
-      location: 'Edinburgh, Scotland',
-      priority: 'medium',
-      category: 'historic',
-      estimatedCost: '£80-120',
-      bestTimeToVisit: 'December',
-      notes: 'Book tickets in advance. Christmas market gets very busy.',
+      id: "2",
+      title: "Edinburgh Castle at Christmas",
+      description:
+        "Experience the magic of Edinburgh Castle during the festive season with Christmas markets.",
+      location: "Edinburgh, Scotland",
+      priority: "medium",
+      category: "historic",
+      estimatedCost: "£80-120",
+      bestTimeToVisit: "December",
+      notes: "Book tickets in advance. Christmas market gets very busy.",
       isCompleted: false,
-      addedBy: 'Max',
-      createdAt: '2024-02-10T14:30:00Z',
-      updatedAt: '2024-02-10T14:30:00Z'
+      addedBy: "Max",
+      createdAt: "2024-02-10T14:30:00Z",
+      updatedAt: "2024-02-10T14:30:00Z",
     },
     {
-      id: '3',
-      title: 'Whisky Tasting in Speyside',
-      description: 'Adults-only whisky tour while kids enjoy local activities - family day out with something for everyone.',
-      location: 'Speyside, Scottish Highlands',
-      priority: 'low',
-      category: 'food',
-      estimatedCost: '£200-300',
-      bestTimeToVisit: 'Autumn',
-      notes: 'Need to find child-friendly activities nearby. Designated driver required.',
+      id: "3",
+      title: "Whisky Tasting in Speyside",
+      description:
+        "Adults-only whisky tour while kids enjoy local activities - family day out with something for everyone.",
+      location: "Speyside, Scottish Highlands",
+      priority: "low",
+      category: "food",
+      estimatedCost: "£200-300",
+      bestTimeToVisit: "Autumn",
+      notes:
+        "Need to find child-friendly activities nearby. Designated driver required.",
       isCompleted: false,
-      addedBy: 'Max',
-      createdAt: '2024-03-05T16:45:00Z',
-      updatedAt: '2024-03-05T16:45:00Z'
+      addedBy: "Max",
+      createdAt: "2024-03-05T16:45:00Z",
+      updatedAt: "2024-03-05T16:45:00Z",
     },
     {
-      id: '4',
-      title: 'Orkney Islands Adventure',
-      description: 'Explore ancient stone circles, dramatic cliffs, and unique wildlife on these magical islands.',
-      location: 'Orkney Islands, Scotland',
-      priority: 'high',
-      category: 'adventure',
-      estimatedCost: '£400-500',
-      bestTimeToVisit: 'Summer',
-      notes: 'Multi-day trip required. Ferry bookings essential. Pack warm clothes.',
+      id: "4",
+      title: "Orkney Islands Adventure",
+      description:
+        "Explore ancient stone circles, dramatic cliffs, and unique wildlife on these magical islands.",
+      location: "Orkney Islands, Scotland",
+      priority: "high",
+      category: "adventure",
+      estimatedCost: "£400-500",
+      bestTimeToVisit: "Summer",
+      notes:
+        "Multi-day trip required. Ferry bookings essential. Pack warm clothes.",
       isCompleted: false,
-      addedBy: 'Charlotte',
-      createdAt: '2024-03-20T11:15:00Z',
-      updatedAt: '2024-03-20T11:15:00Z'
+      addedBy: "Charlotte",
+      createdAt: "2024-03-20T11:15:00Z",
+      updatedAt: "2024-03-20T11:15:00Z",
     },
     {
-      id: '5',
-      title: 'Glasgow Science Centre',
-      description: 'Interactive science museum perfect for curious kids and adults alike!',
-      location: 'Glasgow, Scotland',
-      priority: 'medium',
-      category: 'culture',
-      estimatedCost: '£40-60',
-      bestTimeToVisit: 'Any time',
-      notes: 'Great for rainy days. Check for special exhibitions.',
+      id: "5",
+      title: "Glasgow Science Centre",
+      description:
+        "Interactive science museum perfect for curious kids and adults alike!",
+      location: "Glasgow, Scotland",
+      priority: "medium",
+      category: "culture",
+      estimatedCost: "£40-60",
+      bestTimeToVisit: "Any time",
+      notes: "Great for rainy days. Check for special exhibitions.",
       isCompleted: true,
-      completedDate: '2024-01-28T00:00:00Z',
-      addedBy: 'Rose',
-      createdAt: '2024-01-10T09:00:00Z',
-      updatedAt: '2024-01-28T15:30:00Z'
-    }
+      completedDate: "2024-01-28T00:00:00Z",
+      addedBy: "Rose",
+      createdAt: "2024-01-10T09:00:00Z",
+      updatedAt: "2024-01-28T15:30:00Z",
+    },
   ];
 
   // Save sample data

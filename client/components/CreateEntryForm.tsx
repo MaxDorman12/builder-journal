@@ -583,10 +583,13 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
                       location: formData.location.trim(),
                       moodRating: formData.moodRating,
                       visitDate: formData.date,
-                      entryId: createdEntryId
+                      entryId: createdEntryId,
                     };
-                    localStorage.setItem('pendingMapPin', JSON.stringify(entryData));
-                    navigate('/map?mode=place-pin');
+                    localStorage.setItem(
+                      "pendingMapPin",
+                      JSON.stringify(entryData),
+                    );
+                    navigate("/map?mode=place-pin");
                   }}
                   className="bg-gradient-to-r from-purple-400 to-pink-400 hover:from-purple-500 hover:to-pink-500 text-white font-semibold py-2 px-4 rounded-full transform hover:scale-105 transition-all duration-200 shadow-lg"
                 >

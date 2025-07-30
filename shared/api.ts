@@ -69,8 +69,8 @@ export interface WishlistItem {
   title: string;
   description: string;
   location: string;
-  priority: 'low' | 'medium' | 'high';
-  category: 'adventure' | 'culture' | 'food' | 'nature' | 'city' | 'historic';
+  priority: "low" | "medium" | "high";
+  category: "adventure" | "culture" | "food" | "nature" | "city" | "historic";
   estimatedCost: string;
   bestTimeToVisit: string;
   notes: string;
@@ -145,7 +145,22 @@ export const WISHLIST_CATEGORIES = [
 ] as const;
 
 export const WISHLIST_PRIORITIES = [
-  { value: "low", label: "Low", emoji: "🟢", color: "bg-green-100 text-green-700" },
-  { value: "medium", label: "Medium", emoji: "🟡", color: "bg-yellow-100 text-yellow-700" },
-  { value: "high", label: "High", emoji: "🔴", color: "bg-red-100 text-red-700" },
+  {
+    value: "low",
+    label: "Low",
+    emoji: "🟢",
+    color: "bg-green-100 text-green-700",
+  },
+  {
+    value: "medium",
+    label: "Medium",
+    emoji: "🟡",
+    color: "bg-yellow-100 text-yellow-700",
+  },
+  {
+    value: "high",
+    label: "High",
+    emoji: "🔴",
+    color: "bg-red-100 text-red-700",
+  },
 ] as const;
