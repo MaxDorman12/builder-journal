@@ -40,6 +40,10 @@ export default function Gallery() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortBy, setSortBy] = useState<'date' | 'entry' | 'mood'>('date');
 
+  // Touch handling for mobile swipe
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
+
   useEffect(() => {
     try {
       // Initialize sample data if no data exists
