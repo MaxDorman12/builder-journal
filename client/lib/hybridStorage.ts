@@ -253,6 +253,12 @@ export class HybridStorage {
         listener();
       }
     });
+
+    // Force refresh on mobile browsers that might not handle real-time updates well
+    if (navigator.userAgent.includes('Mobile') || navigator.userAgent.includes('Android') || navigator.userAgent.includes('iPhone')) {
+      console.log("📱 Mobile detected - triggering force refresh");
+      setTimeout(() => window.location.reload(), 1000);
+    }
   }
 
   static isCloudEnabled(): boolean {
