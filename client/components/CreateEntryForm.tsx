@@ -193,13 +193,21 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
         canvas.height = height;
         ctx?.drawImage(img, 0, 0, width, height);
 
-        // Convert to base64 with compression
-        const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.8);
+        // Upload compressed image to Firebase Storage
+        try {
+          const entryId = `temp_${Date.now()}`;
+          const downloadURL = await MediaStorage.uploadCompressedImage(canvas, entryId);
 
-        setFormData((prev) => ({
-          ...prev,
-          images: [...prev.images, compressedDataUrl],
-        }));
+          setFormData((prev) => ({
+            ...prev,
+            images: [...prev.images, downloadURL],
+          }));
+
+          console.log(`✅ Image uploaded to Firebase Storage: ${file.name}`);
+        } catch (error) {
+          console.error("Failed to upload to Firebase Storage:", error);
+          alert(`Failed to upload image "${file.name}". Please try again.`);
+        }
 
         console.log(`📸 Image "${file.name}" compressed:`, {
           originalSize: file.size,
