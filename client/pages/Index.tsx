@@ -218,13 +218,21 @@ export default function Index() {
         tempCharlieData.description.trim() || charlieData.description || "",
     };
 
-    // Always save - even if only description changed
-    await HybridStorage.setCharlieData(dataToSave);
-    console.log("🐕 Charlie data saved successfully:", {
-      hasImage: !!dataToSave.image,
-      imageLength: dataToSave.image?.length || 0,
-      descriptionLength: dataToSave.description?.length || 0,
-    });
+    // FORCE SAVE TO FIREBASE FIRST - no more local storage issues!
+    try {
+      console.log("🔥 SAVING DIRECTLY TO FIREBASE...");
+      await CloudStorage.setCharlieData(dataToSave);
+      console.log("✅ FIREBASE SAVE SUCCESS");
+
+      // Update local storage as backup
+      LocalStorage.setCharlieData(dataToSave);
+      console.log("✅ Local backup updated");
+
+    } catch (error) {
+      console.error("❌ FIREBASE SAVE FAILED:", error);
+      alert("❌ Save failed! Check internet connection.");
+      return;
+    }
 
     setCharlieData(dataToSave);
     setIsCharlieDialogOpen(false);
