@@ -2,26 +2,70 @@ import { JournalEntry, MapPin, Comment, WishlistItem } from "@shared/api";
 
 export class LocalStorage {
   private static localStorageDisabled = false;
+  private static initChecked = false;
 
   private static getKey(key: string): string {
     return `familyjournal_${key}`;
   }
 
-  // Check if localStorage is completely unusable
-  private static isLocalStorageUsable(): boolean {
-    if (this.localStorageDisabled) return false;
+  // Initialize and check localStorage availability
+  private static initialize(): void {
+    if (this.initChecked) return;
+    this.initChecked = true;
 
     try {
+      // Check sessionStorage flag from previous failures
+      if (sessionStorage.getItem('localStorage_disabled') === 'true') {
+        this.localStorageDisabled = true;
+        console.warn("📵 localStorage previously disabled, keeping disabled");
+        return;
+      }
+
       const testKey = "__test__";
       localStorage.setItem(testKey, "test");
       localStorage.removeItem(testKey);
+    } catch (error) {
+      console.warn("📵 localStorage completely full, disabling permanently");
+      this.localStorageDisabled = true;
+      sessionStorage.setItem('localStorage_disabled', 'true');
+    }
+  }
+
+  // Check if localStorage is completely unusable
+  private static isLocalStorageUsable(): boolean {
+    this.initialize();
+    return !this.localStorageDisabled;
+  }
+
+  // Override localStorage methods when disabled
+  private static safeLocalStorageSet(key: string, value: string): boolean {
+    if (!this.isLocalStorageUsable()) {
+      console.warn(`📵 Skipping localStorage.setItem(${key}) - storage disabled`);
+      return false;
+    }
+
+    try {
+      localStorage.setItem(key, value);
       return true;
     } catch (error) {
-      console.warn(
-        "📵 localStorage completely full, disabling for this session",
-      );
+      console.error(`❌ localStorage.setItem failed for ${key}`);
       this.localStorageDisabled = true;
+      sessionStorage.setItem('localStorage_disabled', 'true');
       return false;
+    }
+  }
+
+  private static safeLocalStorageGet(key: string): string | null {
+    if (!this.isLocalStorageUsable()) {
+      console.warn(`📵 Skipping localStorage.getItem(${key}) - storage disabled`);
+      return null;
+    }
+
+    try {
+      return localStorage.getItem(key);
+    } catch (error) {
+      console.warn(`⚠️ localStorage.getItem failed for ${key}`);
+      return null;
     }
   }
 
