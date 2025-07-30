@@ -1,4 +1,4 @@
-import { JournalEntry, MapPin } from "@shared/api";
+import { JournalEntry, MapPin, WishlistItem } from "@shared/api";
 import { LocalStorage } from "./storage";
 
 export function initializeSampleData() {
