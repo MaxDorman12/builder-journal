@@ -111,10 +111,28 @@ export default function Wishlist() {
         </div>
         
         {isFamilyMember && (
-          <Button size="lg" className="flex items-center space-x-2">
-            <Plus className="h-5 w-5" />
-            <span>Add Dream Destination</span>
-          </Button>
+          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+            <DialogTrigger asChild>
+              <Button size="lg" className="flex items-center space-x-2">
+                <Plus className="h-5 w-5" />
+                <span>✨ Add Dream Destination</span>
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Add New Dream Destination</DialogTitle>
+              </DialogHeader>
+              <WishlistForm
+                formData={formData}
+                setFormData={setFormData}
+                onSubmit={handleCreateItem}
+                onCancel={() => {
+                  setIsCreateDialogOpen(false);
+                  resetForm();
+                }}
+              />
+            </DialogContent>
+          </Dialog>
         )}
       </div>
 
