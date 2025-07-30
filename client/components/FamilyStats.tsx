@@ -53,7 +53,7 @@ interface StatsData {
   adventuresByMood: { [mood: number]: number };
 }
 
-export function FamilyStats({ showAll = false, onViewAll }: FamilyStatsProps) {
+export function FamilyStats({ showAll = false, onViewAll, onClose }: FamilyStatsProps) {
   const [stats, setStats] = useState<StatsData | null>(null);
 
   useEffect(() => {
@@ -254,7 +254,7 @@ export function FamilyStats({ showAll = false, onViewAll }: FamilyStatsProps) {
     {
       icon: MessageCircle,
       value: stats.totalComments,
-      label: '💬 Comments Shared',
+      label: '��� Comments Shared',
       color: 'from-indigo-200 to-blue-300',
       textColor: 'text-indigo-700'
     },
