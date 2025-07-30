@@ -342,6 +342,38 @@ export default function Index() {
           </Card>
         </section>
       )}
+
+      {/* YouTube Edit Dialog */}
+      <Dialog open={isYoutubeDialogOpen} onOpenChange={setIsYoutubeDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Update YouTube Video</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="youtube-url">YouTube URL</Label>
+              <Input
+                id="youtube-url"
+                value={tempYoutubeUrl}
+                onChange={(e) => setTempYoutubeUrl(e.target.value)}
+                placeholder="https://www.youtube.com/watch?v=..."
+                className="w-full"
+              />
+            </div>
+            <div className="text-sm text-muted-foreground">
+              <p>📝 Paste a YouTube video URL to update your latest adventure video.</p>
+            </div>
+            <div className="flex justify-end space-x-2">
+              <Button variant="outline" onClick={handleYoutubeCancel}>
+                Cancel
+              </Button>
+              <Button onClick={handleYoutubeSave} disabled={!tempYoutubeUrl.trim()}>
+                Update Video
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
