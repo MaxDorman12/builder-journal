@@ -41,6 +41,9 @@ export default function Index() {
   const [isYoutubeDialogOpen, setIsYoutubeDialogOpen] = useState(false);
   const [tempYoutubeUrl, setTempYoutubeUrl] = useState<string>("");
   const [showAllStats, setShowAllStats] = useState(false);
+  const [charlieData, setCharlieData] = useState({ image: "", description: "" });
+  const [isCharlieDialogOpen, setIsCharlieDialogOpen] = useState(false);
+  const [tempCharlieData, setTempCharlieData] = useState({ image: "", description: "" });
 
   useEffect(() => {
     // Initialize sample data if no data exists
