@@ -3,12 +3,12 @@ import { LocalStorage } from '@/lib/storage';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { 
-  MapPin, 
-  BookOpen, 
-  Users, 
-  Heart, 
-  Camera, 
+import {
+  MapPin,
+  BookOpen,
+  Users,
+  Heart,
+  Camera,
   Calendar,
   TrendingUp,
   Clock,
@@ -20,7 +20,9 @@ import {
   MessageCircle,
   Navigation,
   ChevronRight,
-  BarChart3
+  BarChart3,
+  X,
+  ChevronUp
 } from 'lucide-react';
 import { JournalEntry, MapPin as MapPinType, AREA_TYPES, MOOD_RATINGS } from '@shared/api';
 
@@ -407,7 +409,7 @@ export function FamilyStats({ showAll = false, onViewAll }: FamilyStatsProps) {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                 <div className="text-center">
                   <p className="text-2xl font-bold text-green-600">{stats.freeActivitiesCount}</p>
-                  <p className="text-muted-foreground">��� Free Activities</p>
+                  <p className="text-muted-foreground">🆓 Free Activities</p>
                 </div>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-blue-600">{stats.paidActivitiesCount}</p>
