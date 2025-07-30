@@ -64,7 +64,29 @@ export default function Map() {
   useEffect(() => {
     setPins(LocalStorage.getMapPins());
     setEntries(LocalStorage.getJournalEntries());
-  }, []);
+
+    // Check if we're in pin placement mode
+    const mode = searchParams.get('mode');
+    if (mode === 'place-pin') {
+      setIsPinPlacementMode(true);
+
+      // Load pending pin data from localStorage
+      const pendingData = localStorage.getItem('pendingMapPin');
+      if (pendingData) {
+        const parsedData = JSON.parse(pendingData);
+        setPendingPinData(parsedData);
+
+        // Pre-fill the new pin form with the journal entry data
+        setNewPin(prev => ({
+          ...prev,
+          title: parsedData.title,
+          description: parsedData.description,
+          moodRating: parsedData.moodRating,
+          visitDate: parsedData.visitDate
+        }));
+      }
+    }
+  }, [searchParams]);
 
   // Add keyboard navigation
   useEffect(() => {
