@@ -186,24 +186,29 @@ export default function Index() {
   };
 
   const handleCharlieSave = async () => {
-    if (tempCharlieData.description.trim() || tempCharlieData.image.trim()) {
-      const dataToSave = {
-        image: tempCharlieData.image.trim(),
-        description:
-          tempCharlieData.description.trim() || charlieData.description,
-      };
+    console.log("🐕 Charlie save clicked:", {
+      hasNewDescription: !!tempCharlieData.description.trim(),
+      hasNewImage: !!tempCharlieData.image.trim(),
+      currentDescription: charlieData.description?.substring(0, 50) + "..."
+    });
 
-      // Always use HybridStorage - it handles both local and cloud automatically
-      await HybridStorage.setCharlieData(dataToSave);
-      console.log("🐕 Charlie data saved:", {
-        hasImage: !!dataToSave.image,
-        imageLength: dataToSave.image?.length || 0,
-      });
+    // Allow saving if there's ANY content (text or image)
+    const dataToSave = {
+      image: tempCharlieData.image.trim() || charlieData.image || "",
+      description: tempCharlieData.description.trim() || charlieData.description || "",
+    };
 
-      setCharlieData(dataToSave);
-      setIsCharlieDialogOpen(false);
-      setTempCharlieData({ image: "", description: "" });
-    }
+    // Always save - even if only description changed
+    await HybridStorage.setCharlieData(dataToSave);
+    console.log("🐕 Charlie data saved successfully:", {
+      hasImage: !!dataToSave.image,
+      imageLength: dataToSave.image?.length || 0,
+      descriptionLength: dataToSave.description?.length || 0
+    });
+
+    setCharlieData(dataToSave);
+    setIsCharlieDialogOpen(false);
+    setTempCharlieData({ image: "", description: "" });
   };
 
   const handleCharlieCancel = () => {
