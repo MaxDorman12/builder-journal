@@ -488,7 +488,10 @@ export default function Index() {
                   size="sm"
                   onClick={async () => {
                     try {
-                      console.log("🔄 FORCE SYNC START - Device:", navigator.userAgent.substring(0, 50));
+                      console.log(
+                        "🔄 FORCE SYNC START - Device:",
+                        navigator.userAgent.substring(0, 50),
+                      );
                       console.log("🔄 Clearing cache...");
 
                       // Clear all local storage
@@ -499,22 +502,32 @@ export default function Index() {
                       // Force fresh fetch from Firebase with timeout
                       const freshData = await Promise.race([
                         CloudStorage.getCharlieData(),
-                        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 10000))
+                        new Promise((_, reject) =>
+                          setTimeout(() => reject(new Error("Timeout")), 10000),
+                        ),
                       ]);
 
                       console.log("✅ Firebase data received:", {
                         hasImage: !!freshData.image,
-                        imageLength: freshData.image?.length || 0
+                        imageLength: freshData.image?.length || 0,
                       });
 
                       // Update UI
                       setCharlieData(freshData);
 
-                      alert("✅ FORCE SYNC SUCCESS!\nImage: " + (freshData.image ? "YES" : "NO") + "\nLength: " + (freshData.image?.length || 0));
-
+                      alert(
+                        "✅ FORCE SYNC SUCCESS!\nImage: " +
+                          (freshData.image ? "YES" : "NO") +
+                          "\nLength: " +
+                          (freshData.image?.length || 0),
+                      );
                     } catch (error) {
                       console.error("❌ FORCE SYNC FAILED:", error);
-                      alert("❌ FORCE SYNC FAILED: " + error.message + "\nCheck console for details.");
+                      alert(
+                        "❌ FORCE SYNC FAILED: " +
+                          error.message +
+                          "\nCheck console for details.",
+                      );
                     }
                   }}
                   className="h-8 w-auto px-2 text-xs bg-red-100"
