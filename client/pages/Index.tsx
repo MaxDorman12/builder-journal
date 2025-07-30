@@ -103,15 +103,13 @@ export default function Index() {
   };
 
   const handleCharlieSave = () => {
-    if (tempCharlieData.description.trim()) {
-      LocalStorage.setCharlieData({
+    if (tempCharlieData.description.trim() || tempCharlieData.image.trim()) {
+      const dataToSave = {
         image: tempCharlieData.image.trim(),
-        description: tempCharlieData.description.trim(),
-      });
-      setCharlieData({
-        image: tempCharlieData.image.trim(),
-        description: tempCharlieData.description.trim(),
-      });
+        description: tempCharlieData.description.trim() || charlieData.description,
+      };
+      LocalStorage.setCharlieData(dataToSave);
+      setCharlieData(dataToSave);
       setIsCharlieDialogOpen(false);
       setTempCharlieData({ image: "", description: "" });
     }
