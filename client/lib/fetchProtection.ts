@@ -59,5 +59,8 @@ export class FetchProtection {
   }
 }
 
-// Auto-enable protection on import
-FetchProtection.enableProtection()
+// Auto-enable protection on import - DISABLED due to conflicts
+// FetchProtection.enableProtection()
+
+// Instead, just try to disable problematic analytics
+FetchProtection.disableAnalytics()
