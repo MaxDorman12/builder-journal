@@ -145,7 +145,7 @@ export default function Map() {
     setIsCreatePinOpen(true);
   };
 
-  const handleCreatePin = () => {
+  const handleCreatePin = async () => {
     if (!newPin.title.trim()) return;
 
     const pin: MapPin = {

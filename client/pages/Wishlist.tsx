@@ -102,7 +102,7 @@ export default function Wishlist() {
     loadWishlistItems();
   };
 
-  const handleCreateItem = () => {
+  const handleCreateItem = async () => {
     if (!formData.title.trim() || !formData.location.trim()) return;
 
     const item: WishlistItem = {
