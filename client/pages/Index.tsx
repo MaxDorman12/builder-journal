@@ -129,9 +129,9 @@ export default function Index() {
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      // Check file size (limit to 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert("Image size must be less than 5MB");
+      // Check file size (limit to 2MB for better performance)
+      if (file.size > 2 * 1024 * 1024) {
+        alert("Image size must be less than 2MB. Please choose a smaller image or compress it first.");
         return;
       }
 
@@ -141,13 +141,44 @@ export default function Index() {
         return;
       }
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target?.result as string;
+      // Create canvas for image compression
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+
+      img.onload = () => {
+        // Calculate new dimensions (max 800px width/height)
+        const maxSize = 800;
+        let { width, height } = img;
+
+        if (width > maxSize || height > maxSize) {
+          if (width > height) {
+            height = (height * maxSize) / width;
+            width = maxSize;
+          } else {
+            width = (width * maxSize) / height;
+            height = maxSize;
+          }
+        }
+
+        // Set canvas size and draw compressed image
+        canvas.width = width;
+        canvas.height = height;
+        ctx?.drawImage(img, 0, 0, width, height);
+
+        // Convert to base64 with compression
+        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+
         setTempCharlieData({
           ...tempCharlieData,
-          image: result,
+          image: compressedDataUrl,
         });
+      };
+
+      // Load the file
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        img.src = e.target?.result as string;
       };
       reader.readAsDataURL(file);
     }
