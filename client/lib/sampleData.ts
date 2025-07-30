@@ -32,7 +32,7 @@ export function initializeSampleData() {
       hasFreeParkingAvailable: true,
       parkingCost: "",
       author: "Charlotte",
-      likes: 12,
+      likes: 18,
       comments: [
         {
           id: "1",
