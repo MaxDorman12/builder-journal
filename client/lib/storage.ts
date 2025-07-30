@@ -235,7 +235,12 @@ export class LocalStorage {
   }
 
   static setCharlieData(data: { image: string; description: string }): void {
-    localStorage.setItem(this.getKey("charlie_data"), JSON.stringify(data));
+    try {
+      localStorage.setItem(this.getKey("charlie_data"), JSON.stringify(data));
+    } catch (error) {
+      console.error('❌ localStorage quota exceeded when saving Charlie data');
+      this.handleQuotaExceeded('charlie_data', data);
+    }
   }
 
   // OneDrive-compatible sync methods
