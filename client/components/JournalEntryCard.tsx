@@ -254,20 +254,46 @@ export function JournalEntryCard({
                 ))}
               </div>
 
-              {isFamilyMember && (
-                <div className="flex gap-2 mt-2">
+              <div className="mt-2 space-y-2">
+                {showNameInput && !isFamilyMember && (
+                  <div className="p-3 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+                    <p className="text-xs font-medium text-blue-800 mb-2">
+                      👋 What's your name? (So we know who's commenting!)
+                    </p>
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Your name..."
+                        value={visitorName}
+                        onChange={(e) => setVisitorName(e.target.value)}
+                        className="text-xs"
+                        onKeyPress={(e) => e.key === 'Enter' && handleAddComment()}
+                      />
+                      <Button size="sm" onClick={handleAddComment} disabled={!visitorName.trim()}>
+                        ✨ Post
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex gap-2">
                   <Textarea
-                    placeholder="Add a comment..."
+                    placeholder={isFamilyMember ? "Add a comment..." : "Share your thoughts about this adventure..."}
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                     className="text-xs"
                     rows={2}
                   />
                   <Button size="sm" onClick={handleAddComment}>
-                    Post
+                    {isFamilyMember ? 'Post' : '💭 Comment'}
                   </Button>
                 </div>
-              )}
+
+                {!isFamilyMember && (
+                  <p className="text-xs text-muted-foreground">
+                    🌟 Visitors can share their thoughts! We'd love to hear from you.
+                  </p>
+                )}
+              </div>
             </div>
           )}
         </CardContent>
