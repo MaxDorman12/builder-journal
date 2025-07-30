@@ -106,7 +106,8 @@ export default function Index() {
     if (tempCharlieData.description.trim() || tempCharlieData.image.trim()) {
       const dataToSave = {
         image: tempCharlieData.image.trim(),
-        description: tempCharlieData.description.trim() || charlieData.description,
+        description:
+          tempCharlieData.description.trim() || charlieData.description,
       };
       LocalStorage.setCharlieData(dataToSave);
       setCharlieData(dataToSave);
@@ -612,7 +613,10 @@ export default function Index() {
               </Button>
               <Button
                 onClick={handleCharlieSave}
-                disabled={!tempCharlieData.description.trim() && !tempCharlieData.image.trim()}
+                disabled={
+                  !tempCharlieData.description.trim() &&
+                  !tempCharlieData.image.trim()
+                }
               >
                 Save Changes
               </Button>
