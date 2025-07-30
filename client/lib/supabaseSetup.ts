@@ -45,9 +45,8 @@ export class SupabaseSetup {
   static async createBucketManually(): Promise<void> {
     try {
       const { error } = await supabase.storage.createBucket(this.BUCKET_NAME, {
-        public: true,
-        allowedMimeTypes: ['image/*', 'video/*'],
-        fileSizeLimit: 100 * 1024 * 1024 // 100MB
+        public: true
+        // Remove file size and MIME type limits to avoid creation errors
       })
 
       if (error) {
