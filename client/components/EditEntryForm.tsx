@@ -91,7 +91,15 @@ export function EditEntryForm({ entry, onEntryUpdated }: EditEntryFormProps) {
         updatedAt: new Date().toISOString(),
       };
 
-      await HybridStorage.saveJournalEntry(updatedEntry);
+      // FORCE SAVE TO FIREBASE FIRST
+      try {
+        await CloudStorage.saveJournalEntry(updatedEntry);
+        LocalStorage.saveJournalEntry(updatedEntry); // Backup to local
+        console.log("✅ Entry update saved to Firebase");
+      } catch (error) {
+        console.error("❌ Firebase save failed:", error);
+        LocalStorage.saveJournalEntry(updatedEntry); // Fallback to local only
+      }
       onEntryUpdated();
     } catch (err) {
       setError("Failed to update journal entry. Please try again.");
