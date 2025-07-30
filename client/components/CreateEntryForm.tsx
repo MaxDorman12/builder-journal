@@ -144,15 +144,58 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
+
     files.forEach((file) => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          setFormData((prev) => ({
-            ...prev,
-            images: [...prev.images, event.target!.result as string],
-          }));
+      // Check file size (limit to 5MB per image)
+      if (file.size > 5 * 1024 * 1024) {
+        alert(`Image "${file.name}" is too large. Please choose images under 5MB.`);
+        return;
+      }
+
+      // Compress image for better performance
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const img = new Image();
+
+      img.onload = () => {
+        // Calculate new dimensions (max 1200px)
+        const maxSize = 1200;
+        let { width, height } = img;
+
+        if (width > maxSize || height > maxSize) {
+          if (width > height) {
+            height = (height * maxSize) / width;
+            width = maxSize;
+          } else {
+            width = (width * maxSize) / height;
+            height = maxSize;
+          }
         }
+
+        // Draw compressed image
+        canvas.width = width;
+        canvas.height = height;
+        ctx?.drawImage(img, 0, 0, width, height);
+
+        // Convert to base64 with compression
+        const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.8);
+
+        setFormData((prev) => ({
+          ...prev,
+          images: [...prev.images, compressedDataUrl],
+        }));
+
+        console.log(`📸 Image "${file.name}" compressed:`, {
+          originalSize: file.size,
+          newSize: compressedDataUrl.length,
+          dimensions: `${width}x${height}`
+        });
+      };
+
+      // Load the file
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        img.src = e.target?.result as string;
       };
       reader.readAsDataURL(file);
     });
