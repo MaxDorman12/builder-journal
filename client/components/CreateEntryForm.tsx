@@ -182,7 +182,7 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
   const moodData = MOOD_RATINGS.find((r) => r.value === formData.moodRating);
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
       {error && (
         <Alert variant="destructive">
           <AlertDescription>{error}</AlertDescription>
