@@ -41,9 +41,15 @@ export default function Index() {
   const [isYoutubeDialogOpen, setIsYoutubeDialogOpen] = useState(false);
   const [tempYoutubeUrl, setTempYoutubeUrl] = useState<string>("");
   const [showAllStats, setShowAllStats] = useState(false);
-  const [charlieData, setCharlieData] = useState({ image: "", description: "" });
+  const [charlieData, setCharlieData] = useState({
+    image: "",
+    description: "",
+  });
   const [isCharlieDialogOpen, setIsCharlieDialogOpen] = useState(false);
-  const [tempCharlieData, setTempCharlieData] = useState({ image: "", description: "" });
+  const [tempCharlieData, setTempCharlieData] = useState({
+    image: "",
+    description: "",
+  });
 
   useEffect(() => {
     // Initialize sample data if no data exists
@@ -100,11 +106,11 @@ export default function Index() {
     if (tempCharlieData.description.trim()) {
       LocalStorage.setCharlieData({
         image: tempCharlieData.image.trim(),
-        description: tempCharlieData.description.trim()
+        description: tempCharlieData.description.trim(),
       });
       setCharlieData({
         image: tempCharlieData.image.trim(),
-        description: tempCharlieData.description.trim()
+        description: tempCharlieData.description.trim(),
       });
       setIsCharlieDialogOpen(false);
       setTempCharlieData({ image: "", description: "" });
@@ -273,14 +279,17 @@ export default function Index() {
                 alt="Charlie the dog"
                 className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
                 onError={(e) => {
-                  e.target.style.display = 'none';
-                  e.target.parentElement.innerHTML = '<div class="text-8xl">🐕</div><p class="text-lg font-medium text-amber-800 mt-4">Charlie</p>';
+                  e.target.style.display = "none";
+                  e.target.parentElement.innerHTML =
+                    '<div class="text-8xl">🐕</div><p class="text-lg font-medium text-amber-800 mt-4">Charlie</p>';
                 }}
               />
             ) : (
               <>
                 <div className="text-8xl">🐕</div>
-                <p className="text-lg font-medium text-amber-800 mt-4 absolute bottom-4">Charlie</p>
+                <p className="text-lg font-medium text-amber-800 mt-4 absolute bottom-4">
+                  Charlie
+                </p>
               </>
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-amber-900/20 to-transparent"></div>
@@ -304,7 +313,7 @@ export default function Index() {
             )}
           </h2>
           <div className="prose prose-lg max-w-none text-muted-foreground">
-            {charlieData.description.split('\n').map((paragraph, index) => (
+            {charlieData.description.split("\n").map((paragraph, index) => (
               <p key={index}>{paragraph}</p>
             ))}
           </div>
@@ -321,9 +330,7 @@ export default function Index() {
               </span>
             </div>
             <div className="bg-gradient-to-r from-blue-200 to-cyan-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
-              <span className="text-blue-800 font-medium">
-                📸 Photo Star
-              </span>
+              <span className="text-blue-800 font-medium">📸 Photo Star</span>
             </div>
             <div className="bg-gradient-to-r from-purple-200 to-pink-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
               <span className="text-purple-800 font-medium">
@@ -477,12 +484,18 @@ export default function Index() {
               <Input
                 id="charlie-image"
                 value={tempCharlieData.image}
-                onChange={(e) => setTempCharlieData({...tempCharlieData, image: e.target.value})}
+                onChange={(e) =>
+                  setTempCharlieData({
+                    ...tempCharlieData,
+                    image: e.target.value,
+                  })
+                }
                 placeholder="https://example.com/charlie-photo.jpg"
                 className="w-full"
               />
               <p className="text-sm text-muted-foreground">
-                📸 Paste an image URL of Charlie (optional - will show cute dog emoji if empty)
+                📸 Paste an image URL of Charlie (optional - will show cute dog
+                emoji if empty)
               </p>
             </div>
             <div className="space-y-2">
@@ -490,7 +503,12 @@ export default function Index() {
               <Textarea
                 id="charlie-description"
                 value={tempCharlieData.description}
-                onChange={(e) => setTempCharlieData({...tempCharlieData, description: e.target.value})}
+                onChange={(e) =>
+                  setTempCharlieData({
+                    ...tempCharlieData,
+                    description: e.target.value,
+                  })
+                }
                 placeholder="Tell everyone about Charlie and your adventures together..."
                 className="w-full min-h-[120px]"
               />
