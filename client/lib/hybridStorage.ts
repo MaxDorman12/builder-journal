@@ -162,7 +162,11 @@ export class HybridStorage {
 
   // Setup real-time listeners for cloud updates
   private static setupRealtimeListeners(): void {
-    if (!this.cloudEnabled) return;
+    if (!this.cloudEnabled) {
+      console.log("⚠️ Cloud not enabled, skipping real-time listeners");
+      return;
+    }
+    console.log("🔄 Setting up Firebase real-time listeners...");
 
     // Listen for journal entry changes
     const entriesListener = CloudStorage.listenToJournalEntries(
