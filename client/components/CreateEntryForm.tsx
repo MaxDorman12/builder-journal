@@ -240,18 +240,21 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
         type: file.type,
       });
 
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          setFormData((prev) => ({
-            ...prev,
-            videos: [...prev.videos, event.target!.result as string],
-          }));
+      // Upload video directly to Firebase Storage
+      try {
+        const entryId = `temp_${Date.now()}`;
+        const downloadURL = await MediaStorage.uploadFile(file, entryId);
 
-          console.log(`✅ Video "${file.name}" uploaded successfully`);
-        }
-      };
-      reader.readAsDataURL(file);
+        setFormData((prev) => ({
+          ...prev,
+          videos: [...prev.videos, downloadURL],
+        }));
+
+        console.log(`✅ Video uploaded to Firebase Storage: ${file.name}`);
+      } catch (error) {
+        console.error("Failed to upload video to Firebase Storage:", error);
+        alert(`Failed to upload video "${file.name}". Please try again.`);
+      }
     });
   };
 
