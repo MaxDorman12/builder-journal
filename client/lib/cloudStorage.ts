@@ -99,8 +99,32 @@ export class CloudStorage {
       imageLength: data.image?.length || 0,
       descriptionLength: data.description?.length || 0,
     });
-    await setDoc(doc(db, "family-data", "charlie"), data);
-    console.log("✅ Save to Firebase completed");
+
+    try {
+      const docRef = doc(db, "family-data", "charlie");
+      await setDoc(docRef, {
+        ...data,
+        lastUpdated: new Date().toISOString(),
+        updatedBy: window.location.hostname + "-" + navigator.userAgent.substring(0, 50)
+      });
+      console.log("✅ Save to Firebase completed successfully");
+
+      // Immediately read back to verify
+      const verifyDoc = await getDoc(docRef);
+      if (verifyDoc.exists()) {
+        const savedData = verifyDoc.data();
+        console.log("✅ Verification read successful:", {
+          hasImage: !!savedData.image,
+          lastUpdated: savedData.lastUpdated,
+          updatedBy: savedData.updatedBy
+        });
+      } else {
+        console.error("❌ Document doesn't exist after save!");
+      }
+    } catch (error) {
+      console.error("❌ Firebase save error:", error);
+      throw error;
+    }
   }
 
   static async getCharlieData(): Promise<{
