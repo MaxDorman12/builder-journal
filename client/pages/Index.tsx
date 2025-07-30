@@ -670,6 +670,32 @@ export default function Index() {
                 >
                   💥 RESET
                 </Button>
+                {StorageHealth.isDisabled() && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={async () => {
+                      try {
+                        console.log("🔄 Manual refresh from Firebase...");
+                        const freshEntries = await CloudStorage.getJournalEntries();
+                        const freshCharlie = await CloudStorage.getCharlieData();
+                        const freshPins = await CloudStorage.getMapPins();
+
+                        setEntries(freshEntries);
+                        setCharlieData(freshCharlie);
+                        setPins(freshPins);
+
+                        alert(`✅ Refreshed from cloud!\n${freshEntries.length} journal entries loaded`);
+                      } catch (error) {
+                        alert(`❌ Refresh failed: ${error}`);
+                      }
+                    }}
+                    className="h-8 w-auto px-2 text-xs bg-blue-100"
+                    title="Refresh data from cloud when localStorage is disabled"
+                  >
+                    🔄 REFRESH
+                  </Button>
+                )}
                 <Button
                   variant="ghost"
                   size="sm"
