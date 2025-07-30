@@ -81,7 +81,7 @@ export function JournalEntryCard({
 
   return (
     <>
-      <Card className="family-card overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
+      <Card className="family-card overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group">
         <div
           className="aspect-video bg-gradient-to-br from-blue-50 to-purple-50 relative overflow-hidden"
           onClick={() => setIsDetailOpen(true)}
