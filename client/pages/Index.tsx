@@ -129,14 +129,20 @@ export default function Index() {
     setTempYoutubeUrl("");
   };
 
-  const handleCharlieSave = () => {
+  const handleCharlieSave = async () => {
     if (tempCharlieData.description.trim() || tempCharlieData.image.trim()) {
       const dataToSave = {
         image: tempCharlieData.image.trim(),
         description:
           tempCharlieData.description.trim() || charlieData.description,
       };
-      LocalStorage.setCharlieData(dataToSave);
+
+      if (isCloudSyncEnabled) {
+        await HybridStorage.setCharlieData(dataToSave);
+      } else {
+        LocalStorage.setCharlieData(dataToSave);
+      }
+
       setCharlieData(dataToSave);
       setIsCharlieDialogOpen(false);
       setTempCharlieData({ image: "", description: "" });
@@ -384,7 +390,7 @@ export default function Index() {
 
         <div className="space-y-6">
           <h2 className="text-3xl font-bold text-foreground flex items-center gap-3">
-            <span className="text-4xl">����</span>
+            <span className="text-4xl">🐕</span>
             Meet Charlie
             {isAuthenticated && (
               <Button
