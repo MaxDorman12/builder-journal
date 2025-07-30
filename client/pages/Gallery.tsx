@@ -118,6 +118,30 @@ export default function Gallery() {
     return mood?.emoji || '😊';
   };
 
+  // Touch handlers for mobile swipe navigation
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartX.current || !touchEndX.current) return;
+
+    const distance = touchStartX.current - touchEndX.current;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe && photos.length > 1) {
+      navigatePhoto('next');
+    }
+    if (isRightSwipe && photos.length > 1) {
+      navigatePhoto('prev');
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
