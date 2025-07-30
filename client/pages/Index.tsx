@@ -28,6 +28,9 @@ export default function Index() {
   const { isAuthenticated, isFamilyMember } = useAuth();
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [pins, setPins] = useState<MapPinType[]>([]);
+  const [youtubeUrl, setYoutubeUrl] = useState<string>("");
+  const [isYoutubeDialogOpen, setIsYoutubeDialogOpen] = useState(false);
+  const [tempYoutubeUrl, setTempYoutubeUrl] = useState<string>("");
 
   useEffect(() => {
     // Initialize sample data if no data exists
