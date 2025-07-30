@@ -60,13 +60,13 @@ export class SupabaseStorage {
       const fileExtension = file.name.split('.').pop() || 'bin'
       const fileName = `${entryId}/${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExtension}`
 
-      // Upload file to Supabase Storage with content type override
+      // Upload file to Supabase Storage without MIME type restrictions
       const { data, error } = await supabase.storage
         .from(this.BUCKET_NAME)
         .upload(fileName, file, {
           cacheControl: '3600',
-          upsert: true, // Allow overwrite if file exists
-          contentType: file.type || 'application/octet-stream' // Use generic type as fallback
+          upsert: true // Allow overwrite if file exists
+          // No contentType specified to bypass bucket MIME restrictions
         })
 
       if (error) {
@@ -127,13 +127,13 @@ export class SupabaseStorage {
           // Create unique file path with PNG extension
           const fileName = `${entryId}/${Date.now()}_compressed.png`
 
-          // Upload blob to Supabase Storage with content type override
+          // Upload blob to Supabase Storage without MIME type specification
           const { data, error } = await supabase.storage
             .from(this.BUCKET_NAME)
             .upload(fileName, blob, {
               cacheControl: '3600',
-              upsert: true, // Allow overwrite if file exists
-              contentType: 'image/png' // Use PNG instead of JPEG to avoid MIME restrictions
+              upsert: true // Allow overwrite if file exists
+              // No contentType to bypass MIME restrictions
             })
 
           if (error) {
