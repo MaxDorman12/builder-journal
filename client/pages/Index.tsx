@@ -614,7 +614,7 @@ export default function Index() {
               </Button>
               <Button
                 onClick={handleCharlieSave}
-                disabled={!tempCharlieData.description.trim()}
+                disabled={!tempCharlieData.description.trim() && !tempCharlieData.image.trim()}
               >
                 Save Changes
               </Button>
