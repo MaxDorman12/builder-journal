@@ -28,6 +28,7 @@ import {
 import { JournalEntry, AREA_TYPES, MOOD_RATINGS } from "@shared/api";
 import { LocalStorage } from "@/lib/storage";
 import { HybridStorage } from "@/lib/hybridStorage";
+import { CloudStorage } from "@/lib/cloudStorage";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface CreateEntryFormProps {
