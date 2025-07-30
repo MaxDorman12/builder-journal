@@ -111,11 +111,7 @@ export default function Login() {
               entries, upload photos and videos, add pins to the map, and manage
               all our wonderful family memories! 💫
             </p>
-            <div className="bg-gradient-to-r from-yellow-200 to-orange-200 p-3 rounded-xl shadow-md">
-              <p className="text-xs text-orange-800 font-mono font-bold">
-                🗝️ Secret Family Password: Summer07max
-              </p>
-            </div>
+
           </div>
 
           <div className="mt-4 text-center">
