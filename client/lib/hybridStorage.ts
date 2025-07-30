@@ -14,7 +14,9 @@ export class HybridStorage {
         console.log("🔄 Initializing cloud sync...");
         await this.syncLocalToCloud();
         this.setupRealtimeListeners();
-        console.log("🎉 Auto-sync ready! Changes will sync across all devices.");
+        console.log(
+          "🎉 Auto-sync ready! Changes will sync across all devices.",
+        );
       } else {
         console.log("📱 Using local storage only - Firebase not configured");
       }

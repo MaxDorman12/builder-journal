@@ -133,7 +133,7 @@ export class CloudStorage {
       // Test connection by writing a simple document
       await setDoc(doc(db, "system", "test"), {
         timestamp: new Date(),
-        test: true
+        test: true,
       });
       console.log("✅ Firebase cloud sync enabled successfully");
       return true;
