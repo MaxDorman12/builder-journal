@@ -26,15 +26,18 @@ export class LocalStorage {
   // Emergency cleanup of large files
   private static emergencyCleanup(): void {
     let clearedCount = 0;
+    let clearedSize = 0;
     const keys = Object.keys(localStorage);
 
+    console.log(`🧹 Starting emergency cleanup of ${keys.length} localStorage items`);
+
+    // Phase 1: Remove ALL base64 images/videos regardless of size
     for (const key of keys) {
       try {
         const value = localStorage.getItem(key);
-        if (value &&
-            (value.startsWith('data:image/') || value.startsWith('data:video/')) &&
-            value.length > 100000) {
-          console.log(`🗑️ Auto-removing large file: ${key}`);
+        if (value && (value.startsWith('data:image/') || value.startsWith('data:video/'))) {
+          console.log(`🗑️ Removing media file: ${key} (${(value.length/1024).toFixed(1)}KB)`);
+          clearedSize += value.length;
           localStorage.removeItem(key);
           clearedCount++;
         }
@@ -43,7 +46,24 @@ export class LocalStorage {
       }
     }
 
-    console.log(`🧹 Auto-cleanup removed ${clearedCount} large files`);
+    // Phase 2: If still having issues, remove non-essential family journal data
+    if (clearedCount === 0) {
+      console.log(`⚠️ No media files found, removing old journal entries`);
+      try {
+        // Remove old journal entries (keep only last 5)
+        const entries = this.getJournalEntries();
+        if (entries.length > 5) {
+          const recentEntries = entries.slice(-5); // Keep last 5
+          localStorage.setItem(this.getKey("entries"), JSON.stringify(recentEntries));
+          console.log(`🗑️ Reduced journal entries from ${entries.length} to 5`);
+          clearedCount += entries.length - 5;
+        }
+      } catch (error) {
+        console.error('Failed to reduce journal entries:', error);
+      }
+    }
+
+    console.log(`🧹 Emergency cleanup complete: ${clearedCount} items, ${(clearedSize/1024/1024).toFixed(1)}MB freed`);
   }
 
   static getJournalEntries(): JournalEntry[] {
