@@ -64,6 +64,24 @@ export interface MapPin {
   images: string[];
 }
 
+export interface WishlistItem {
+  id: string;
+  title: string;
+  description: string;
+  location: string;
+  priority: 'low' | 'medium' | 'high';
+  category: 'adventure' | 'culture' | 'food' | 'nature' | 'city' | 'historic';
+  estimatedCost: string;
+  bestTimeToVisit: string;
+  notes: string;
+  isCompleted: boolean;
+  completedDate?: string;
+  journalEntryId?: string;
+  addedBy: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface AuthState {
   isAuthenticated: boolean;
   isFamilyMember: boolean;
