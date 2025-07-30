@@ -69,9 +69,15 @@ export default function Index() {
 
         // Setup listener for real-time updates
         const unsubscribe = HybridStorage.onUpdate(() => {
+          console.log("🔄 Real-time update received");
           setEntries(HybridStorage.getJournalEntries());
           setPins(HybridStorage.getMapPins());
-          setCharlieData(HybridStorage.getCharlieData());
+          const newCharlieData = HybridStorage.getCharlieData();
+          console.log("🐕 Real-time Charlie update:", {
+            hasImage: !!newCharlieData.image,
+            imageLength: newCharlieData.image?.length || 0
+          });
+          setCharlieData(newCharlieData);
         });
 
         return () => unsubscribe();
