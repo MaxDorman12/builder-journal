@@ -324,7 +324,7 @@ export class LocalStorage {
   }
 
   static getCharlieData(): { image: string; description: string } {
-    const data = localStorage.getItem(this.getKey("charlie_data"));
+    const data = this.safeLocalStorageGet(this.getKey("charlie_data"));
     return data
       ? JSON.parse(data)
       : {
@@ -335,19 +335,9 @@ export class LocalStorage {
   }
 
   static setCharlieData(data: { image: string; description: string }): void {
-    // Skip localStorage if disabled due to quota issues
-    if (!this.isLocalStorageUsable()) {
-      console.warn(
-        "📵 Skipping Charlie data localStorage save - storage disabled",
-      );
-      return;
-    }
-
-    try {
-      localStorage.setItem(this.getKey("charlie_data"), JSON.stringify(data));
-    } catch (error) {
-      console.error("❌ localStorage quota exceeded when saving Charlie data");
-      this.handleQuotaExceeded("charlie_data", data);
+    const success = this.safeLocalStorageSet(this.getKey("charlie_data"), JSON.stringify(data));
+    if (!success) {
+      console.warn("📵 Charlie data not saved locally - using cloud sync only");
     }
   }
 
