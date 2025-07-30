@@ -150,20 +150,43 @@ export default function Index() {
 
     initializeStorage();
 
-    setEntries(HybridStorage.getJournalEntries());
-    setPins(HybridStorage.getMapPins());
+    // FORCE FRESH DATA FROM FIREBASE ON EVERY PAGE LOAD
+    console.log("🔄 FORCING fresh data from Firebase...");
+    try {
+      const [freshCharlie, freshEntries, freshPins] = await Promise.all([
+        CloudStorage.getCharlieData(),
+        CloudStorage.getJournalEntries(),
+        CloudStorage.getMapPins()
+      ]);
+
+      console.log("✅ FRESH DATA LOADED:", {
+        charlieImage: !!freshCharlie.image,
+        entriesCount: freshEntries.length,
+        pinsCount: freshPins.length
+      });
+
+      // UPDATE UI IMMEDIATELY
+      setCharlieData(freshCharlie);
+      setEntries(freshEntries);
+      setPins(freshPins);
+
+      // Update local storage as backup
+      LocalStorage.setCharlieData(freshCharlie);
+      freshEntries.forEach(entry => LocalStorage.saveJournalEntry(entry));
+      freshPins.forEach(pin => LocalStorage.saveMapPin(pin));
+
+    } catch (error) {
+      console.error("❌ Failed to load fresh data:", error);
+      // Fallback to local data only if Firebase completely fails
+      setEntries(HybridStorage.getJournalEntries());
+      setPins(HybridStorage.getMapPins());
+      setCharlieData(HybridStorage.getCharlieData());
+    }
 
     // Load YouTube URL from localStorage
     const savedYoutubeUrl = localStorage.getItem("familyjournal_youtube_url");
     const defaultUrl = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
     setYoutubeUrl(savedYoutubeUrl || defaultUrl);
-
-    // Charlie data is now loaded automatically in the cloud sync above
-    // Fallback: Load local data if cloud sync is disabled
-    if (!isCloudSyncEnabled) {
-      const charlieInfo = HybridStorage.getCharlieData();
-      setCharlieData(charlieInfo);
-    }
 
     return () => {
       HybridStorage.cleanup();
