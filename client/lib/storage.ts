@@ -30,21 +30,18 @@ export class LocalStorage {
     // Emergency cleanup of large base64 data
     this.emergencyCleanup();
 
-    // Try saving again after cleanup
-    try {
-      localStorage.setItem(this.getKey(key), JSON.stringify(data));
-      console.log('✅ Save successful after cleanup');
-    } catch (retryError) {
-      console.error('❌ Save failed even after cleanup:', retryError);
+    // Immediately disable localStorage - don't even try to save again
+    this.localStorageDisabled = true;
+    console.warn('📵 localStorage completely full and disabled for this session');
 
-      // Disable localStorage for this session
-      this.localStorageDisabled = true;
-
-      alert(`❌ Device storage completely full!\n\nYour app will work but won't save locally until you:\n\n1. Click "🧹 CLEAN" button repeatedly\n2. Clear browser data\n3. Free up device storage\n\nData will still sync to cloud when available.`);
-
-      // Don't throw error - just log it and continue
-      console.warn('📵 localStorage disabled due to quota exceeded');
+    // Show one-time alert about storage being disabled
+    if (!sessionStorage.getItem('storage_alert_shown')) {
+      sessionStorage.setItem('storage_alert_shown', 'true');
+      alert(`📵 Device Storage Full!\n\nYour family journal will work but changes won't save locally on this device.\n\n✅ Data WILL sync to cloud (Firebase/Supabase)\n✅ Other devices will still work normally\n\n🔧 To fix: Click "🧹 CLEAN" or clear browser data`);
     }
+
+    // Don't throw error - just continue without localStorage
+    console.log('🌥️ Continuing with cloud-only storage mode');
   }
 
   // Emergency cleanup of large files
