@@ -194,19 +194,30 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
         canvas.height = height;
         ctx?.drawImage(img, 0, 0, width, height);
 
-        // Convert to base64 with compression
-        const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.8);
+        // For large images or better storage, use Supabase
+        try {
+          const entryId = `entry_${Date.now()}`;
+          const publicUrl = await SupabaseStorage.uploadCompressedImage(canvas, entryId);
 
-        setFormData((prev) => ({
-          ...prev,
-          images: [...prev.images, compressedDataUrl],
-        }));
+          setFormData((prev) => ({
+            ...prev,
+            images: [...prev.images, publicUrl],
+          }));
 
-        console.log(`📸 Image "${file.name}" compressed:`, {
-          originalSize: file.size,
-          newSize: compressedDataUrl.length,
-          dimensions: `${width}x${height}`,
-        });
+          console.log(`✅ Image "${file.name}" uploaded to Supabase:`, {
+            originalSize: file.size,
+            dimensions: `${width}x${height}`,
+            url: publicUrl
+          });
+        } catch (error) {
+          console.warn('Supabase upload failed, using base64 fallback:', error);
+          // Fallback to base64 if Supabase fails
+          const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.8);
+          setFormData((prev) => ({
+            ...prev,
+            images: [...prev.images, compressedDataUrl],
+          }));
+        }
       };
 
       // Load the file
