@@ -65,26 +65,52 @@ export class SupabaseSetup {
     }
   }
 
+  // Check if Storage service is enabled
+  static async isStorageEnabled(): Promise<boolean> {
+    try {
+      // Try a simple storage operation
+      const { data, error } = await supabase.storage.listBuckets()
+      if (error && error.message?.includes('Failed to fetch')) {
+        return false
+      }
+      return true
+    } catch (error) {
+      return false
+    }
+  }
+
   // Display setup instructions
   static displaySetupInstructions(): void {
     console.log('\n📋 SUPABASE STORAGE SETUP INSTRUCTIONS:')
     console.log('==========================================')
-    console.log('1. Go to your Supabase project dashboard: https://supabase.com/dashboard')
-    console.log('2. Navigate to Storage section on the left sidebar')
-    console.log('3. Click "Create a new bucket"')
-    console.log('4. Set bucket name: "journal-media"')
-    console.log('5. Make it public (toggle "Public bucket" to ON)')
-    console.log('6. In the bucket settings, add these MIME types:')
-    console.log('   - image/*')
-    console.log('   - video/*')
-    console.log('7. Set file size limit to 100MB')
-    console.log('8. Go to Storage > Policies')
-    console.log('9. Create a new policy for the bucket with these settings:')
-    console.log('   - Name: "Public Access"')
-    console.log('   - Allowed operation: SELECT, INSERT')
-    console.log('   - Target roles: public')
-    console.log('   - Policy definition: (no restrictions)')
-    console.log('10. Save and try uploading again')
+    console.log('⚠️  IMPORTANT: If you see "Failed to fetch" errors:')
+    console.log('1. First, enable Storage service in your Supabase project:')
+    console.log('   - Go to https://supabase.com/dashboard')
+    console.log('   - Select your project')
+    console.log('   - Go to Settings > API')
+    console.log('   - Ensure Storage API is enabled')
+    console.log('')
+    console.log('2. Then create the storage bucket:')
+    console.log('   - Navigate to Storage section on the left sidebar')
+    console.log('   - Click "Create a new bucket"')
+    console.log('   - Set bucket name: "journal-media"')
+    console.log('   - Make it public (toggle "Public bucket" to ON)')
+    console.log('   - In the bucket settings, add these MIME types:')
+    console.log('     • image/*')
+    console.log('     • video/*')
+    console.log('   - Set file size limit to 100MB')
+    console.log('')
+    console.log('3. Set up RLS policies:')
+    console.log('   - Go to Storage > Policies')
+    console.log('   - Create a new policy:')
+    console.log('     • Name: "Public Access"')
+    console.log('     • Allowed operation: SELECT, INSERT')
+    console.log('     • Target roles: public')
+    console.log('     • Policy definition: true')
+    console.log('')
+    console.log('4. Alternative: Disable RLS for the bucket entirely')
+    console.log('   - In Storage > journal-media > Settings')
+    console.log('   - Toggle "Row Level Security" OFF')
     console.log('==========================================\n')
   }
 }
