@@ -60,6 +60,25 @@ export default function Index() {
         )
       : 0;
 
+  const handleYoutubeEdit = () => {
+    setTempYoutubeUrl(youtubeUrl);
+    setIsYoutubeDialogOpen(true);
+  };
+
+  const handleYoutubeSave = () => {
+    if (tempYoutubeUrl.trim()) {
+      localStorage.setItem('familyjournal_youtube_url', tempYoutubeUrl.trim());
+      setYoutubeUrl(tempYoutubeUrl.trim());
+      setIsYoutubeDialogOpen(false);
+      setTempYoutubeUrl("");
+    }
+  };
+
+  const handleYoutubeCancel = () => {
+    setIsYoutubeDialogOpen(false);
+    setTempYoutubeUrl("");
+  };
+
   return (
     <div className="space-y-12">
       {/* Hero Section */}
@@ -195,7 +214,7 @@ export default function Index() {
             <div className="bg-gradient-to-r from-blue-200 to-cyan-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
               <Waves className="h-3 w-3 text-blue-700" />
               <span className="text-blue-800 font-medium">
-                🌊 Loch Explorers
+                �� Loch Explorers
               </span>
             </div>
             <div className="bg-gradient-to-r from-pink-200 to-purple-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
