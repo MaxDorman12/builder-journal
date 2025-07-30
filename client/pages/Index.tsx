@@ -235,9 +235,13 @@ export default function Index() {
         <Card className="family-card overflow-hidden">
           <div className="aspect-[4/3] bg-gradient-to-br from-amber-50 to-orange-50 overflow-hidden">
             <img
-              src="https://cdn.builder.io/o/assets%2Fcfcab9c7e41c4c598843808fb9cdccfb%2Fd4230fee0d984ee1ac6366e4bd0605b1?alt=media&token=9b486792-1532-434c-bebb-708ab61386b0&apiKey=cfcab9c7e41c4c598843808fb9cdccfb"
+              src="https://cdn.builder.io/api/v1/image/assets%2Fcfcab9c7e41c4c598843808fb9cdccfb%2Fd4230fee0d984ee1ac6366e4bd0605b1?format=webp&width=800"
               alt="Charlie the dog"
               className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+              onError={(e) => {
+                console.log('Image failed to load:', e.target.src);
+                e.target.style.display = 'none';
+              }}
             />
           </div>
         </Card>
