@@ -148,7 +148,9 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
     files.forEach((file) => {
       // Check file size (limit to 5MB per image)
       if (file.size > 5 * 1024 * 1024) {
-        alert(`Image "${file.name}" is too large. Please choose images under 5MB.`);
+        alert(
+          `Image "${file.name}" is too large. Please choose images under 5MB.`,
+        );
         return;
       }
 
@@ -188,7 +190,7 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
         console.log(`📸 Image "${file.name}" compressed:`, {
           originalSize: file.size,
           newSize: compressedDataUrl.length,
-          dimensions: `${width}x${height}`
+          dimensions: `${width}x${height}`,
         });
       };
 
@@ -207,13 +209,15 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
     files.forEach((file) => {
       // Check file size (limit to 50MB per video)
       if (file.size > 50 * 1024 * 1024) {
-        alert(`Video "${file.name}" is too large. Please choose videos under 50MB.`);
+        alert(
+          `Video "${file.name}" is too large. Please choose videos under 50MB.`,
+        );
         return;
       }
 
       console.log(`🎥 Processing video "${file.name}":`, {
         size: file.size,
-        type: file.type
+        type: file.type,
       });
 
       const reader = new FileReader();
