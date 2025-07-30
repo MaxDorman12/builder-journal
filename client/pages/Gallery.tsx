@@ -341,21 +341,26 @@ export default function Gallery() {
         </div>
       )}
 
-      {/* Photo Modal */}
+      {/* Photo Modal - Mobile optimized */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] p-0">
+        <DialogContent className="max-w-4xl max-h-[95vh] p-0 m-2 md:m-8">
           {selectedPhoto && (
             <>
-              <DialogHeader className="p-6 pb-0">
-                <DialogTitle className="flex items-center justify-between">
-                  <span>{selectedPhoto.entryTitle}</span>
-                  <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+              <DialogHeader className="p-4 md:p-6 pb-0">
+                <DialogTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  <span className="text-base md:text-lg line-clamp-2">{selectedPhoto.entryTitle}</span>
+                  <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white self-start sm:self-auto">
                     {getMoodEmoji(selectedPhoto.moodRating)} {MOOD_RATINGS.find(r => r.value === selectedPhoto.moodRating)?.label}
                   </Badge>
                 </DialogTitle>
               </DialogHeader>
-              
-              <div className="relative">
+
+              <div
+                className="relative touch-pan-y"
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+              >
                 <div className="aspect-video bg-gray-100 flex items-center justify-center">
                   <img
                     src={selectedPhoto.url}
