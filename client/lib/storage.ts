@@ -73,10 +73,50 @@ export class LocalStorage {
     }
   }
 
+  static getWishlistItems(): WishlistItem[] {
+    const data = localStorage.getItem(this.getKey("wishlist"));
+    return data ? JSON.parse(data) : [];
+  }
+
+  static saveWishlistItem(item: WishlistItem): void {
+    const items = this.getWishlistItems();
+    const existingIndex = items.findIndex((i) => i.id === item.id);
+
+    if (existingIndex >= 0) {
+      items[existingIndex] = item;
+    } else {
+      items.push(item);
+    }
+
+    localStorage.setItem(this.getKey("wishlist"), JSON.stringify(items));
+  }
+
+  static deleteWishlistItem(id: string): void {
+    const items = this.getWishlistItems().filter((i) => i.id !== id);
+    localStorage.setItem(this.getKey("wishlist"), JSON.stringify(items));
+  }
+
+  static markWishlistItemCompleted(
+    id: string,
+    journalEntryId?: string,
+  ): void {
+    const items = this.getWishlistItems();
+    const item = items.find((i) => i.id === id);
+
+    if (item) {
+      item.isCompleted = true;
+      item.completedDate = new Date().toISOString();
+      item.journalEntryId = journalEntryId;
+      item.updatedAt = new Date().toISOString();
+      this.saveWishlistItem(item);
+    }
+  }
+
   static exportData(): string {
     const data = {
       entries: this.getJournalEntries(),
       pins: this.getMapPins(),
+      wishlist: this.getWishlistItems(),
       exportDate: new Date().toISOString(),
     };
     return JSON.stringify(data, null, 2);
