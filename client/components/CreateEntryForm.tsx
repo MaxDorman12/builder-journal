@@ -101,6 +101,7 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
       };
 
       LocalStorage.saveJournalEntry(entry);
+      setCreatedEntryId(entryId);
 
       // Show option to place pin on map
       setShowPinOption(true);
