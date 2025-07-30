@@ -315,13 +315,22 @@ export default function Index() {
         canvas.height = height;
         ctx?.drawImage(img, 0, 0, width, height);
 
-        // Convert to base64 with compression
-        const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.8);
+        // Convert to base64 with aggressive compression for Firebase
+        let quality = 0.6;
+        let compressedDataUrl = canvas.toDataURL("image/jpeg", quality);
 
-        console.log("📸 Image compressed successfully:", {
+        // If still too large for Firebase (1MB limit), compress more
+        while (compressedDataUrl.length > 800000 && quality > 0.1) {
+          quality -= 0.1;
+          compressedDataUrl = canvas.toDataURL("image/jpeg", quality);
+        }
+
+        console.log("📸 Image compressed for Firebase:", {
           originalSize: file.size,
           compressedLength: compressedDataUrl.length,
           dimensions: `${width}x${height}`,
+          quality: quality,
+          firebaseSafe: compressedDataUrl.length < 800000 ? "✅" : "❌"
         });
 
         setTempCharlieData({
