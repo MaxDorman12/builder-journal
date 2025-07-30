@@ -60,12 +60,13 @@ export class SupabaseStorage {
       const fileExtension = file.name.split('.').pop() || 'bin'
       const fileName = `${entryId}/${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExtension}`
 
-      // Upload file to Supabase Storage
+      // Upload file to Supabase Storage with content type override
       const { data, error } = await supabase.storage
         .from(this.BUCKET_NAME)
         .upload(fileName, file, {
           cacheControl: '3600',
-          upsert: true // Allow overwrite if file exists
+          upsert: true, // Allow overwrite if file exists
+          contentType: file.type || 'application/octet-stream' // Use generic type as fallback
         })
 
       if (error) {
