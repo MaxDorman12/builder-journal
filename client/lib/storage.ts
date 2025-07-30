@@ -164,7 +164,12 @@ export class LocalStorage {
 
   static deleteWishlistItem(id: string): void {
     const items = this.getWishlistItems().filter((i) => i.id !== id);
-    localStorage.setItem(this.getKey("wishlist"), JSON.stringify(items));
+    try {
+      localStorage.setItem(this.getKey("wishlist"), JSON.stringify(items));
+    } catch (error) {
+      console.error('❌ localStorage quota exceeded when deleting wishlist item');
+      this.handleQuotaExceeded('wishlist', items);
+    }
   }
 
   static markWishlistItemCompleted(id: string, journalEntryId?: string): void {
