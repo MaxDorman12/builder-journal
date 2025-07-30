@@ -79,6 +79,14 @@ const App = () => (
               }
             />
             <Route
+              path="/settings"
+              element={
+                <Layout>
+                  <Settings />
+                </Layout>
+              }
+            />
+            <Route
               path="/calendar"
               element={
                 <Layout>
