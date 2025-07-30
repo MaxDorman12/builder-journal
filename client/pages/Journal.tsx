@@ -26,6 +26,7 @@ import {
 import { JournalEntry, MOOD_RATINGS, AREA_TYPES } from "@shared/api";
 import { JournalEntryCard } from "@/components/JournalEntryCard";
 import { CreateEntryForm } from "@/components/CreateEntryForm";
+import { EditEntryForm } from "@/components/EditEntryForm";
 
 export default function Journal() {
   const { isFamilyMember } = useAuth();
