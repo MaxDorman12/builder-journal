@@ -83,6 +83,15 @@ export function JournalEntryCard({
     onComment?.(entry.id);
   };
 
+  const handleExport = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      ExportUtils.exportSingleEntry(entry.id);
+    } catch (error) {
+      console.error('Failed to export entry:', error);
+    }
+  };
+
   const nextImage = () => {
     setCurrentImageIndex((prev) =>
       prev === entry.images.length - 1 ? 0 : prev + 1,
