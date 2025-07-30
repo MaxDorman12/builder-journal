@@ -298,17 +298,17 @@ export default function Map() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      {/* Header - Mobile optimized */}
+      <div className="flex flex-col gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground">
             {isPinPlacementMode
               ? "📍 Place Your Adventure Pin"
               : "Scotland Adventure Map"}
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground text-sm md:text-base">
             {isPinPlacementMode
-              ? "Click anywhere on the map to place a pin for your journal entry"
+              ? "Tap anywhere on the map to place a pin for your journal entry"
               : "Explore the places we've visited across beautiful Scotland"}
           </p>
         </div>
