@@ -28,6 +28,7 @@ import {
   Mountain,
   Waves,
   Edit2,
+  User,
 } from "lucide-react";
 import { MOOD_RATINGS, JournalEntry, MapPin as MapPinType } from "@shared/api";
 
