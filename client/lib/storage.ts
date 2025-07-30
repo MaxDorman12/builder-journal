@@ -150,17 +150,11 @@ export class LocalStorage {
   }
 
   static getJournalEntries(): JournalEntry[] {
-    const data = localStorage.getItem(this.getKey("entries"));
+    const data = this.safeLocalStorageGet(this.getKey("entries"));
     return data ? JSON.parse(data) : [];
   }
 
   static saveJournalEntry(entry: JournalEntry): void {
-    // Skip localStorage if disabled due to quota issues
-    if (!this.isLocalStorageUsable()) {
-      console.warn("📵 Skipping localStorage save - storage disabled");
-      return;
-    }
-
     const entries = this.getJournalEntries();
     const existingIndex = entries.findIndex((e) => e.id === entry.id);
 
@@ -170,24 +164,17 @@ export class LocalStorage {
       entries.push(entry);
     }
 
-    try {
-      localStorage.setItem(this.getKey("entries"), JSON.stringify(entries));
-    } catch (error) {
-      console.error("❌ localStorage quota exceeded when saving journal entry");
-      // Try emergency cleanup and retry
-      this.handleQuotaExceeded("entries", entries);
+    const success = this.safeLocalStorageSet(this.getKey("entries"), JSON.stringify(entries));
+    if (!success) {
+      console.warn("📵 Journal entry not saved locally - using cloud sync only");
     }
   }
 
   static deleteJournalEntry(id: string): void {
     const entries = this.getJournalEntries().filter((e) => e.id !== id);
-    try {
-      localStorage.setItem(this.getKey("entries"), JSON.stringify(entries));
-    } catch (error) {
-      console.error(
-        "❌ localStorage quota exceeded when deleting journal entry",
-      );
-      this.handleQuotaExceeded("entries", entries);
+    const success = this.safeLocalStorageSet(this.getKey("entries"), JSON.stringify(entries));
+    if (!success) {
+      console.warn("📵 Journal entry deletion not saved locally - using cloud sync only");
     }
   }
 
