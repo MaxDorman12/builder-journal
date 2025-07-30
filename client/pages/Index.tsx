@@ -610,6 +610,15 @@ export default function Index() {
                 <Button
                   variant="ghost"
                   size="sm"
+                  onClick={() => StorageCleanup.nuclearReset()}
+                  className="h-8 w-auto px-2 text-xs bg-red-200"
+                  title="Nuclear option: Clear ALL local storage"
+                >
+                  💥 RESET
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={handleCharlieEdit}
                   className="h-8 w-8 p-0"
                   title="Edit Charlie's section"
