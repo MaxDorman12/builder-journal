@@ -173,7 +173,7 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
       const ctx = canvas.getContext("2d");
       const img = new Image();
 
-      img.onload = async () => {
+      img.onload = () => {
         // Calculate new dimensions (max 1200px)
         const maxSize = 1200;
         let { width, height } = img;
@@ -193,21 +193,13 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
         canvas.height = height;
         ctx?.drawImage(img, 0, 0, width, height);
 
-        // Upload compressed image to Firebase Storage
-        try {
-          const entryId = `temp_${Date.now()}`;
-          const downloadURL = await MediaStorage.uploadCompressedImage(canvas, entryId);
+        // Convert to base64 with compression
+        const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.8);
 
-          setFormData((prev) => ({
-            ...prev,
-            images: [...prev.images, downloadURL],
-          }));
-
-          console.log(`✅ Image uploaded to Firebase Storage: ${file.name}`);
-        } catch (error) {
-          console.error("Failed to upload to Firebase Storage:", error);
-          alert(`Failed to upload image "${file.name}". Please try again.`);
-        }
+        setFormData((prev) => ({
+          ...prev,
+          images: [...prev.images, compressedDataUrl],
+        }));
 
         console.log(`📸 Image "${file.name}" compressed:`, {
           originalSize: file.size,
@@ -225,32 +217,34 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
     });
   };
 
-  const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
 
-    for (const file of files) {
+    files.forEach((file) => {
       // Allow large videos - Firebase Storage can handle them
+      console.log(`🎥 Processing video "${file.name}":`, {
+        size: file.size,
+        type: file.type
+      });
+
       console.log(`🎥 Processing video "${file.name}":`, {
         size: file.size,
         type: file.type,
       });
 
-      // Upload video directly to Firebase Storage
-      try {
-        const entryId = `temp_${Date.now()}`;
-        const downloadURL = await MediaStorage.uploadFile(file, entryId);
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          setFormData((prev) => ({
+            ...prev,
+            videos: [...prev.videos, event.target!.result as string],
+          }));
 
-        setFormData((prev) => ({
-          ...prev,
-          videos: [...prev.videos, downloadURL],
-        }));
-
-        console.log(`✅ Video uploaded to Firebase Storage: ${file.name}`);
-      } catch (error) {
-        console.error("Failed to upload video to Firebase Storage:", error);
-        alert(`Failed to upload video "${file.name}". Please try again.`);
-      }
-    }
+          console.log(`✅ Video "${file.name}" uploaded successfully`);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
   };
 
   const removeImage = (index: number) => {
