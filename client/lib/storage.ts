@@ -36,8 +36,14 @@ export class LocalStorage {
       console.log('✅ Save successful after cleanup');
     } catch (retryError) {
       console.error('❌ Save failed even after cleanup:', retryError);
-      alert('❌ Storage full! Please click "🧹 CLEAN" button to free up space.');
-      throw retryError;
+
+      // Disable localStorage for this session
+      this.localStorageDisabled = true;
+
+      alert(`❌ Device storage completely full!\n\nYour app will work but won't save locally until you:\n\n1. Click "🧹 CLEAN" button repeatedly\n2. Clear browser data\n3. Free up device storage\n\nData will still sync to cloud when available.`);
+
+      // Don't throw error - just log it and continue
+      console.warn('📵 localStorage disabled due to quota exceeded');
     }
   }
 
