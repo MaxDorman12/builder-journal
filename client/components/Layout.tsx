@@ -12,6 +12,7 @@ import {
   Heart,
   Camera,
   Calendar,
+  Star,
 } from "lucide-react";
 
 interface LayoutProps {
