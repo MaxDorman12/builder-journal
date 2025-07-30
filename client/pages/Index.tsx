@@ -262,20 +262,29 @@ export default function Index() {
                     {/* Gradient overlay for better text readability */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-200"></div>
                   </div>
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-semibold truncate">{entry.title}</h3>
+                  <CardContent className="p-4 flex-1">
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="font-semibold line-clamp-2 flex-1 mr-2">{entry.title}</h3>
                       {moodData && (
-                        <span className="text-lg">{moodData.emoji}</span>
+                        <span className="text-xl flex-shrink-0">{moodData.emoji}</span>
                       )}
                     </div>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      {entry.location}
-                    </p>
-                    <p className="text-sm line-clamp-2">{entry.content}</p>
-                    <div className="flex items-center justify-between mt-3 text-xs text-muted-foreground">
-                      <span>{new Date(entry.date).toLocaleDateString()}</span>
-                      <span>by {entry.author}</span>
+                    <div className="flex items-center space-x-1 mb-2">
+                      <MapPin className="h-3 w-3 text-muted-foreground" />
+                      <p className="text-sm text-muted-foreground truncate">
+                        {entry.location}
+                      </p>
+                    </div>
+                    <p className="text-sm text-muted-foreground line-clamp-3 mb-3">{entry.content}</p>
+                    <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t border-gray-100">
+                      <div className="flex items-center space-x-1">
+                        <Calendar className="h-3 w-3" />
+                        <span>{new Date(entry.date).toLocaleDateString()}</span>
+                      </div>
+                      <div className="flex items-center space-x-1">
+                        <User className="h-3 w-3" />
+                        <span>{entry.author}</span>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
