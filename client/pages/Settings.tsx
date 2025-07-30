@@ -382,6 +382,67 @@ export default function Settings() {
         </CardContent>
       </Card>
 
+      {/* OneDrive Sync */}
+      <Card className="family-card border-blue-200">
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2 text-blue-700">
+            <Download className="h-5 w-5" />
+            <span>📁 OneDrive Sync</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Alert>
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription>
+              <strong>How OneDrive Sync Works:</strong>
+              <br />📱 <strong>Phone:</strong> Create sync file → Save to OneDrive
+              <br />💻 <strong>PC:</strong> Download from OneDrive → Import here
+              <br />🔄 <strong>Result:</strong> All journal entries, photos & data synced!
+            </AlertDescription>
+          </Alert>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Button
+              onClick={() => {
+                const syncData = LocalStorage.createSyncFile();
+                const blob = new Blob([syncData], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `dorman-journal-sync-${new Date().toISOString().split('T')[0]}.json`;
+                link.click();
+                URL.revokeObjectURL(url);
+                setMessage({
+                  type: 'success',
+                  text: '📱 Sync file created! Save this to your OneDrive folder.'
+                });
+              }}
+              className="w-full bg-blue-600 hover:bg-blue-700"
+              disabled={isExporting}
+            >
+              <Download className="mr-2 h-4 w-4" />
+              📱 Create Sync File
+            </Button>
+
+            <Button
+              onClick={() => fileInputRef.current?.click()}
+              variant="outline"
+              className="w-full border-blue-300 text-blue-700 hover:bg-blue-50"
+              disabled={isImporting}
+            >
+              <Upload className="mr-2 h-4 w-4" />
+              💻 Import from OneDrive
+            </Button>
+          </div>
+
+          <div className="text-xs text-gray-600 bg-blue-50 p-3 rounded-lg space-y-1">
+            <p><strong>Step 1:</strong> 📱 On phone: "Create Sync File" → Save to OneDrive</p>
+            <p><strong>Step 2:</strong> 💻 On PC: Download file → "Import from OneDrive"</p>
+            <p><strong>Step 3:</strong> 🎉 Enjoy synced journal across all devices!</p>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Tips */}
       <Card className="family-card">
         <CardHeader>
