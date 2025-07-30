@@ -108,7 +108,7 @@ export default function Wishlist() {
       bestTimeToVisit: formData.bestTimeToVisit.trim(),
       notes: formData.notes.trim(),
       isCompleted: false,
-      addedBy: currentUser || "Family Member",
+      addedBy: currentUser || "Dorman Family",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
