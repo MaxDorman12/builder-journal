@@ -5,8 +5,9 @@ export function initializeSampleData() {
   // Check if data already exists
   const existingEntries = LocalStorage.getJournalEntries();
   const existingPins = LocalStorage.getMapPins();
+  const existingWishlist = LocalStorage.getWishlistItems();
 
-  if (existingEntries.length > 0 || existingPins.length > 0) {
+  if (existingEntries.length > 0 || existingPins.length > 0 || existingWishlist.length > 0) {
     return; // Don't overwrite existing data
   }
 
