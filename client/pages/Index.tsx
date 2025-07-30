@@ -482,8 +482,7 @@ export default function Index() {
             Meet Charlie
             <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
               Sync:{" "}
-              {charlieData.description.includes("[Sync test at") ||
-              charlieData.description.includes("[Test sync at")
+              {charlieData.image || charlieData.description.length > 100
                 ? "✅"
                 : "❌"}
             </span>
