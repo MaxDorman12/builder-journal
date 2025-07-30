@@ -29,6 +29,7 @@ import { JournalEntry, MapPin as MapPinType, AREA_TYPES, MOOD_RATINGS } from '@s
 interface FamilyStatsProps {
   showAll?: boolean;
   onViewAll?: () => void;
+  onClose?: () => void;
 }
 
 interface StatsData {
