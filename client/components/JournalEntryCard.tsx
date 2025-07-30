@@ -135,6 +135,21 @@ export function JournalEntryCard({
                 </Badge>
               )}
             </>
+          ) : entry.videos.length > 0 ? (
+            <>
+              <video
+                src={entry.videos[0]}
+                className="w-full h-full object-cover"
+                controls
+                preload="metadata"
+              />
+              {entry.videos.length > 1 && (
+                <Badge className="absolute top-2 right-2 bg-red-600 text-white">
+                  <Video className="h-3 w-3 mr-1" />
+                  {entry.videos.length}
+                </Badge>
+              )}
+            </>
           ) : (
             <div className="flex items-center justify-center h-full">
               <Camera className="h-12 w-12 text-muted-foreground" />
