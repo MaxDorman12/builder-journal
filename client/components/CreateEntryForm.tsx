@@ -244,18 +244,31 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
         type: file.type,
       });
 
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          setFormData((prev) => ({
-            ...prev,
-            videos: [...prev.videos, event.target!.result as string],
-          }));
+      // Upload large videos to Supabase Storage
+      try {
+        const entryId = `entry_${Date.now()}`;
+        const publicUrl = await SupabaseStorage.uploadFile(file, entryId);
 
-          console.log(`✅ Video "${file.name}" uploaded successfully`);
-        }
-      };
-      reader.readAsDataURL(file);
+        setFormData((prev) => ({
+          ...prev,
+          videos: [...prev.videos, publicUrl],
+        }));
+
+        console.log(`✅ Video "${file.name}" uploaded to Supabase:`, publicUrl);
+      } catch (error) {
+        console.warn('Supabase video upload failed, using base64 fallback:', error);
+        // Fallback to base64 if Supabase fails
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          if (event.target?.result) {
+            setFormData((prev) => ({
+              ...prev,
+              videos: [...prev.videos, event.target!.result as string],
+            }));
+          }
+        };
+        reader.readAsDataURL(file);
+      }
     });
   };
 
