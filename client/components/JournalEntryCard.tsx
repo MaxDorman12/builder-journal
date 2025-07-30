@@ -447,6 +447,15 @@ export function JournalEntryCard({
                     <span className="ml-1">({entry.parkingCost})</span>
                   )}
                 </div>
+                <div>
+                  <strong>Activity:</strong>{" "}
+                  {entry.isPaidActivity
+                    ? "💳 Paid activity"
+                    : "🆓 Free activity"}
+                  {entry.isPaidActivity && entry.activityCost && (
+                    <span className="ml-1">({entry.activityCost})</span>
+                  )}
+                </div>
               </div>
 
               {entry.greatFor.length > 0 && (
