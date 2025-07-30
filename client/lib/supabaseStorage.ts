@@ -134,8 +134,17 @@ export class SupabaseStorage {
     try {
       console.log('🔄 Initializing Supabase Storage bucket...')
 
-      // Try to create bucket first (it will fail gracefully if it already exists)
-      const { data: createData, error: createError } = await supabase.storage.createBucket(this.BUCKET_NAME, {
+      // First test connection
+      const testResult = await SupabaseSetup.testConnection()
+      if (testResult.success) {
+        console.log('✅', testResult.message)
+        return
+      }
+
+      console.warn('⚠️', testResult.message)
+
+      // Try to create bucket
+      const { error: createError } = await supabase.storage.createBucket(this.BUCKET_NAME, {
         public: true,
         allowedMimeTypes: ['image/*', 'video/*'],
         fileSizeLimit: 100 * 1024 * 1024 // 100MB limit
@@ -145,30 +154,15 @@ export class SupabaseStorage {
         if (createError.message?.includes('already exists')) {
           console.log('✅ Supabase storage bucket already exists:', this.BUCKET_NAME)
         } else {
-          console.warn('⚠️ Bucket creation warning:', createError.message)
-          // Check if bucket exists by trying to list it
-          const { data: buckets, error: listError } = await supabase.storage.listBuckets()
-          if (!listError && buckets?.some(bucket => bucket.name === this.BUCKET_NAME)) {
-            console.log('✅ Bucket exists and accessible:', this.BUCKET_NAME)
-          } else {
-            console.error('❌ Cannot access or create bucket. Please check Supabase dashboard.')
-            console.error('Setup instructions:')
-            console.error('1. Go to your Supabase project dashboard')
-            console.error('2. Navigate to Storage section')
-            console.error('3. Create a public bucket named "journal-media"')
-            console.error('4. Set RLS policies to allow public access')
-          }
+          console.error('❌ Bucket creation failed:', createError.message)
+          SupabaseSetup.displaySetupInstructions()
         }
       } else {
         console.log('✅ Supabase storage bucket created successfully:', this.BUCKET_NAME)
       }
     } catch (error) {
       console.error('❌ Bucket initialization failed:', error)
-      console.error('Please manually create the bucket in Supabase dashboard:')
-      console.error('1. Go to Storage > Create new bucket')
-      console.error('2. Name: "journal-media"')
-      console.error('3. Make it public')
-      console.error('4. Allow image/* and video/* file types')
+      SupabaseSetup.displaySetupInstructions()
     }
   }
 }
