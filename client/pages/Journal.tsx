@@ -310,6 +310,8 @@ export default function Journal() {
               key={entry.id}
               entry={entry}
               onLike={handleLike}
+              onEdit={isFamilyMember ? handleEdit : undefined}
+              onDelete={isFamilyMember ? handleDelete : undefined}
               isFamilyMember={isFamilyMember}
             />
           ))}
