@@ -131,6 +131,7 @@ export default function Index() {
         <FamilyStats
           showAll={showAllStats}
           onViewAll={() => setShowAllStats(true)}
+          onClose={() => setShowAllStats(false)}
         />
       </section>
 
