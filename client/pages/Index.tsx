@@ -62,6 +62,20 @@ export default function Index() {
       const cloudEnabled = await HybridStorage.initialize();
       setIsCloudSyncEnabled(cloudEnabled);
 
+      // Manual test: try to read Charlie data from Firebase
+      if (cloudEnabled) {
+        try {
+          const firebaseCharlieData = await CloudStorage.getCharlieData();
+          console.log("🔥 Manual Firebase Charlie read:", {
+            hasImage: !!firebaseCharlieData.image,
+            imageLength: firebaseCharlieData.image?.length || 0,
+            imageStart: firebaseCharlieData.image?.substring(0, 30) || "none"
+          });
+        } catch (error) {
+          console.error("❌ Failed to read Charlie data from Firebase:", error);
+        }
+      }
+
       if (cloudEnabled) {
         console.log(
           "🔄 Auto-sync enabled! Changes will sync across all devices.",
