@@ -214,6 +214,10 @@ export class HybridStorage {
 
     // Listen for Charlie data changes
     const charlieListener = CloudStorage.listenToCharlieData((charlieData) => {
+      console.log("🔥 Firebase Charlie update received:", {
+        hasImage: !!charlieData.image,
+        imageLength: charlieData.image?.length || 0
+      });
       LocalStorage.setCharlieData(charlieData);
       this.notifyListeners();
     });
