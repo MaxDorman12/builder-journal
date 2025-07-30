@@ -230,6 +230,67 @@ export default function Index() {
         </Card>
       </section>
 
+      {/* Meet Charlie Section */}
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+        <Card className="family-card overflow-hidden">
+          <div className="aspect-[4/3] bg-gradient-to-br from-amber-50 to-orange-50 overflow-hidden">
+            <img
+              src="https://cdn.builder.io/o/assets%2Fcfcab9c7e41c4c598843808fb9cdccfb%2Fd4230fee0d984ee1ac6366e4bd0605b1?alt=media&token=9b486792-1532-434c-bebb-708ab61386b0&apiKey=cfcab9c7e41c4c598843808fb9cdccfb"
+              alt="Charlie the dog"
+              className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+            />
+          </div>
+        </Card>
+
+        <div className="space-y-6">
+          <h2 className="text-3xl font-bold text-foreground flex items-center gap-3">
+            <span className="text-4xl">🐕</span>
+            Meet Charlie
+          </h2>
+          <div className="prose prose-lg max-w-none text-muted-foreground">
+            <p>
+              No family adventure is complete without our beloved four-legged companion,
+              Charlie! This loyal and energetic member of the Dorman family brings joy
+              and excitement to every journey we embark on across Scotland.
+            </p>
+            <p>
+              Whether it's hiking through the Scottish Highlands, exploring sandy beaches
+              along the coast, or discovering dog-friendly trails in the countryside,
+              Charlie is always ready for the next adventure with his tail wagging and
+              spirit high.
+            </p>
+            <p>
+              His favorite activities include chasing sticks by the lochs, making friends
+              with other dogs at campsites, and of course, being the star of many of our
+              family photos. Charlie truly makes every adventure more memorable! 🐾
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <div className="bg-gradient-to-r from-amber-200 to-yellow-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
+              <span className="text-amber-800 font-medium">
+                🎾 Adventure Buddy
+              </span>
+            </div>
+            <div className="bg-gradient-to-r from-green-200 to-emerald-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
+              <span className="text-green-800 font-medium">
+                🥾 Trail Explorer
+              </span>
+            </div>
+            <div className="bg-gradient-to-r from-blue-200 to-cyan-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
+              <span className="text-blue-800 font-medium">
+                📸 Photo Star
+              </span>
+            </div>
+            <div className="bg-gradient-to-r from-purple-200 to-pink-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
+              <span className="text-purple-800 font-medium">
+                ❤️ Family Heart
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Recent Entries */}
       {recentEntries.length > 0 && (
         <section className="space-y-6">
