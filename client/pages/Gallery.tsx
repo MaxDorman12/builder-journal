@@ -117,41 +117,44 @@ export default function Gallery() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="space-y-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">📸 Family Photo Gallery</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground">📸 Family Photo Gallery</h1>
+          <p className="text-muted-foreground text-sm md:text-base">
             All your adventure memories in one beautiful place
           </p>
         </div>
-        
-        <div className="flex items-center space-x-2">
+
+        {/* Mobile-optimized controls */}
+        <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as 'date' | 'entry' | 'mood')}
-            className="px-3 py-2 border border-input bg-background rounded-md text-sm"
+            className="px-3 py-2 border border-input bg-background rounded-md text-sm w-full sm:w-auto"
           >
             <option value="date">📅 Sort by Date</option>
             <option value="entry">📝 Sort by Entry</option>
             <option value="mood">😊 Sort by Mood</option>
           </select>
-          
-          <div className="flex border border-input rounded-md">
+
+          <div className="flex border border-input rounded-md w-full sm:w-auto">
             <Button
               variant={viewMode === 'grid' ? 'default' : 'ghost'}
               size="sm"
               onClick={() => setViewMode('grid')}
-              className="rounded-r-none border-r"
+              className="rounded-r-none border-r flex-1 sm:flex-none"
             >
               <Grid3X3 className="h-4 w-4" />
+              <span className="ml-2 sm:hidden">Grid</span>
             </Button>
             <Button
               variant={viewMode === 'list' ? 'default' : 'ghost'}
               size="sm"
               onClick={() => setViewMode('list')}
-              className="rounded-l-none"
+              className="rounded-l-none flex-1 sm:flex-none"
             >
               <List className="h-4 w-4" />
+              <span className="ml-2 sm:hidden">List</span>
             </Button>
           </div>
         </div>
