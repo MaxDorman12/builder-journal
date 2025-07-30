@@ -82,6 +82,13 @@ export function Layout({ children }: LayoutProps) {
                       👨‍👩‍����‍👦 {currentUser}
                     </span>
                   </div>
+                  <Link
+                    to="/settings"
+                    className="bg-gradient-to-r from-purple-300 to-pink-300 hover:from-purple-400 hover:to-pink-400 text-purple-800 font-medium py-1 px-3 rounded-full text-sm transform hover:scale-105 transition-all duration-200 shadow-md flex items-center space-x-1"
+                  >
+                    <Settings className="h-3 w-3" />
+                    <span>Settings</span>
+                  </Link>
                   <button
                     onClick={logout}
                     className="bg-gradient-to-r from-orange-300 to-red-300 hover:from-orange-400 hover:to-red-400 text-orange-800 font-medium py-1 px-3 rounded-full text-sm transform hover:scale-105 transition-all duration-200 shadow-md flex items-center space-x-1"
