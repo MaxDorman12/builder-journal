@@ -501,29 +501,81 @@ export default function Index() {
 
       {/* Charlie Edit Dialog */}
       <Dialog open={isCharlieDialogOpen} onOpenChange={setIsCharlieDialogOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Charlie's Section</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="charlie-image">Charlie's Photo URL</Label>
-              <Input
-                id="charlie-image"
-                value={tempCharlieData.image}
-                onChange={(e) =>
-                  setTempCharlieData({
-                    ...tempCharlieData,
-                    image: e.target.value,
-                  })
-                }
-                placeholder="https://example.com/charlie-photo.jpg"
-                className="w-full"
-              />
-              <p className="text-sm text-muted-foreground">
-                📸 Paste an image URL of Charlie (optional - will show cute dog
-                emoji if empty)
-              </p>
+          <div className="space-y-6">
+            <div className="space-y-4">
+              <Label className="text-base font-semibold">Charlie's Photo</Label>
+
+              {/* Image Preview */}
+              {tempCharlieData.image && (
+                <div className="w-full max-w-sm mx-auto">
+                  <div className="aspect-square bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg overflow-hidden">
+                    <img
+                      src={tempCharlieData.image}
+                      alt="Charlie preview"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.style.display = "none";
+                        e.target.parentElement.innerHTML = '<div class="flex items-center justify-center h-full"><div class="text-6xl">🐕</div></div>';
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* File Upload Option */}
+              <div className="space-y-2">
+                <Label htmlFor="charlie-file-upload" className="text-sm font-medium">
+                  📱 Upload from Device
+                </Label>
+                <Input
+                  id="charlie-file-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="w-full"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Upload directly from your phone or computer (max 5MB)
+                </p>
+              </div>
+
+              {/* URL Option */}
+              <div className="space-y-2">
+                <Label htmlFor="charlie-image-url" className="text-sm font-medium">
+                  🔗 Or paste image URL
+                </Label>
+                <Input
+                  id="charlie-image-url"
+                  value={tempCharlieData.image.startsWith('data:') ? '' : tempCharlieData.image}
+                  onChange={(e) =>
+                    setTempCharlieData({
+                      ...tempCharlieData,
+                      image: e.target.value,
+                    })
+                  }
+                  placeholder="https://example.com/charlie-photo.jpg"
+                  className="w-full"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Alternative: paste an image URL from the web
+                </p>
+              </div>
+
+              {/* Clear Image Button */}
+              {tempCharlieData.image && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setTempCharlieData({...tempCharlieData, image: ''})}
+                  className="w-full"
+                >
+                  🗑️ Remove Photo
+                </Button>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="charlie-description">Description</Label>
