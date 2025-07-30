@@ -99,7 +99,9 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
       };
 
       LocalStorage.saveJournalEntry(entry);
-      onEntryCreated();
+
+      // Show option to place pin on map
+      setShowPinOption(true);
     } catch (err) {
       setError("Failed to create journal entry. Please try again.");
     } finally {
