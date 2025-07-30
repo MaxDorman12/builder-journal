@@ -137,6 +137,12 @@ export class LocalStorage {
           JSON.stringify(data.pins),
         );
       }
+      if (data.wishlist) {
+        localStorage.setItem(
+          this.getKey("wishlist"),
+          JSON.stringify(data.wishlist),
+        );
+      }
       return true;
     } catch (error) {
       console.error("Failed to import data:", error);
