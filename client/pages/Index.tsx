@@ -70,7 +70,7 @@ export default function Index() {
           console.log("🔥 Manual Firebase Charlie read:", {
             hasImage: !!firebaseCharlieData.image,
             imageLength: firebaseCharlieData.image?.length || 0,
-            imageStart: firebaseCharlieData.image?.substring(0, 30) || "none"
+            imageStart: firebaseCharlieData.image?.substring(0, 30) || "none",
           });
         } catch (error) {
           console.error("❌ Failed to read Charlie data from Firebase:", error);
