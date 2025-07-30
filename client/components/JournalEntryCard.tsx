@@ -21,6 +21,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Play,
+  Edit2,
+  Trash2,
+  MoreHorizontal,
 } from "lucide-react";
 import { JournalEntry, MOOD_RATINGS, AREA_TYPES, Comment } from "@shared/api";
 import { LocalStorage } from "@/lib/storage";
