@@ -41,6 +41,7 @@ interface JournalEntryCardProps {
 export function JournalEntryCard({
   entry,
   onLike,
+  onComment,
   onEdit,
   onDelete,
   isFamilyMember,
