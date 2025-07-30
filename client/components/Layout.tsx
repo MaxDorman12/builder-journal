@@ -27,6 +27,7 @@ export function Layout({ children }: LayoutProps) {
     { name: "Home", href: "/", icon: Home },
     { name: "Journal", href: "/journal", icon: BookOpen },
     { name: "Map", href: "/map", icon: Map },
+    { name: "Wishlist", href: "/wishlist", icon: Star },
     { name: "Calendar", href: "/calendar", icon: Calendar },
   ];
 
