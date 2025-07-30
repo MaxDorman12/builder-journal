@@ -142,22 +142,9 @@ export default function Index() {
     const defaultUrl = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
     setYoutubeUrl(savedYoutubeUrl || defaultUrl);
 
-    // Load Charlie data - try cloud first, then local fallback
-    if (isCloudSyncEnabled) {
-      try {
-        const cloudCharlieData = await CloudStorage.getCharlieData();
-        console.log("🐕 Loading Charlie from cloud:", {
-          hasImage: !!cloudCharlieData.image,
-          imageLength: cloudCharlieData.image?.length || 0,
-        });
-        setCharlieData(cloudCharlieData);
-        LocalStorage.setCharlieData(cloudCharlieData); // Update local copy
-      } catch (error) {
-        console.warn("Failed to load Charlie from cloud, using local:", error);
-        const localCharlieData = HybridStorage.getCharlieData();
-        setCharlieData(localCharlieData);
-      }
-    } else {
+    // Charlie data is now loaded automatically in the cloud sync above
+    // Fallback: Load local data if cloud sync is disabled
+    if (!isCloudSyncEnabled) {
       const charlieInfo = HybridStorage.getCharlieData();
       setCharlieData(charlieInfo);
     }
