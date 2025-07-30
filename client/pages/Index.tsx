@@ -244,18 +244,7 @@ export default function Index() {
         tempCharlieData.description.trim() || charlieData.description || "",
     };
 
-    // Check if image is too large for Firebase (1MB limit)
-    if (dataToSave.image && dataToSave.image.length > 800000) {
-      console.warn(
-        "⚠️ Image might be too large for Firebase:",
-        dataToSave.image.length,
-      );
-      alert(
-        "⚠️ Image is very large (" +
-          Math.round(dataToSave.image.length / 1000) +
-          "KB) - it might not sync properly. Try a smaller image.",
-      );
-    }
+    // Firebase Storage can handle large images - no size limit needed
 
     // FORCE SAVE TO FIREBASE FIRST - no more local storage issues!
     try {
