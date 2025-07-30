@@ -96,7 +96,7 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
         parkingCost: formData.parkingCost.trim(),
         isPaidActivity: formData.isPaidActivity,
         activityCost: formData.activityCost.trim(),
-        author: currentUser || "Family Member",
+        author: currentUser || "Dorman Family",
         likes: 0,
         comments: [],
         tags: [],
