@@ -247,17 +247,20 @@ export default function Index() {
                 (r) => r.value === entry.moodRating,
               );
               return (
-                <Card key={entry.id} className="family-card overflow-hidden">
-                  <div className="aspect-video bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center">
+                <Card key={entry.id} className="family-card overflow-hidden hover:shadow-lg transition-all duration-200 hover:scale-105">
+                  <div className="aspect-[4/3] bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center overflow-hidden relative">
                     {entry.images.length > 0 ? (
                       <img
                         src={entry.images[0]}
                         alt={entry.title}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                        loading="lazy"
                       />
                     ) : (
                       <Camera className="h-12 w-12 text-muted-foreground" />
                     )}
+                    {/* Gradient overlay for better text readability */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-200"></div>
                   </div>
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between mb-2">
