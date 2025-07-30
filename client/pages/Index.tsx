@@ -51,10 +51,32 @@ export default function Index() {
     image: "",
     description: "",
   });
+  const [isCloudSyncEnabled, setIsCloudSyncEnabled] = useState(false);
 
   useEffect(() => {
     // Initialize sample data if no data exists
     initializeSampleData();
+
+    // Initialize hybrid storage with auto-sync
+    const initializeStorage = async () => {
+      const cloudEnabled = await HybridStorage.initialize();
+      setIsCloudSyncEnabled(cloudEnabled);
+
+      if (cloudEnabled) {
+        console.log('🔄 Auto-sync enabled! Changes will sync across all devices.');
+
+        // Setup listener for real-time updates
+        const unsubscribe = HybridStorage.onUpdate(() => {
+          setEntries(HybridStorage.getJournalEntries());
+          setPins(HybridStorage.getMapPins());
+          setCharlieData(HybridStorage.getCharlieData());
+        });
+
+        return () => unsubscribe();
+      }
+    };
+
+    initializeStorage();
 
     setEntries(LocalStorage.getJournalEntries());
     setPins(LocalStorage.getMapPins());
@@ -67,6 +89,10 @@ export default function Index() {
     // Load Charlie data
     const charlieInfo = LocalStorage.getCharlieData();
     setCharlieData(charlieInfo);
+
+    return () => {
+      HybridStorage.cleanup();
+    };
   }, []);
 
   const recentEntries = entries
@@ -358,7 +384,7 @@ export default function Index() {
 
         <div className="space-y-6">
           <h2 className="text-3xl font-bold text-foreground flex items-center gap-3">
-            <span className="text-4xl">🐕</span>
+            <span className="text-4xl">����</span>
             Meet Charlie
             {isAuthenticated && (
               <Button
