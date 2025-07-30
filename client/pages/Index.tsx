@@ -341,7 +341,7 @@ export default function Index() {
         console.log("📸 Image processed:", {
           originalSize: file.size,
           compressedLength: compressedDataUrl.length,
-          dimensions: `${width}x${height}`
+          dimensions: `${width}x${height}`,
         });
 
         setTempCharlieData({
