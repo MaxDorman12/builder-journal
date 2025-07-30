@@ -243,7 +243,7 @@ export default function Index() {
         tempCharlieData.description.trim() || charlieData.description || "",
     };
 
-    // Firebase Storage can handle large images - no size limit needed
+    // Using simple base64 approach for now
 
     // FORCE SAVE TO FIREBASE FIRST - no more local storage issues!
     try {
