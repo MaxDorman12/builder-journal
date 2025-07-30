@@ -464,6 +464,54 @@ export default function Index() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Charlie Edit Dialog */}
+      <Dialog open={isCharlieDialogOpen} onOpenChange={setIsCharlieDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Edit Charlie's Section</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="charlie-image">Charlie's Photo URL</Label>
+              <Input
+                id="charlie-image"
+                value={tempCharlieData.image}
+                onChange={(e) => setTempCharlieData({...tempCharlieData, image: e.target.value})}
+                placeholder="https://example.com/charlie-photo.jpg"
+                className="w-full"
+              />
+              <p className="text-sm text-muted-foreground">
+                📸 Paste an image URL of Charlie (optional - will show cute dog emoji if empty)
+              </p>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="charlie-description">Description</Label>
+              <Textarea
+                id="charlie-description"
+                value={tempCharlieData.description}
+                onChange={(e) => setTempCharlieData({...tempCharlieData, description: e.target.value})}
+                placeholder="Tell everyone about Charlie and your adventures together..."
+                className="w-full min-h-[120px]"
+              />
+              <p className="text-sm text-muted-foreground">
+                🐕 Share Charlie's story and his role in your family adventures
+              </p>
+            </div>
+            <div className="flex justify-end space-x-2">
+              <Button variant="outline" onClick={handleCharlieCancel}>
+                Cancel
+              </Button>
+              <Button
+                onClick={handleCharlieSave}
+                disabled={!tempCharlieData.description.trim()}
+              >
+                Save Changes
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
