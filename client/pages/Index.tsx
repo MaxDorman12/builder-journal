@@ -487,7 +487,9 @@ export default function Index() {
                   variant="ghost"
                   size="sm"
                   onClick={async () => {
-                    console.log("🔄 FORCE SYNC - Clearing cache and re-syncing...");
+                    console.log(
+                      "🔄 FORCE SYNC - Clearing cache and re-syncing...",
+                    );
 
                     // Clear all local storage
                     localStorage.clear();
@@ -505,10 +507,12 @@ export default function Index() {
                     console.log("✅ FORCE SYNC complete:", {
                       charlieHasImage: !!freshData.image,
                       imageLength: freshData.image?.length || 0,
-                      timestamp: new Date().toISOString()
+                      timestamp: new Date().toISOString(),
                     });
 
-                    alert("🔄 Force sync complete! Latest data loaded from Firebase.");
+                    alert(
+                      "🔄 Force sync complete! Latest data loaded from Firebase.",
+                    );
                   }}
                   className="h-8 w-auto px-2 text-xs bg-red-100"
                   title="Force Sync"
