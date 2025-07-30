@@ -552,6 +552,59 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
         </CardContent>
       </Card>
 
+      {/* Pin Placement Dialog */}
+      {showPinOption && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-6 max-w-md mx-4 shadow-2xl">
+            <div className="text-center space-y-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-green-200 to-blue-200 rounded-full flex items-center justify-center mx-auto">
+                <span className="text-2xl">📍</span>
+              </div>
+
+              <div>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">
+                  🎉 Journal Entry Created!
+                </h3>
+                <p className="text-gray-600">
+                  Would you like to place a pin on the map for this adventure?
+                </p>
+              </div>
+
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => {
+                    // Store the entry data for map pin creation
+                    const entryData = {
+                      title: formData.title.trim(),
+                      description: formData.content.trim(),
+                      location: formData.location.trim(),
+                      moodRating: formData.moodRating,
+                      visitDate: formData.date,
+                      entryId: Date.now().toString() // This should match the entry ID
+                    };
+                    localStorage.setItem('pendingMapPin', JSON.stringify(entryData));
+                    navigate('/map?mode=place-pin');
+                  }}
+                  className="bg-gradient-to-r from-purple-400 to-pink-400 hover:from-purple-500 hover:to-pink-500 text-white font-semibold py-2 px-4 rounded-full transform hover:scale-105 transition-all duration-200 shadow-lg"
+                >
+                  📍 Yes, Place Pin!
+                </button>
+
+                <button
+                  onClick={() => {
+                    setShowPinOption(false);
+                    onEntryCreated();
+                  }}
+                  className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-full transition-colors"
+                >
+                  Skip for now
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Submit */}
       <div className="flex justify-end space-x-4">
         <Button type="submit" disabled={isSubmitting}>
