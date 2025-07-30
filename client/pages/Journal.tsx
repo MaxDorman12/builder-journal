@@ -101,6 +101,11 @@ export default function Journal() {
           <p className="text-muted-foreground">
             {entries.length} adventures documented and counting!
           </p>
+          {!isFamilyMember && (
+            <p className="text-sm text-blue-600 bg-blue-50 px-3 py-1 rounded-full inline-block mt-2">
+              💭 Visitors can like and comment on our adventures!
+            </p>
+          )}
         </div>
 
         {isFamilyMember && (
