@@ -160,8 +160,8 @@ export default function Gallery() {
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {/* Stats - Mobile optimized */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
         <Card className="pastel-stat-card from-pink-200 to-rose-300">
           <CardContent className="flex items-center space-x-3 p-4">
             <div className="p-2 bg-white/60 rounded-lg">
