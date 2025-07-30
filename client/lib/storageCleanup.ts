@@ -149,6 +149,23 @@ export class StorageCleanup {
     }
     return 0;
   }
+
+  // Nuclear option: Clear ALL localStorage for this domain
+  static nuclearReset(): void {
+    const confirmed = confirm('🚨 NUCLEAR RESET 🚨\n\nThis will delete ALL local data for this site!\n\n• All journal entries saved locally\n• All photos and videos\n• All settings\n\nData on cloud (Firebase) will be safe and will re-download.\n\nAre you absolutely sure?');
+
+    if (confirmed) {
+      console.log('💥 Nuclear localStorage reset initiated');
+      try {
+        localStorage.clear();
+        sessionStorage.clear();
+        alert('💥 Nuclear Reset Complete!\n\nAll local storage cleared.\nReload the page to start fresh.');
+        window.location.reload();
+      } catch (error) {
+        alert('❌ Reset failed. Try manually clearing browser data.');
+      }
+    }
+  }
 }
 
 // Auto-run cleanup if localStorage is getting too large
