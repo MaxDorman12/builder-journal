@@ -159,6 +159,15 @@
   .bouncy {
     animation: bounce-gentle 2s ease-in-out infinite;
   }
+
+  /* Mobile dialog optimizations */
+  @media (max-width: 768px) {
+    [data-radix-dialog-content] {
+      max-height: 90vh !important;
+      margin: 1rem !important;
+      border-radius: 1rem !important;
+    }
+  }
 }
 
 @keyframes gradient-shift {
