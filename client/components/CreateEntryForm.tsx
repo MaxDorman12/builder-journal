@@ -503,6 +503,44 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
             )}
           </div>
 
+          {/* Paid Activity Section */}
+          <div className="space-y-3">
+            <Label className="text-base font-medium">💳 Activity Cost</Label>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="isPaidActivity"
+                checked={formData.isPaidActivity}
+                onCheckedChange={(checked) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    isPaidActivity: checked as boolean,
+                  }))
+                }
+              />
+              <Label htmlFor="isPaidActivity">
+                💰 This is a paid activity
+              </Label>
+            </div>
+
+            {formData.isPaidActivity && (
+              <div className="ml-6 space-y-2">
+                <Label htmlFor="activityCost">💳 Activity cost</Label>
+                <Input
+                  id="activityCost"
+                  value={formData.activityCost}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      activityCost: e.target.value,
+                    }))
+                  }
+                  placeholder="e.g., £15 per person, £50 for family"
+                  className="max-w-xs"
+                />
+              </div>
+            )}
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Would you return?</Label>
