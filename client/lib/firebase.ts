@@ -23,9 +23,6 @@ export const db = getFirestore(app);
 // Initialize Auth
 export const auth = getAuth(app);
 
-// Initialize Storage for large image uploads
-export const storage = getStorage(app);
-
 // Use production Firebase - emulator disabled for browser compatibility
 
 export default app;
