@@ -76,6 +76,10 @@ export default function Journal() {
     loadEntries();
   };
 
+  const handleComment = (entryId: string) => {
+    loadEntries(); // Reload entries to show new comments
+  };
+
   const handleEdit = (entry: JournalEntry) => {
     setEditingEntry(entry);
     setIsEditDialogOpen(true);
