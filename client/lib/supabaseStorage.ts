@@ -144,11 +144,22 @@ export class SupabaseStorage {
 
           if (error) {
             console.error('❌ Supabase compressed upload error:', error)
-            if (error.message?.includes('Failed to fetch') || error.message?.includes('mime type')) {
-              console.error('💡 MIME type or connection issue, falling back to base64 storage')
+            if (error.message?.includes('Failed to fetch') ||
+                error.message?.includes('mime type') ||
+                error.message?.includes('row-level security policy')) {
+              console.error('💡 Supabase Storage issue detected, falling back to base64 storage')
+
               if (error.message?.includes('mime type')) {
-                console.error('Bucket MIME type restrictions detected. Please configure bucket to allow image files.')
+                console.error('🚨 MIME type restriction detected')
+              } else if (error.message?.includes('row-level security policy')) {
+                console.error('🚨 RLS POLICY BLOCKING IMAGE UPLOAD!')
+                console.error('IMMEDIATE FIX NEEDED:')
+                console.error('1. Go to https://supabase.com/dashboard')
+                console.error('2. Storage > journal-media > Settings')
+                console.error('3. Turn OFF "Row Level Security"')
+                console.error('4. Save changes')
               }
+
               SupabaseSetup.displaySetupInstructions()
               resolve(this.canvasToBase64(canvas))
               return
