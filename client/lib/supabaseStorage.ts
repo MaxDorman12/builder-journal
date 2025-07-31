@@ -70,11 +70,18 @@ export class SupabaseStorage {
 
       if (error) {
         console.error('❌ Supabase upload error:', error)
-        if (error.message?.includes('Failed to fetch') || error.message?.includes('mime type')) {
-          console.error('💡 MIME type or connection issue, falling back to base64 storage')
+        if (error.message?.includes('Failed to fetch') ||
+            error.message?.includes('mime type') ||
+            error.message?.includes('row-level security policy')) {
+          console.error('💡 Supabase Storage issue detected, falling back to base64 storage')
+
           if (error.message?.includes('mime type')) {
-            console.error('Bucket MIME type restrictions detected. Please configure bucket to allow this file type:', file.type)
+            console.error('🚨 MIME type restriction:', file.type)
+          } else if (error.message?.includes('row-level security policy')) {
+            console.error('🚨 RLS POLICY BLOCKING UPLOAD!')
+            console.error('Quick fix: Go to Supabase > Storage > journal-media > Settings > Turn OFF Row Level Security')
           }
+
           SupabaseSetup.displaySetupInstructions()
           return await this.fileToBase64(file)
         }
