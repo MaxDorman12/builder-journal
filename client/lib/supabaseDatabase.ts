@@ -386,7 +386,7 @@ export class SupabaseDatabase {
           console.error("  - Request timeout (>10 seconds)");
           console.error("  - CORS or firewall blocking request");
 
-          console.log("⚠️ Skipping wishlist item save due to network issue (catch block)");
+          console.log("⚠️ CONFIRMED: Skipping wishlist item save due to network issue (catch block) - RETURNING WITHOUT THROWING");
           return; // DO NOT THROW - just return
         }
       }
