@@ -174,23 +174,23 @@ export class HybridStorage {
     }
   }
 
-  // Setup real-time listeners for cloud updates
+  // Setup real-time listeners for Supabase updates
   private static setupRealtimeListeners(): void {
     if (!this.supabaseEnabled) {
-      console.log("⚠️ Cloud not enabled, skipping real-time listeners");
+      console.log("⚠️ Supabase not enabled, skipping real-time listeners");
       return;
     }
-    console.log("🔄 Setting up Firebase real-time listeners...");
+    console.log("🔄 Setting up Supabase real-time subscriptions...");
 
     try {
-      // Listen for journal entry changes
-      const entriesListener = SupabaseDatabase.listenToJournalEntries(
-        (cloudEntries) => {
+      // Subscribe to journal entry changes
+      const entriesListener = SupabaseDatabase.subscribeToJournalEntries(
+        (supabaseEntries) => {
           const localEntries = LocalStorage.getJournalEntries();
           const localIds = new Set(localEntries.map((e) => e.id));
 
-          // Add new entries from cloud
-          cloudEntries.forEach((entry) => {
+          // Add new entries from Supabase
+          supabaseEntries.forEach((entry) => {
             if (!localIds.has(entry.id)) {
               LocalStorage.saveJournalEntry(entry);
             }
