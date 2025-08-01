@@ -501,7 +501,7 @@ export function JournalEntryCard({
                 </div>
               </div>
 
-              {entry.greatFor.length > 0 && (
+              {entry.greatFor && entry.greatFor.length > 0 && (
                 <div>
                   <strong className="text-sm">Great For:</strong>
                   <div className="flex flex-wrap gap-1 mt-1">
