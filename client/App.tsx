@@ -21,8 +21,26 @@ import Search from "./pages/Search";
 import Settings from "./pages/Settings";
 import Calendar from "./pages/Calendar";
 import NotFound from "./pages/NotFound";
+import { HybridStorage } from "./lib/hybridStorage";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient();
+
+// Global initialization component
+const StorageInitializer = () => {
+  useEffect(() => {
+    console.log("🚀 Initializing HybridStorage globally...");
+    HybridStorage.initialize().then((success) => {
+      if (success) {
+        console.log("✅ HybridStorage initialized successfully");
+      } else {
+        console.log("⚠️ HybridStorage initialized with local storage only");
+      }
+    });
+  }, []);
+
+  return null;
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
