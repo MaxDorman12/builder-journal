@@ -338,6 +338,8 @@ export class SupabaseDatabase {
           error.message?.includes("Failed to fetch") ||
           error.message?.includes("NetworkError") ||
           error.message?.includes("fetch") ||
+          error.message?.toLowerCase().includes("timeout") ||
+          error.message?.toLowerCase().includes("connection") ||
           error.code === "PGRST301"
         ) {
           console.error("🌐 Network connectivity issue during wishlist save:");
@@ -351,6 +353,7 @@ export class SupabaseDatabase {
           return;
         }
 
+        // Only throw for non-network errors
         throw new Error(
           `Failed to save wishlist item: ${error.message || error}`,
         );
