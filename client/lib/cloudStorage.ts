@@ -215,6 +215,10 @@ export class CloudStorage {
   }
 
   static listenToMapPins(callback: (pins: MapPin[]) => void): Unsubscribe {
+    if (!this.isFirebaseAvailable()) {
+      console.warn("⚠️ Cannot setup map pins listener - Firebase unavailable");
+      return () => {};
+    }
     return onSnapshot(collection(db, "map-pins"),
       (snapshot) => {
         const pins = snapshot.docs.map((doc) => doc.data() as MapPin);
