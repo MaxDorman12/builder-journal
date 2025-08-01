@@ -15,6 +15,10 @@ export class HybridStorage {
 
       if (this.supabaseEnabled) {
         console.log("🔄 Initializing Supabase sync...");
+
+        // Test real-time connection
+        SupabaseDatabase.testRealtime();
+
         await this.syncLocalToSupabase();
         this.setupRealtimeListeners();
         console.log(
