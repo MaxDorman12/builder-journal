@@ -48,7 +48,10 @@ export class SupabaseDatabase {
         likes: entry.likes || 0,
         comments: entry.comments || [],
         tags: entry.tags || [],
-      });
+      })
+      .abortSignal(controller.signal);
+
+      clearTimeout(timeoutId);
 
       if (error) {
         console.error(
