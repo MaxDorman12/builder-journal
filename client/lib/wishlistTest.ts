@@ -56,6 +56,19 @@ export class WishlistTest {
     return count;
   }
 
+  static checkSupabaseStatus(): void {
+    console.log("🧪 STATUS: Checking Supabase and sync status...");
+    const status = HybridStorage.getSupabaseStatus();
+    console.log("🧪 STATUS: Supabase enabled:", status.enabled);
+    console.log("🧪 STATUS: Message:", status.message);
+
+    const localItems = HybridStorage.getWishlistItems();
+    console.log("🧪 STATUS: Local wishlist items:", localItems.length);
+    localItems.forEach((item, index) => {
+      console.log(`🧪 STATUS: Item ${index + 1}: ${item.title} (ID: ${item.id})`);
+    });
+  }
+
   static async testDelete(itemId: string): Promise<void> {
     console.log("🧪 TEST: Testing deletion of item:", itemId);
     await HybridStorage.deleteWishlistItem(itemId);
