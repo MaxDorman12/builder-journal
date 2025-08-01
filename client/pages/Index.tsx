@@ -73,9 +73,9 @@ export default function Index() {
           "📵 localStorage disabled - forcing direct Firebase access",
         );
         try {
-          const directEntries = await CloudStorage.getJournalEntries();
-          const directCharlie = await CloudStorage.getCharlieData();
-          const directPins = await CloudStorage.getMapPins();
+          const directEntries = await SupabaseDatabase.getJournalEntries();
+          const directCharlie = await SupabaseDatabase.getCharlieData();
+          const directPins = await SupabaseDatabase.getMapPins();
 
           console.log("📱 Direct Firebase load successful:", {
             entriesCount: directEntries.length,
@@ -98,10 +98,10 @@ export default function Index() {
           // Fetch ALL fresh data from Firebase
           const [freshCharlieData, freshEntries, freshPins, freshWishlist] =
             await Promise.all([
-              CloudStorage.getCharlieData(),
-              CloudStorage.getJournalEntries(),
-              CloudStorage.getMapPins(),
-              CloudStorage.getWishlistItems(),
+              SupabaseDatabase.getCharlieData(),
+              SupabaseDatabase.getJournalEntries(),
+              SupabaseDatabase.getMapPins(),
+              SupabaseDatabase.getWishlistItems(),
             ]);
 
           console.log("📥 Fresh data received from Firebase:", {
@@ -142,9 +142,9 @@ export default function Index() {
           // Try direct Firebase load as emergency fallback
           try {
             console.log("🚨 Emergency fallback: Direct Firebase load");
-            const emergencyEntries = await CloudStorage.getJournalEntries();
-            const emergencyCharlie = await CloudStorage.getCharlieData();
-            const emergencyPins = await CloudStorage.getMapPins();
+            const emergencyEntries = await SupabaseDatabase.getJournalEntries();
+            const emergencyCharlie = await SupabaseDatabase.getCharlieData();
+            const emergencyPins = await SupabaseDatabase.getMapPins();
 
             console.log("🚨 Emergency data loaded:", {
               entriesCount: emergencyEntries.length,
@@ -167,9 +167,9 @@ export default function Index() {
         // Even if cloud sync is disabled, try to load from Firebase for public viewing
         try {
           console.log("🌐 Loading public data from Firebase...");
-          const publicCharlieData = await CloudStorage.getCharlieData();
-          const publicEntries = await CloudStorage.getJournalEntries();
-          const publicPins = await CloudStorage.getMapPins();
+          const publicCharlieData = await SupabaseDatabase.getCharlieData();
+          const publicEntries = await SupabaseDatabase.getJournalEntries();
+          const publicPins = await SupabaseDatabase.getMapPins();
 
           setCharlieData(publicCharlieData);
           setEntries(publicEntries);
@@ -208,9 +208,9 @@ export default function Index() {
       console.log("🔄 FORCING fresh data from Firebase...");
       try {
         const [freshCharlie, freshEntries, freshPins] = await Promise.all([
-          CloudStorage.getCharlieData(),
-          CloudStorage.getJournalEntries(),
-          CloudStorage.getMapPins(),
+          SupabaseDatabase.getCharlieData(),
+          SupabaseDatabase.getJournalEntries(),
+          SupabaseDatabase.getMapPins(),
         ]);
 
         console.log("✅ FRESH DATA LOADED:", {
@@ -313,7 +313,7 @@ export default function Index() {
           (dataToSave.image?.length || 0) +
           (dataToSave.description?.length || 0),
       });
-      await CloudStorage.setCharlieData(dataToSave);
+      await SupabaseDatabase.setCharlieData(dataToSave);
       console.log("✅ FIREBASE SAVE SUCCESS");
 
       // Update local storage as backup
@@ -657,7 +657,7 @@ export default function Index() {
 
                       // Force fresh fetch from Firebase with timeout
                       const freshData = await Promise.race([
-                        CloudStorage.getCharlieData(),
+                        SupabaseDatabase.getCharlieData(),
                         new Promise((_, reject) =>
                           setTimeout(() => reject(new Error("Timeout")), 10000),
                         ),
@@ -717,10 +717,10 @@ export default function Index() {
                       try {
                         console.log("🔄 Manual refresh from Firebase...");
                         const freshEntries =
-                          await CloudStorage.getJournalEntries();
+                          await SupabaseDatabase.getJournalEntries();
                         const freshCharlie =
-                          await CloudStorage.getCharlieData();
-                        const freshPins = await CloudStorage.getMapPins();
+                          await SupabaseDatabase.getCharlieData();
+                        const freshPins = await SupabaseDatabase.getMapPins();
 
                         setEntries(freshEntries);
                         setCharlieData(freshCharlie);
