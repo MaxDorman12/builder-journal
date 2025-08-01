@@ -52,7 +52,7 @@ export class HybridStorage {
     const localEntries = LocalStorage.getJournalEntries();
 
     // If localStorage is disabled and we get no entries, we need to load from Firebase
-    if (localEntries.length === 0 && this.cloudEnabled) {
+    if (localEntries.length === 0 && this.supabaseEnabled) {
       console.warn(
         "📵 localStorage disabled, entries should be loaded from Firebase directly",
       );
@@ -66,7 +66,7 @@ export class HybridStorage {
 
   static async deleteJournalEntry(id: string): Promise<void> {
     LocalStorage.deleteJournalEntry(id);
-    if (this.cloudEnabled) {
+    if (this.supabaseEnabled) {
       try {
         await SupabaseDatabase.deleteJournalEntry(id);
       } catch (error) {
@@ -78,7 +78,7 @@ export class HybridStorage {
   // Map Pins
   static async saveMapPin(pin: MapPin): Promise<void> {
     LocalStorage.saveMapPin(pin);
-    if (this.cloudEnabled) {
+    if (this.supabaseEnabled) {
       try {
         await SupabaseDatabase.saveMapPin(pin);
       } catch (error) {
@@ -93,7 +93,7 @@ export class HybridStorage {
 
   static async deleteMapPin(id: string): Promise<void> {
     LocalStorage.deleteMapPin(id);
-    if (this.cloudEnabled) {
+    if (this.supabaseEnabled) {
       try {
         await SupabaseDatabase.deleteMapPin(id);
       } catch (error) {
@@ -105,7 +105,7 @@ export class HybridStorage {
   // Wishlist Items
   static async saveWishlistItem(item: WishlistItem): Promise<void> {
     LocalStorage.saveWishlistItem(item);
-    if (this.cloudEnabled) {
+    if (this.supabaseEnabled) {
       try {
         await SupabaseDatabase.saveWishlistItem(item);
       } catch (error) {
@@ -120,7 +120,7 @@ export class HybridStorage {
 
   static async deleteWishlistItem(id: string): Promise<void> {
     LocalStorage.deleteWishlistItem(id);
-    if (this.cloudEnabled) {
+    if (this.supabaseEnabled) {
       try {
         await SupabaseDatabase.deleteWishlistItem(id);
       } catch (error) {
@@ -135,7 +135,7 @@ export class HybridStorage {
     description: string;
   }): Promise<void> {
     LocalStorage.setCharlieData(data);
-    if (this.cloudEnabled) {
+    if (this.supabaseEnabled) {
       try {
         await SupabaseDatabase.setCharlieData(data);
       } catch (error) {
@@ -176,7 +176,7 @@ export class HybridStorage {
 
   // Setup real-time listeners for cloud updates
   private static setupRealtimeListeners(): void {
-    if (!this.cloudEnabled) {
+    if (!this.supabaseEnabled) {
       console.log("⚠️ Cloud not enabled, skipping real-time listeners");
       return;
     }
@@ -254,7 +254,7 @@ export class HybridStorage {
       console.log("📱 App will work in offline mode with localStorage only");
 
       // Disable cloud sync to prevent further connection attempts
-      this.cloudEnabled = false;
+      this.supabaseEnabled = false;
     }
   }
 
@@ -278,7 +278,7 @@ export class HybridStorage {
   }
 
   static isCloudEnabled(): boolean {
-    return this.cloudEnabled;
+    return this.supabaseEnabled;
   }
 
   static cleanup(): void {
