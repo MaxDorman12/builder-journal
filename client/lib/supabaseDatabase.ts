@@ -244,6 +244,19 @@ export class SupabaseDatabase {
 
       if (error) {
         console.error("❌ Failed to delete journal entry:", error);
+
+        // Check if it's a network connectivity issue
+        if (
+          error.message?.includes("Failed to fetch") ||
+          error.message?.includes("NetworkError") ||
+          error.message?.includes("fetch") ||
+          error.code === "PGRST301"
+        ) {
+          console.error("🌐 Network connectivity issue during journal entry deletion");
+          console.log("⚠️ Skipping journal entry deletion due to network issue");
+          return;
+        }
+
         throw error;
       }
 
