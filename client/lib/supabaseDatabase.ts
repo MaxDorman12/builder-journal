@@ -215,10 +215,10 @@ export class SupabaseDatabase {
         lng: row.longitude,
         title: row.title,
         description: row.description || '',
-        moodRating: 5, // Default value since not stored in DB yet
-        journalEntryId: undefined, // Not stored in DB yet
+        moodRating: row.mood_rating || 5,
+        journalEntryId: row.journal_entry_id || undefined,
         visitDate: row.created_at,
-        images: [], // Not stored in DB yet
+        images: row.images ? JSON.parse(row.images) : [],
       }));
 
       console.log(`✅ Loaded ${pins.length} map pins from Supabase`);
