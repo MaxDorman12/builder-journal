@@ -67,17 +67,17 @@ export default function Index() {
       const cloudEnabled = await HybridStorage.initialize();
       setIsCloudSyncEnabled(cloudEnabled);
 
-      // If localStorage is disabled, force direct Firebase access
+      // If localStorage is disabled, force direct Supabase access
       if (StorageHealth.isDisabled()) {
         console.log(
-          "📵 localStorage disabled - forcing direct Firebase access",
+          "📵 localStorage disabled - forcing direct Supabase access",
         );
         try {
           const directEntries = await SupabaseDatabase.getJournalEntries();
           const directCharlie = await SupabaseDatabase.getCharlieData();
           const directPins = await SupabaseDatabase.getMapPins();
 
-          console.log("📱 Direct Firebase load successful:", {
+          console.log("📱 Direct Supabase load successful:", {
             entriesCount: directEntries.length,
             charlieHasImage: !!directCharlie.image,
           });
@@ -90,12 +90,12 @@ export default function Index() {
         }
       }
 
-      // AUTO-SYNC: Always fetch fresh data from Firebase when page loads (for ALL visitors)
+      // AUTO-SYNC: Always fetch fresh data from Supabase when page loads (for ALL visitors)
       if (cloudEnabled) {
         try {
-          console.log("🔄 Auto-syncing with Firebase on page load...");
+          console.log("🔄 Auto-syncing with Supabase on page load...");
 
-          // Fetch ALL fresh data from Firebase
+          // Fetch ALL fresh data from Supabase
           const [freshCharlieData, freshEntries, freshPins, freshWishlist] =
             await Promise.all([
               SupabaseDatabase.getCharlieData(),
@@ -104,7 +104,7 @@ export default function Index() {
               SupabaseDatabase.getWishlistItems(),
             ]);
 
-          console.log("📥 Fresh data received from Firebase:", {
+          console.log("📥 Fresh data received from Supabase:", {
             charlieHasImage: !!freshCharlieData.image,
             entriesCount: freshEntries.length,
             pinsCount: freshPins.length,
@@ -117,8 +117,8 @@ export default function Index() {
           freshPins.forEach((pin) => LocalStorage.saveMapPin(pin));
           freshWishlist.forEach((item) => LocalStorage.saveWishlistItem(item));
 
-          // ALWAYS update UI with fresh Firebase data (even if localStorage fails)
-          console.log("📱 Setting UI state with Firebase data:", {
+          // ALWAYS update UI with fresh Supabase data (even if localStorage fails)
+          console.log("📱 Setting UI state with Supabase data:", {
             entriesCount: freshEntries.length,
             pinsCount: freshPins.length,
             charlieHasImage: !!freshCharlieData.image,
@@ -129,7 +129,7 @@ export default function Index() {
           setPins(freshPins);
 
           console.log(
-            "✅ Auto-sync completed - all data refreshed from Firebase!",
+            "✅ Auto-sync completed - all data refreshed from Supabase!",
           );
           console.log("👀 New visitors will see:", {
             charlieHasImage: !!freshCharlieData.image,
@@ -139,9 +139,9 @@ export default function Index() {
         } catch (error) {
           console.error("❌ Auto-sync failed:", error);
 
-          // Try direct Firebase load as emergency fallback
+          // Try direct Supabase load as emergency fallback
           try {
-            console.log("🚨 Emergency fallback: Direct Firebase load");
+            console.log("🚨 Emergency fallback: Direct Supabase load");
             const emergencyEntries = await SupabaseDatabase.getJournalEntries();
             const emergencyCharlie = await SupabaseDatabase.getCharlieData();
             const emergencyPins = await SupabaseDatabase.getMapPins();
@@ -164,9 +164,9 @@ export default function Index() {
           }
         }
       } else {
-        // Even if cloud sync is disabled, try to load from Firebase for public viewing
+        // Even if cloud sync is disabled, try to load from Supabase for public viewing
         try {
-          console.log("🌐 Loading public data from Firebase...");
+          console.log("🌐 Loading public data from Supabase...");
           const publicCharlieData = await SupabaseDatabase.getCharlieData();
           const publicEntries = await SupabaseDatabase.getJournalEntries();
           const publicPins = await SupabaseDatabase.getMapPins();
@@ -205,7 +205,7 @@ export default function Index() {
 
     const loadFreshData = async () => {
       // FORCE FRESH DATA FROM FIREBASE ON EVERY PAGE LOAD
-      console.log("🔄 FORCING fresh data from Firebase...");
+      console.log("🔄 FORCING fresh data from Supabase...");
       try {
         const [freshCharlie, freshEntries, freshPins] = await Promise.all([
           SupabaseDatabase.getCharlieData(),
@@ -230,7 +230,7 @@ export default function Index() {
         freshPins.forEach((pin) => LocalStorage.saveMapPin(pin));
       } catch (error) {
         console.error("❌ Failed to load fresh data:", error);
-        // Fallback to local data only if Firebase completely fails
+        // Fallback to local data only if Supabase completely fails
         setEntries(HybridStorage.getJournalEntries());
         setPins(HybridStorage.getMapPins());
         setCharlieData(HybridStorage.getCharlieData());
@@ -341,7 +341,7 @@ export default function Index() {
           error.message.includes("limit"))
       ) {
         alert(
-          "❌ Image too large for Firebase! Try a smaller photo or compress it more.",
+          "❌ Image too large for Supabase! Try a smaller photo or compress it more.",
         );
       } else {
         alert("❌ Save failed! Error: " + (error.message || "Unknown error"));
@@ -653,9 +653,9 @@ export default function Index() {
                       // Clear all local storage
                       localStorage.clear();
 
-                      console.log("🔄 Fetching from Firebase...");
+                      console.log("🔄 Fetching from Supabase...");
 
-                      // Force fresh fetch from Firebase with timeout
+                      // Force fresh fetch from Supabase with timeout
                       const freshData = await Promise.race([
                         SupabaseDatabase.getCharlieData(),
                         new Promise((_, reject) =>
@@ -663,7 +663,7 @@ export default function Index() {
                         ),
                       ]);
 
-                      console.log("✅ Firebase data received:", {
+                      console.log("✅ Supabase data received:", {
                         hasImage: !!freshData.image,
                         imageLength: freshData.image?.length || 0,
                       });
@@ -715,7 +715,7 @@ export default function Index() {
                     size="sm"
                     onClick={async () => {
                       try {
-                        console.log("🔄 Manual refresh from Firebase...");
+                        console.log("🔄 Manual refresh from Supabase...");
                         const freshEntries =
                           await SupabaseDatabase.getJournalEntries();
                         const freshCharlie =
