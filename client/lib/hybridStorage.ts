@@ -316,7 +316,51 @@ export class HybridStorage {
     return this.supabaseEnabled;
   }
 
+  // Start periodic sync as backup to real-time
+  private static startPeriodicSync(): void {
+    if (this.periodicSyncInterval) {
+      clearInterval(this.periodicSyncInterval);
+    }
+
+    console.log("⏰ Starting periodic sync every 30 seconds as backup...");
+
+    this.periodicSyncInterval = setInterval(async () => {
+      if (!this.supabaseEnabled) return;
+
+      try {
+        console.log("⏰ Periodic sync: Checking for updates...");
+
+        // Fetch latest data from Supabase
+        const [entries, pins, wishlist, charlie] = await Promise.all([
+          SupabaseDatabase.getJournalEntries(),
+          SupabaseDatabase.getMapPins(),
+          SupabaseDatabase.getWishlistItems(),
+          SupabaseDatabase.getCharlieData(),
+        ]);
+
+        // Update local storage
+        entries.forEach(entry => LocalStorage.saveJournalEntry(entry));
+        pins.forEach(pin => LocalStorage.saveMapPin(pin));
+        wishlist.forEach(item => LocalStorage.saveWishlistItem(item));
+        LocalStorage.setCharlieData(charlie);
+
+        // Notify listeners to refresh UI
+        this.notifyListeners();
+
+        console.log(`⏰ Periodic sync completed: ${entries.length} entries, ${pins.length} pins`);
+      } catch (error) {
+        console.warn("⏰ Periodic sync failed:", error);
+      }
+    }, 30000); // Every 30 seconds
+  }
+
   static cleanup(): void {
+    // Clean up periodic sync
+    if (this.periodicSyncInterval) {
+      clearInterval(this.periodicSyncInterval);
+      this.periodicSyncInterval = null;
+    }
+
     // Clean up local listeners
     this.listeners = [];
     console.log("🧹 HybridStorage cleanup completed");
