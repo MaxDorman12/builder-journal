@@ -59,7 +59,9 @@ export class SupabaseDatabase {
           error.message?.toLowerCase().includes("connection") ||
           error.code === "PGRST301"
         ) {
-          console.error("🌐 Network connectivity issue during journal entry save:");
+          console.error(
+            "🌐 Network connectivity issue during journal entry save:",
+          );
           console.error("  - Internet connection lost");
           console.error("  - Supabase service temporarily unavailable");
           console.error("  - Request timeout (>10 seconds)");
@@ -89,13 +91,17 @@ export class SupabaseDatabase {
           error.message?.toLowerCase().includes("timeout") ||
           error.message?.toLowerCase().includes("connection")
         ) {
-          console.error("🌐 Network connectivity issue during journal entry save (catch):");
+          console.error(
+            "🌐 Network connectivity issue during journal entry save (catch):",
+          );
           console.error("  - Internet connection lost");
           console.error("  - Supabase service temporarily unavailable");
           console.error("  - Request timeout (>10 seconds)");
           console.error("  - CORS or firewall blocking request");
 
-          console.log("⚠️ Skipping journal entry save due to network issue (catch)");
+          console.log(
+            "⚠️ Skipping journal entry save due to network issue (catch)",
+          );
           return;
         }
       }
@@ -148,13 +154,17 @@ export class SupabaseDatabase {
           error.message?.toLowerCase().includes("connection") ||
           error.code === "PGRST301"
         ) {
-          console.error("🌐 Network connectivity issue during journal entries fetch:");
+          console.error(
+            "🌐 Network connectivity issue during journal entries fetch:",
+          );
           console.error("  - Internet connection lost");
           console.error("  - Supabase service temporarily unavailable");
           console.error("  - Request timeout (>10 seconds)");
           console.error("  - CORS or firewall blocking request");
 
-          console.log("⚠️ Returning empty journal entries due to network issue");
+          console.log(
+            "⚠️ Returning empty journal entries due to network issue",
+          );
           return [];
         }
 
@@ -252,8 +262,12 @@ export class SupabaseDatabase {
           error.message?.includes("fetch") ||
           error.code === "PGRST301"
         ) {
-          console.error("🌐 Network connectivity issue during journal entry deletion");
-          console.log("⚠️ Skipping journal entry deletion due to network issue");
+          console.error(
+            "🌐 Network connectivity issue during journal entry deletion",
+          );
+          console.log(
+            "⚠️ Skipping journal entry deletion due to network issue",
+          );
           return;
         }
 
@@ -273,8 +287,12 @@ export class SupabaseDatabase {
           error.message?.includes("fetch") ||
           error.message?.includes("network")
         ) {
-          console.error("🌐 Network connectivity issue during journal entry deletion (catch)");
-          console.log("⚠️ Skipping journal entry deletion due to network issue (catch)");
+          console.error(
+            "🌐 Network connectivity issue during journal entry deletion (catch)",
+          );
+          console.log(
+            "⚠️ Skipping journal entry deletion due to network issue (catch)",
+          );
           return;
         }
       }

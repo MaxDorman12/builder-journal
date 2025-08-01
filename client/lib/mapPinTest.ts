@@ -15,10 +15,10 @@ declare global {
 export class MapPinTest {
   static async deleteFirstPin(): Promise<void> {
     console.log("🧪 MAP PIN TEST: Starting map pin deletion test...");
-    
+
     const pinsBefore = HybridStorage.getMapPins();
     console.log("🧪 MAP PIN TEST: Pins before deletion:", pinsBefore.length);
-    
+
     if (pinsBefore.length > 0) {
       const pinToDelete = pinsBefore[0];
       console.log(
@@ -27,10 +27,10 @@ export class MapPinTest {
         "ID:",
         pinToDelete.id,
       );
-      
+
       await HybridStorage.deleteMapPin(pinToDelete.id);
       console.log("🧪 MAP PIN TEST: Delete operation completed");
-      
+
       // Check pins after deletion
       setTimeout(() => {
         const pinsAfter = HybridStorage.getMapPins();
@@ -41,21 +41,25 @@ export class MapPinTest {
           "Actual:",
           pinsAfter.length,
         );
-        
+
         if (pinsAfter.length === pinsBefore.length - 1) {
           console.log("✅ MAP PIN TEST: Local deletion successful");
         } else {
           console.log("❌ MAP PIN TEST: Local deletion failed");
         }
       }, 1000);
-      
+
       // Check for real-time sync after 3 seconds
       setTimeout(() => {
-        console.log("🧪 MAP PIN TEST: Checking real-time sync after 3 seconds...");
+        console.log(
+          "🧪 MAP PIN TEST: Checking real-time sync after 3 seconds...",
+        );
         const pinsAfterSync = HybridStorage.getMapPins();
-        console.log("🧪 MAP PIN TEST: Pins after sync delay:", pinsAfterSync.length);
+        console.log(
+          "🧪 MAP PIN TEST: Pins after sync delay:",
+          pinsAfterSync.length,
+        );
       }, 3000);
-      
     } else {
       console.log("🧪 MAP PIN TEST: No pins to delete");
     }
@@ -72,7 +76,7 @@ export class MapPinTest {
     const status = HybridStorage.getSupabaseStatus();
     console.log("🧪 MAP PIN STATUS: Supabase enabled:", status.enabled);
     console.log("🧪 MAP PIN STATUS: Message:", status.message);
-    
+
     const localPins = HybridStorage.getMapPins();
     console.log("🧪 MAP PIN STATUS: Local map pins:", localPins.length);
     localPins.forEach((pin, index) => {
