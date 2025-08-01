@@ -182,7 +182,7 @@ export class SupabaseDatabase {
         );
       }
 
-      console.log("✅ Journal entry saved to Supabase Database successfully");
+      console.log("�� Journal entry saved to Supabase Database successfully");
     } catch (error) {
       // Check if it's a network connectivity issue (catch block)
       if (error instanceof Error) {
@@ -748,9 +748,9 @@ export class SupabaseDatabase {
     console.log("📋 Fetching wishlist items from Supabase Database...");
 
     try {
-      // Add timeout for network issues
+      // Add timeout for network issues (increased timeout)
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
 
       const { data, error } = await supabase
         .from("wishlist_items")
@@ -1129,7 +1129,7 @@ export class SupabaseDatabase {
               error: error instanceof Error ? error : String(error)
             });
             console.log(
-              "�� Continuing with empty items to prevent subscription crash...",
+              "🔄 Continuing with empty items to prevent subscription crash...",
             );
             callback([]);
           }
