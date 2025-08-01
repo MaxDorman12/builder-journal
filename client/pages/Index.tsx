@@ -86,7 +86,7 @@ export default function Index() {
           setCharlieData(directCharlie);
           setPins(directPins);
         } catch (error) {
-          console.error("❌ Direct Firebase access failed:", error);
+          console.error("❌ Direct Supabase access failed:", error);
         }
       }
 
