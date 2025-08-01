@@ -283,7 +283,7 @@ export function FamilyStats({
         </span>
       ),
       value: `${stats.averageMood}/5`,
-      label: "⭐ Average Trip Rating",
+      label: "⭐🎯 Average Trip Rating",
       color: "from-green-200 to-green-300",
       textColor: "text-green-700",
     },
