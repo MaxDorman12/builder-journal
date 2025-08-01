@@ -213,13 +213,11 @@ export class HybridStorage {
       // Subscribe to map pin changes
       const pinsListener = SupabaseDatabase.subscribeToMapPins(
         (supabasePins) => {
-          const localPins = LocalStorage.getMapPins();
-          const localIds = new Set(localPins.map((p) => p.id));
+          console.log(`🔄 Real-time update: ${supabasePins.length} map pins from Supabase`);
 
+          // Replace all local pins with fresh Supabase data
           supabasePins.forEach((pin) => {
-            if (!localIds.has(pin.id)) {
-              LocalStorage.saveMapPin(pin);
-            }
+            LocalStorage.saveMapPin(pin);
           });
 
           this.notifyListeners();
