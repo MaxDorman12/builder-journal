@@ -11,7 +11,7 @@ import {
   orderBy,
   Unsubscribe,
 } from "firebase/firestore";
-import { db } from "./firebase";
+import { db, getDb } from "./firebase";
 import { JournalEntry, MapPin, WishlistItem } from "@shared/api";
 
 export class CloudStorage {
