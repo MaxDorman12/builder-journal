@@ -23,6 +23,7 @@ import Calendar from "./pages/Calendar";
 import NotFound from "./pages/NotFound";
 import { HybridStorage } from "./lib/hybridStorage";
 import { useEffect } from "react";
+import "./lib/wishlistTest";
 
 const queryClient = new QueryClient();
 
