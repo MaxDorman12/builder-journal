@@ -24,7 +24,19 @@ export default function Calendar() {
   const [selectedEntries, setSelectedEntries] = useState<JournalEntry[]>([]);
 
   useEffect(() => {
-    setEntries(HybridStorage.getJournalEntries());
+    const loadEntries = () => {
+      setEntries(HybridStorage.getJournalEntries());
+    };
+
+    loadEntries();
+
+    // Listen for real-time updates from HybridStorage
+    const unsubscribe = HybridStorage.onUpdate(() => {
+      console.log("🔄 Real-time update received, refreshing calendar entries...");
+      loadEntries();
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const currentMonth = currentDate.getMonth();
