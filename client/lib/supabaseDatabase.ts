@@ -96,6 +96,25 @@ export class SupabaseDatabase {
           return []; // Return empty array for missing tables
         }
 
+        // Check if it's a network connectivity issue before throwing
+        if (
+          error.message?.includes("Failed to fetch") ||
+          error.message?.includes("NetworkError") ||
+          error.message?.includes("fetch") ||
+          error.message?.toLowerCase().includes("timeout") ||
+          error.message?.toLowerCase().includes("connection") ||
+          error.code === "PGRST301"
+        ) {
+          console.error("🌐 Network connectivity issue during journal entries fetch:");
+          console.error("  - Internet connection lost");
+          console.error("  - Supabase service temporarily unavailable");
+          console.error("  - Request timeout (>10 seconds)");
+          console.error("  - CORS or firewall blocking request");
+
+          console.log("⚠️ Returning empty journal entries due to network issue");
+          return [];
+        }
+
         throw new Error(
           `Failed to fetch journal entries: ${error.message || error}`,
         );
