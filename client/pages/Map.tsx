@@ -644,6 +644,11 @@ export default function Map() {
                 ? `📍 Place Pin for "${pendingPinData?.title || "Your Adventure"}"`
                 : "Add New Adventure Pin"}
             </DialogTitle>
+            <DialogDescription>
+              {isPinPlacementMode
+                ? "Mark the location of your adventure on the Scotland map."
+                : "Add a new pin to mark places you've visited in Scotland."}
+            </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4">
