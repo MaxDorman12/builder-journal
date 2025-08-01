@@ -1109,9 +1109,16 @@ export class SupabaseDatabase {
             const items = await this.getWishlistItems();
             callback(items);
           } catch (error) {
-            console.error("❌ Error in wishlist subscription callback:", error);
+            // Better error logging for subscription callbacks
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            const errorName = error instanceof Error ? error.name : typeof error;
+            console.log("⚠️ Error in wishlist subscription callback:", {
+              message: errorMessage,
+              name: errorName,
+              error: error instanceof Error ? error : String(error)
+            });
             console.log(
-              "⚠️ Continuing with empty items to prevent subscription crash...",
+              "🔄 Continuing with empty items to prevent subscription crash...",
             );
             callback([]);
           }
