@@ -180,72 +180,80 @@ export class HybridStorage {
     }
     console.log("🔄 Setting up Firebase real-time listeners...");
 
-    // Listen for journal entry changes
-    const entriesListener = CloudStorage.listenToJournalEntries(
-      (cloudEntries) => {
-        const localEntries = LocalStorage.getJournalEntries();
-        const localIds = new Set(localEntries.map((e) => e.id));
+    try {
+      // Listen for journal entry changes
+      const entriesListener = CloudStorage.listenToJournalEntries(
+        (cloudEntries) => {
+          const localEntries = LocalStorage.getJournalEntries();
+          const localIds = new Set(localEntries.map((e) => e.id));
 
-        // Add new entries from cloud
-        cloudEntries.forEach((entry) => {
-          if (!localIds.has(entry.id)) {
-            LocalStorage.saveJournalEntry(entry);
-          }
-        });
+          // Add new entries from cloud
+          cloudEntries.forEach((entry) => {
+            if (!localIds.has(entry.id)) {
+              LocalStorage.saveJournalEntry(entry);
+            }
+          });
 
-        // Trigger update event
-        this.notifyListeners();
-      },
-    );
+          // Trigger update event
+          this.notifyListeners();
+        },
+      );
 
-    // Listen for map pin changes
-    const pinsListener = CloudStorage.listenToMapPins((cloudPins) => {
-      const localPins = LocalStorage.getMapPins();
-      const localIds = new Set(localPins.map((p) => p.id));
+      // Listen for map pin changes
+      const pinsListener = CloudStorage.listenToMapPins((cloudPins) => {
+        const localPins = LocalStorage.getMapPins();
+        const localIds = new Set(localPins.map((p) => p.id));
 
-      cloudPins.forEach((pin) => {
-        if (!localIds.has(pin.id)) {
-          LocalStorage.saveMapPin(pin);
-        }
-      });
-
-      this.notifyListeners();
-    });
-
-    // Listen for wishlist changes
-    const wishlistListener = CloudStorage.listenToWishlistItems(
-      (cloudItems) => {
-        const localItems = LocalStorage.getWishlistItems();
-        const localIds = new Set(localItems.map((i) => i.id));
-
-        cloudItems.forEach((item) => {
-          if (!localIds.has(item.id)) {
-            LocalStorage.saveWishlistItem(item);
+        cloudPins.forEach((pin) => {
+          if (!localIds.has(pin.id)) {
+            LocalStorage.saveMapPin(pin);
           }
         });
 
         this.notifyListeners();
-      },
-    );
-
-    // Listen for Charlie data changes
-    console.log("🔄 Setting up Charlie listener...");
-    const charlieListener = CloudStorage.listenToCharlieData((charlieData) => {
-      console.log("🔥 Firebase Charlie update received:", {
-        hasImage: !!charlieData.image,
-        imageLength: charlieData.image?.length || 0,
       });
-      LocalStorage.setCharlieData(charlieData);
-      this.notifyListeners();
-    });
-    console.log("✅ Charlie listener set up successfully");
 
-    this.listeners.push(
-      entriesListener,
-      pinsListener,
-      wishlistListener,
-      charlieListener,
-    );
+      // Listen for wishlist changes
+      const wishlistListener = CloudStorage.listenToWishlistItems(
+        (cloudItems) => {
+          const localItems = LocalStorage.getWishlistItems();
+          const localIds = new Set(localItems.map((i) => i.id));
+
+          cloudItems.forEach((item) => {
+            if (!localIds.has(item.id)) {
+              LocalStorage.saveWishlistItem(item);
+            }
+          });
+
+          this.notifyListeners();
+        },
+      );
+
+      // Listen for Charlie data changes
+      console.log("🔄 Setting up Charlie listener...");
+      const charlieListener = CloudStorage.listenToCharlieData((charlieData) => {
+        console.log("🔥 Firebase Charlie update received:", {
+          hasImage: !!charlieData.image,
+          imageLength: charlieData.image?.length || 0,
+        });
+        LocalStorage.setCharlieData(charlieData);
+        this.notifyListeners();
+      });
+      console.log("✅ Charlie listener set up successfully");
+
+      this.listeners.push(
+        entriesListener,
+        pinsListener,
+        wishlistListener,
+        charlieListener,
+      );
+    } catch (error) {
+      console.warn("⚠️ Failed to setup Firebase listeners (network issue):", error);
+      console.log("📱 App will work in offline mode with localStorage only");
+
+      // Disable cloud sync to prevent further connection attempts
+      this.cloudEnabled = false;
+    }
   }
 
   // Add listener for updates
