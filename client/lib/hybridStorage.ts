@@ -282,7 +282,8 @@ export class HybridStorage {
   }
 
   static cleanup(): void {
-    SupabaseDatabase.cleanup();
+    // Clean up local listeners
     this.listeners = [];
+    console.log("🧹 HybridStorage cleanup completed");
   }
 }
