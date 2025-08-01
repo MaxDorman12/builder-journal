@@ -32,7 +32,8 @@ export class SupabaseDatabase {
         is_busy: entry.isBusy || false,
         area_type: entry.areaType || "town",
         would_return_reason: entry.wouldReturnReason || "",
-        would_return: entry.wouldReturn !== undefined ? entry.wouldReturn : true,
+        would_return:
+          entry.wouldReturn !== undefined ? entry.wouldReturn : true,
         has_free_parking_available: entry.hasFreeParkingAvailable || false,
         parking_cost: entry.parkingCost || "",
         is_paid_activity: entry.isPaidActivity || false,
@@ -44,8 +45,13 @@ export class SupabaseDatabase {
       });
 
       if (error) {
-        console.error("❌ Supabase Database save error:", error.message || error);
-        throw new Error(`Failed to save journal entry: ${error.message || error}`);
+        console.error(
+          "❌ Supabase Database save error:",
+          error.message || error,
+        );
+        throw new Error(
+          `Failed to save journal entry: ${error.message || error}`,
+        );
       }
 
       console.log("✅ Journal entry saved to Supabase Database successfully");
@@ -251,8 +257,13 @@ export class SupabaseDatabase {
       });
 
       if (error) {
-        console.error("❌ Failed to save wishlist item:", error.message || error);
-        throw new Error(`Failed to save wishlist item: ${error.message || error}`);
+        console.error(
+          "❌ Failed to save wishlist item:",
+          error.message || error,
+        );
+        throw new Error(
+          `Failed to save wishlist item: ${error.message || error}`,
+        );
       }
 
       console.log("✅ Wishlist item saved to Supabase Database");
@@ -334,8 +345,13 @@ export class SupabaseDatabase {
       });
 
       if (error) {
-        console.error("❌ Failed to save Charlie data:", error.message || error);
-        throw new Error(`Failed to save Charlie data: ${error.message || error}`);
+        console.error(
+          "❌ Failed to save Charlie data:",
+          error.message || error,
+        );
+        throw new Error(
+          `Failed to save Charlie data: ${error.message || error}`,
+        );
       }
 
       console.log("✅ Charlie data saved to Supabase Database successfully");
