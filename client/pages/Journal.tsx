@@ -76,9 +76,9 @@ export default function Journal() {
               console.log(
                 `🔄 Loaded ${supabaseEntries.length} entries directly from Supabase!`,
               );
-              if (firebaseEntries.length > 0) {
+              if (supabaseEntries.length > 0) {
                 setEntries(
-                  firebaseEntries.sort(
+                  supabaseEntries.sort(
                     (a, b) =>
                       new Date(b.createdAt).getTime() -
                       new Date(a.createdAt).getTime(),
