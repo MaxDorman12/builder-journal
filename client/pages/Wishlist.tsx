@@ -176,6 +176,9 @@ export default function Wishlist() {
             <DialogContent className="max-w-2xl">
               <DialogHeader>
                 <DialogTitle>Add New Dream Destination</DialogTitle>
+                <DialogDescription>
+                  Add a new place to your Scotland adventure wishlist with details about location, activities, and planning information.
+                </DialogDescription>
               </DialogHeader>
               <WishlistForm
                 formData={formData}
