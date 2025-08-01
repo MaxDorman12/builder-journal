@@ -64,6 +64,14 @@ export default function Wishlist() {
       // Initialize sample data if no data exists
       initializeSampleData();
       loadWishlistItems();
+
+      // Listen for real-time updates from HybridStorage
+      const unsubscribe = HybridStorage.onUpdate(() => {
+        console.log("🔄 Real-time update received, refreshing wishlist items...");
+        loadWishlistItems();
+      });
+
+      return () => unsubscribe();
     } catch (error) {
       console.error("Error loading wishlist:", error);
     }
