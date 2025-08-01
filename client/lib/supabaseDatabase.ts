@@ -326,6 +326,13 @@ export class SupabaseDatabase {
           error.message || error,
         );
 
+        // DEBUG: Log full error structure
+        console.log("🐛 DEBUG: Full error object:", error);
+        console.log("🐛 DEBUG: Error type:", typeof error);
+        console.log("🐛 DEBUG: Error message:", error.message);
+        console.log("🐛 DEBUG: Error code:", error.code);
+        console.log("🐛 DEBUG: Error details:", error.details);
+
         // Check if it's a network connectivity issue
         if (
           error.message?.includes("Failed to fetch") ||
@@ -599,7 +606,7 @@ export class SupabaseDatabase {
         };
       }
 
-      console.log("✅ Charlie data loaded from Supabase:", {
+      console.log("��� Charlie data loaded from Supabase:", {
         hasImage: !!data.image,
         imageLength: data.image?.length || 0,
       });
