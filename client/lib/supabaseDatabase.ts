@@ -190,27 +190,65 @@ export class SupabaseDatabase {
     console.log("📍 Saving map pin to Supabase Database:", pin.title);
 
     try {
-      const { error } = await supabase.from("map_pins").upsert({
-        id: pin.id,
-        title: pin.title,
-        description: pin.description,
-        latitude: pin.lat,
-        longitude: pin.lng,
-        type: "visited", // Default value for now
-        mood_rating: pin.moodRating,
-        journal_entry_id: pin.journalEntryId || null,
-        images: JSON.stringify(pin.images || []),
-        created_at: pin.visitDate || new Date().toISOString(),
-      });
+      // Add timeout for network issues
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+      const { error } = await supabase
+        .from("map_pins")
+        .upsert({
+          id: pin.id,
+          title: pin.title,
+          description: pin.description,
+          latitude: pin.lat,
+          longitude: pin.lng,
+          type: "visited", // Default value for now
+          mood_rating: pin.moodRating,
+          journal_entry_id: pin.journalEntryId || null,
+          images: JSON.stringify(pin.images || []),
+          created_at: pin.visitDate || new Date().toISOString(),
+        })
+        .abortSignal(controller.signal);
+
+      clearTimeout(timeoutId);
 
       if (error) {
         console.error("❌ Failed to save map pin:", error.message || error);
+
+        // Check if it's a network connectivity issue
+        if (
+          error.message?.includes("Failed to fetch") ||
+          error.message?.includes("NetworkError") ||
+          error.message?.includes("fetch") ||
+          error.code === "PGRST301"
+        ) {
+          console.error("🌐 Network connectivity issue during map pin save");
+          console.log("⚠️ Skipping map pin save due to network issue");
+          return;
+        }
+
         throw new Error(`Failed to save map pin: ${error.message || error}`);
       }
 
       console.log("✅ Map pin saved to Supabase Database");
     } catch (error) {
       console.error("❌ Failed to save map pin:", error.message || error);
+
+      // Check if it's a network connectivity issue (catch block)
+      if (error instanceof Error) {
+        if (
+          error.message?.includes("Failed to fetch") ||
+          error.name === "AbortError" ||
+          error.message?.includes("NetworkError") ||
+          error.message?.includes("fetch") ||
+          error.message?.includes("network")
+        ) {
+          console.error("🌐 Network connectivity issue during map pin save (catch)");
+          console.log("⚠️ Skipping map pin save due to network issue (catch)");
+          return;
+        }
+      }
+
       throw new Error(`Failed to save map pin: ${error.message || error}`);
     }
   }
