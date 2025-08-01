@@ -262,17 +262,33 @@ export class HybridStorage {
       const wishlist = LocalStorage.getWishlistItems();
       const charlie = LocalStorage.getCharlieData();
 
-      // Sync all data to Supabase
+      // Sync all data to Supabase with individual error handling
       for (const entry of entries) {
-        await SupabaseDatabase.saveJournalEntry(entry);
+        try {
+          await SupabaseDatabase.saveJournalEntry(entry);
+        } catch (error) {
+          console.warn(`Failed to sync journal entry "${entry.title}" to cloud:`, error);
+        }
       }
       for (const pin of pins) {
-        await SupabaseDatabase.saveMapPin(pin);
+        try {
+          await SupabaseDatabase.saveMapPin(pin);
+        } catch (error) {
+          console.warn(`Failed to sync map pin "${pin.title}" to cloud:`, error);
+        }
       }
       for (const item of wishlist) {
-        await SupabaseDatabase.saveWishlistItem(item);
+        try {
+          await SupabaseDatabase.saveWishlistItem(item);
+        } catch (error) {
+          console.warn(`Failed to sync wishlist item "${item.title}" to cloud:`, error);
+        }
       }
-      await SupabaseDatabase.setCharlieData(charlie);
+      try {
+        await SupabaseDatabase.setCharlieData(charlie);
+      } catch (error) {
+        console.warn("Failed to sync Charlie data to cloud:", error);
+      }
 
       console.log("Local data synced to Supabase successfully");
     } catch (error) {
