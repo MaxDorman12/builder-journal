@@ -198,10 +198,16 @@ export class CloudStorage {
   }
 
   static listenToMapPins(callback: (pins: MapPin[]) => void): Unsubscribe {
-    return onSnapshot(collection(db, "map-pins"), (snapshot) => {
-      const pins = snapshot.docs.map((doc) => doc.data() as MapPin);
-      callback(pins);
-    });
+    return onSnapshot(collection(db, "map-pins"),
+      (snapshot) => {
+        const pins = snapshot.docs.map((doc) => doc.data() as MapPin);
+        callback(pins);
+      },
+      (error) => {
+        console.warn("⚠️ Map pins listener error (network issue):", error);
+        callback([]);
+      }
+    );
   }
 
   static async deleteMapPin(id: string): Promise<void> {
