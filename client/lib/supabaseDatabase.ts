@@ -165,7 +165,7 @@ export class SupabaseDatabase {
   }
 
   static async deleteJournalEntry(id: string): Promise<void> {
-    console.log("🗑️ Deleting journal entry from Supabase:", id);
+    console.log("���️ Deleting journal entry from Supabase:", id);
 
     try {
       const { error } = await supabase
@@ -564,8 +564,11 @@ export class SupabaseDatabase {
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "wishlist_items" },
-        async () => {
-          console.log("🔄 Wishlist items changed, fetching latest...");
+        async (payload) => {
+          console.log("🔄 Wishlist items DB change detected:", payload);
+          if (payload.eventType === "DELETE") {
+            console.log("🗑️ WISHLIST DELETE event detected in real-time!");
+          }
           const items = await this.getWishlistItems();
           callback(items);
         },
