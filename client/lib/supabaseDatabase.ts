@@ -49,6 +49,26 @@ export class SupabaseDatabase {
           "❌ Supabase Database save error:",
           error.message || error,
         );
+
+        // Check if it's a network connectivity issue
+        if (
+          error.message?.includes("Failed to fetch") ||
+          error.message?.includes("NetworkError") ||
+          error.message?.includes("fetch") ||
+          error.message?.toLowerCase().includes("timeout") ||
+          error.message?.toLowerCase().includes("connection") ||
+          error.code === "PGRST301"
+        ) {
+          console.error("🌐 Network connectivity issue during journal entry save:");
+          console.error("  - Internet connection lost");
+          console.error("  - Supabase service temporarily unavailable");
+          console.error("  - Request timeout (>10 seconds)");
+          console.error("  - CORS or firewall blocking request");
+
+          console.log("⚠️ Skipping journal entry save due to network issue");
+          return;
+        }
+
         throw new Error(
           `Failed to save journal entry: ${error.message || error}`,
         );
