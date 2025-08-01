@@ -4,7 +4,7 @@ import { SupabaseDatabase } from "./supabaseDatabase";
 import { JournalEntry, MapPin, WishlistItem } from "@shared/api";
 
 export class HybridStorage {
-  private static cloudEnabled = false;
+  private static supabaseEnabled = false;
   private static listeners: (() => void)[] = [];
 
   static async initialize(): Promise<boolean> {
