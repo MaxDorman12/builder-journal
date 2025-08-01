@@ -267,21 +267,30 @@ export class HybridStorage {
         try {
           await SupabaseDatabase.saveJournalEntry(entry);
         } catch (error) {
-          console.warn(`Failed to sync journal entry "${entry.title}" to cloud:`, error);
+          console.warn(
+            `Failed to sync journal entry "${entry.title}" to cloud:`,
+            error,
+          );
         }
       }
       for (const pin of pins) {
         try {
           await SupabaseDatabase.saveMapPin(pin);
         } catch (error) {
-          console.warn(`Failed to sync map pin "${pin.title}" to cloud:`, error);
+          console.warn(
+            `Failed to sync map pin "${pin.title}" to cloud:`,
+            error,
+          );
         }
       }
       for (const item of wishlist) {
         try {
           await SupabaseDatabase.saveWishlistItem(item);
         } catch (error) {
-          console.warn(`Failed to sync wishlist item "${item.title}" to cloud:`, error);
+          console.warn(
+            `Failed to sync wishlist item "${item.title}" to cloud:`,
+            error,
+          );
         }
       }
       try {
@@ -397,7 +406,9 @@ export class HybridStorage {
             }
           });
 
-          console.log(`📊 SYNC: Local items before: ${localItems.length}, Supabase items: ${supabaseItems.length}`);
+          console.log(
+            `📊 SYNC: Local items before: ${localItems.length}, Supabase items: ${supabaseItems.length}`,
+          );
 
           // Add/update items from Supabase
           supabaseItems.forEach((item) => {

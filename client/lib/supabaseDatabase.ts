@@ -327,18 +327,20 @@ export class SupabaseDatabase {
         );
 
         // Check if it's a network connectivity issue
-        if (error.message?.includes('Failed to fetch') ||
-            error.message?.includes('NetworkError') ||
-            error.message?.includes('fetch') ||
-            error.code === 'PGRST301') {
-          console.error('🌐 Network connectivity issue during wishlist save:');
-          console.error('  - Internet connection lost');
-          console.error('  - Supabase service temporarily unavailable');
-          console.error('  - Request timeout (>10 seconds)');
-          console.error('  - CORS or firewall blocking request');
+        if (
+          error.message?.includes("Failed to fetch") ||
+          error.message?.includes("NetworkError") ||
+          error.message?.includes("fetch") ||
+          error.code === "PGRST301"
+        ) {
+          console.error("🌐 Network connectivity issue during wishlist save:");
+          console.error("  - Internet connection lost");
+          console.error("  - Supabase service temporarily unavailable");
+          console.error("  - Request timeout (>10 seconds)");
+          console.error("  - CORS or firewall blocking request");
 
           // Don't throw error for network issues during sync to allow app to continue
-          console.log('⚠️ Skipping wishlist item save due to network issue');
+          console.log("⚠️ Skipping wishlist item save due to network issue");
           return;
         }
 
@@ -353,18 +355,20 @@ export class SupabaseDatabase {
 
       // Check if it's a network connectivity issue
       if (error instanceof Error) {
-        if (error.message?.includes('Failed to fetch') ||
-            error.name === 'AbortError' ||
-            error.message?.includes('NetworkError') ||
-            error.message?.includes('fetch') ||
-            error.message?.includes('network')) {
-          console.error('🌐 Network connectivity issue during wishlist save:');
-          console.error('  - Internet connection lost');
-          console.error('  - Supabase service temporarily unavailable');
-          console.error('  - Request timeout (>10 seconds)');
-          console.error('  - CORS or firewall blocking request');
+        if (
+          error.message?.includes("Failed to fetch") ||
+          error.name === "AbortError" ||
+          error.message?.includes("NetworkError") ||
+          error.message?.includes("fetch") ||
+          error.message?.includes("network")
+        ) {
+          console.error("🌐 Network connectivity issue during wishlist save:");
+          console.error("  - Internet connection lost");
+          console.error("  - Supabase service temporarily unavailable");
+          console.error("  - Request timeout (>10 seconds)");
+          console.error("  - CORS or firewall blocking request");
 
-          console.log('⚠️ Skipping wishlist item save due to network issue');
+          console.log("⚠️ Skipping wishlist item save due to network issue");
           return;
         }
       }
@@ -393,12 +397,14 @@ export class SupabaseDatabase {
         console.error("❌ Failed to fetch wishlist items:", error);
 
         // Check if it's a network connectivity issue
-        if (error.message?.includes('Failed to fetch') ||
-            error.message?.includes('NetworkError') ||
-            error.message?.includes('fetch') ||
-            error.code === 'PGRST301') {
-          console.error('🌐 Network connectivity issue during wishlist fetch');
-          console.log('⚠️ Returning empty wishlist due to network issue');
+        if (
+          error.message?.includes("Failed to fetch") ||
+          error.message?.includes("NetworkError") ||
+          error.message?.includes("fetch") ||
+          error.code === "PGRST301"
+        ) {
+          console.error("🌐 Network connectivity issue during wishlist fetch");
+          console.log("⚠️ Returning empty wishlist due to network issue");
           return [];
         }
 
@@ -421,15 +427,19 @@ export class SupabaseDatabase {
 
       // Check if it's a network connectivity issue
       if (error instanceof Error) {
-        if (error.message.includes('Failed to fetch') ||
-            error.name === 'AbortError' ||
-            error.message.includes('NetworkError') ||
-            error.message.includes('fetch')) {
-          console.error('🌐 Network connectivity issue detected for wishlist. Possible causes:');
-          console.error('  - Internet connection lost');
-          console.error('  - Supabase service temporarily unavailable');
-          console.error('  - Request timeout (>10 seconds)');
-          console.error('  - CORS or firewall blocking request');
+        if (
+          error.message.includes("Failed to fetch") ||
+          error.name === "AbortError" ||
+          error.message.includes("NetworkError") ||
+          error.message.includes("fetch")
+        ) {
+          console.error(
+            "🌐 Network connectivity issue detected for wishlist. Possible causes:",
+          );
+          console.error("  - Internet connection lost");
+          console.error("  - Supabase service temporarily unavailable");
+          console.error("  - Request timeout (>10 seconds)");
+          console.error("  - CORS or firewall blocking request");
 
           // Return empty array for network issues to allow app to continue
           return [];
@@ -437,7 +447,9 @@ export class SupabaseDatabase {
       }
 
       // For other errors, throw to propagate to HybridStorage
-      throw new Error(`Failed to get wishlist items: ${error.message || error}`);
+      throw new Error(
+        `Failed to get wishlist items: ${error.message || error}`,
+      );
     }
   }
 
@@ -461,12 +473,16 @@ export class SupabaseDatabase {
         console.error("❌ Failed to delete wishlist item:", error);
 
         // Check if it's a network connectivity issue
-        if (error.message?.includes('Failed to fetch') ||
-            error.message?.includes('NetworkError') ||
-            error.message?.includes('fetch') ||
-            error.code === 'PGRST301') {
-          console.error('🌐 Network connectivity issue during wishlist deletion');
-          console.log('⚠️ Skipping wishlist deletion due to network issue');
+        if (
+          error.message?.includes("Failed to fetch") ||
+          error.message?.includes("NetworkError") ||
+          error.message?.includes("fetch") ||
+          error.code === "PGRST301"
+        ) {
+          console.error(
+            "🌐 Network connectivity issue during wishlist deletion",
+          );
+          console.log("⚠️ Skipping wishlist deletion due to network issue");
           return;
         }
 
@@ -479,13 +495,17 @@ export class SupabaseDatabase {
 
       // Check if it's a network connectivity issue
       if (error instanceof Error) {
-        if (error.message?.includes('Failed to fetch') ||
-            error.name === 'AbortError' ||
-            error.message?.includes('NetworkError') ||
-            error.message?.includes('fetch') ||
-            error.message?.includes('network')) {
-          console.error('🌐 Network connectivity issue during wishlist deletion');
-          console.log('⚠️ Skipping wishlist deletion due to network issue');
+        if (
+          error.message?.includes("Failed to fetch") ||
+          error.name === "AbortError" ||
+          error.message?.includes("NetworkError") ||
+          error.message?.includes("fetch") ||
+          error.message?.includes("network")
+        ) {
+          console.error(
+            "🌐 Network connectivity issue during wishlist deletion",
+          );
+          console.log("⚠️ Skipping wishlist deletion due to network issue");
           return;
         }
       }
