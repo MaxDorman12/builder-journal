@@ -216,9 +216,9 @@ export class SupabaseDatabase {
     console.log("📖 Fetching journal entries from Supabase Database...");
 
     try {
-      // Add timeout and retry logic for network issues
+      // Add timeout and retry logic for network issues (increased timeout)
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
 
       const { data, error } = await supabase
         .from("journal_entries")
@@ -722,7 +722,7 @@ export class SupabaseDatabase {
           console.error("  - CORS or firewall blocking request");
 
           console.log(
-            "⚠�� CONFIRMED: Skipping wishlist item save due to network issue (catch block) - RETURNING WITHOUT THROWING",
+            "⚠️ CONFIRMED: Skipping wishlist item save due to network issue (catch block) - RETURNING WITHOUT THROWING",
           );
           return; // DO NOT THROW - just return
         }
@@ -1129,7 +1129,7 @@ export class SupabaseDatabase {
               error: error instanceof Error ? error : String(error)
             });
             console.log(
-              "🔄 Continuing with empty items to prevent subscription crash...",
+              "�� Continuing with empty items to prevent subscription crash...",
             );
             callback([]);
           }
