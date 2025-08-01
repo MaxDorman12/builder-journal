@@ -360,6 +360,12 @@ export class SupabaseDatabase {
     } catch (error) {
       console.error("❌ Failed to save wishlist item:", error);
 
+      // DEBUG: Log full error structure in catch block
+      console.log("🐛 DEBUG CATCH: Full error object:", error);
+      console.log("🐛 DEBUG CATCH: Error type:", typeof error);
+      console.log("🐛 DEBUG CATCH: Error message:", error instanceof Error ? error.message : String(error));
+      console.log("🐛 DEBUG CATCH: Error name:", error instanceof Error ? error.name : 'unknown');
+
       // Check if it's a network connectivity issue
       if (error instanceof Error) {
         if (
@@ -367,7 +373,9 @@ export class SupabaseDatabase {
           error.name === "AbortError" ||
           error.message?.includes("NetworkError") ||
           error.message?.includes("fetch") ||
-          error.message?.includes("network")
+          error.message?.includes("network") ||
+          error.message?.toLowerCase().includes("timeout") ||
+          error.message?.toLowerCase().includes("connection")
         ) {
           console.error("🌐 Network connectivity issue during wishlist save:");
           console.error("  - Internet connection lost");
@@ -378,6 +386,13 @@ export class SupabaseDatabase {
           console.log("⚠️ Skipping wishlist item save due to network issue");
           return;
         }
+      }
+
+      // Also check string errors
+      if (typeof error === 'string' && error.includes('Failed to fetch')) {
+        console.error("🌐 Network connectivity issue (string error) during wishlist save");
+        console.log("⚠️ Skipping wishlist item save due to network issue");
+        return;
       }
 
       throw error;
@@ -606,7 +621,7 @@ export class SupabaseDatabase {
         };
       }
 
-      console.log("��� Charlie data loaded from Supabase:", {
+      console.log("✅ Charlie data loaded from Supabase:", {
         hasImage: !!data.image,
         imageLength: data.image?.length || 0,
       });
