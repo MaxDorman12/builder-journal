@@ -927,8 +927,14 @@ export class SupabaseDatabase {
           if (payload.eventType === "DELETE") {
             console.log("🗑️ MAP PIN DELETE event detected in real-time!");
           }
-          const pins = await this.getMapPins();
-          callback(pins);
+          try {
+            const pins = await this.getMapPins();
+            callback(pins);
+          } catch (error) {
+            console.error("❌ Error in map pins subscription callback:", error);
+            console.log("⚠️ Continuing with empty pins to prevent subscription crash...");
+            callback([]);
+          }
         },
       )
       .subscribe();
