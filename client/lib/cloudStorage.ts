@@ -227,10 +227,16 @@ export class CloudStorage {
   static listenToWishlistItems(
     callback: (items: WishlistItem[]) => void,
   ): Unsubscribe {
-    return onSnapshot(collection(db, "wishlist-items"), (snapshot) => {
-      const items = snapshot.docs.map((doc) => doc.data() as WishlistItem);
-      callback(items);
-    });
+    return onSnapshot(collection(db, "wishlist-items"),
+      (snapshot) => {
+        const items = snapshot.docs.map((doc) => doc.data() as WishlistItem);
+        callback(items);
+      },
+      (error) => {
+        console.warn("⚠️ Wishlist items listener error (network issue):", error);
+        callback([]);
+      }
+    );
   }
 
   static async deleteWishlistItem(id: string): Promise<void> {
