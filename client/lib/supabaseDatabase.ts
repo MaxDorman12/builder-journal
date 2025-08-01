@@ -263,6 +263,22 @@ export class SupabaseDatabase {
       console.log("✅ Journal entry deleted from Supabase");
     } catch (error) {
       console.error("❌ Failed to delete journal entry:", error);
+
+      // Check if it's a network connectivity issue (catch block)
+      if (error instanceof Error) {
+        if (
+          error.message?.includes("Failed to fetch") ||
+          error.name === "AbortError" ||
+          error.message?.includes("NetworkError") ||
+          error.message?.includes("fetch") ||
+          error.message?.includes("network")
+        ) {
+          console.error("🌐 Network connectivity issue during journal entry deletion (catch)");
+          console.log("⚠️ Skipping journal entry deletion due to network issue (catch)");
+          return;
+        }
+      }
+
       throw error;
     }
   }
