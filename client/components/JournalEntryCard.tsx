@@ -375,7 +375,7 @@ export function JournalEntryCard({
 
           <div className="space-y-6">
             {/* Image Gallery */}
-            {entry.images.length > 0 && (
+            {entry.images && entry.images.length > 0 && (
               <div className="space-y-4">
                 <div className="relative aspect-video bg-gray-100 rounded-lg overflow-hidden">
                   <img
