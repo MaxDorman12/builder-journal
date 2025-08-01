@@ -213,7 +213,10 @@ export class HybridStorage {
           console.log(
             `🔄 Real-time update: ${supabaseEntries.length} journal entries from Supabase`,
           );
-          console.log("📝 Entry IDs received:", supabaseEntries.map(e => e.id));
+          console.log(
+            "📝 Entry IDs received:",
+            supabaseEntries.map((e) => e.id),
+          );
 
           // Replace all local entries with fresh Supabase data
           // This ensures we have the latest data including updates and deletions
@@ -339,15 +342,17 @@ export class HybridStorage {
         ]);
 
         // Update local storage
-        entries.forEach(entry => LocalStorage.saveJournalEntry(entry));
-        pins.forEach(pin => LocalStorage.saveMapPin(pin));
-        wishlist.forEach(item => LocalStorage.saveWishlistItem(item));
+        entries.forEach((entry) => LocalStorage.saveJournalEntry(entry));
+        pins.forEach((pin) => LocalStorage.saveMapPin(pin));
+        wishlist.forEach((item) => LocalStorage.saveWishlistItem(item));
         LocalStorage.setCharlieData(charlie);
 
         // Notify listeners to refresh UI
         this.notifyListeners();
 
-        console.log(`⏰ Periodic sync completed: ${entries.length} entries, ${pins.length} pins`);
+        console.log(
+          `⏰ Periodic sync completed: ${entries.length} entries, ${pins.length} pins`,
+        );
       } catch (error) {
         console.warn("⏰ Periodic sync failed:", error);
       }

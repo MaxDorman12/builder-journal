@@ -446,7 +446,9 @@ export class SupabaseDatabase {
           console.log("🔄 Journal entries DB change detected:", payload);
           console.log("🔄 Fetching latest journal entries...");
           const entries = await this.getJournalEntries();
-          console.log(`✅ Fetched ${entries.length} entries, calling callback...`);
+          console.log(
+            `✅ Fetched ${entries.length} entries, calling callback...`,
+          );
           callback(entries);
         },
       )
