@@ -10,6 +10,7 @@ export class HybridStorage {
   private static supabaseEnabled = false;
   private static listeners: (() => void)[] = [];
   private static periodicSyncInterval: NodeJS.Timeout | null = null;
+  private static connectionMonitorInterval: NodeJS.Timeout | null = null;
 
   static getSupabaseStatus(): { enabled: boolean; message: string } {
     return {
@@ -23,6 +24,30 @@ export class HybridStorage {
   static async reinitialize(): Promise<boolean> {
     console.log("🔄 Reinitializing Supabase connection...");
     return this.initialize();
+  }
+
+  private static startConnectionMonitoring(): void {
+    // Clear any existing monitor
+    if (this.connectionMonitorInterval) {
+      clearInterval(this.connectionMonitorInterval);
+    }
+
+    // Check connection health every 2 minutes
+    this.connectionMonitorInterval = setInterval(async () => {
+      if (this.supabaseEnabled) {
+        try {
+          const healthCheck = await SupabaseDatabase.checkConnectionHealth();
+          if (!healthCheck.healthy) {
+            console.warn("⚠️ Connection health check failed:", healthCheck.message);
+            console.log("🔄 Connection monitoring will continue...");
+          } else {
+            console.log("✅ Connection health check passed");
+          }
+        } catch (error) {
+          console.warn("⚠️ Connection health check error:", error);
+        }
+      }
+    }, 2 * 60 * 1000); // 2 minutes
   }
 
   static async initialize(): Promise<boolean> {
