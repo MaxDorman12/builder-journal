@@ -219,10 +219,7 @@ export class SupabaseDatabase {
     console.log("🗑️ Deleting map pin from Supabase:", id);
 
     try {
-      const { error } = await supabase
-        .from("map_pins")
-        .delete()
-        .eq("id", id);
+      const { error } = await supabase.from("map_pins").delete().eq("id", id);
 
       if (error) {
         console.error("❌ Failed to delete map pin:", error.message || error);
