@@ -242,7 +242,7 @@ export class HybridStorage {
       console.log("🔄 Setting up Charlie subscription...");
       const charlieListener = SupabaseDatabase.subscribeToCharlieData(
         (charlieData) => {
-          console.log("🔄 Supabase Charlie update received:", {
+          console.log("🔄 Real-time Charlie update received:", {
             hasImage: !!charlieData.image,
             imageLength: charlieData.image?.length || 0,
           });
