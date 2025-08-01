@@ -13,11 +13,38 @@ declare global {
 
 export class WishlistTest {
   static async deleteFirstItem(): Promise<void> {
-    const items = HybridStorage.getWishlistItems();
-    if (items.length > 0) {
-      console.log("🧪 TEST: Deleting first wishlist item:", items[0].title);
-      await HybridStorage.deleteWishlistItem(items[0].id);
+    console.log("🧪 TEST: Starting wishlist deletion test...");
+
+    const itemsBefore = HybridStorage.getWishlistItems();
+    console.log("🧪 TEST: Items before deletion:", itemsBefore.length);
+
+    if (itemsBefore.length > 0) {
+      const itemToDelete = itemsBefore[0];
+      console.log("🧪 TEST: Deleting first wishlist item:", itemToDelete.title, "ID:", itemToDelete.id);
+
+      await HybridStorage.deleteWishlistItem(itemToDelete.id);
       console.log("🧪 TEST: Delete operation completed");
+
+      // Check items after deletion
+      setTimeout(() => {
+        const itemsAfter = HybridStorage.getWishlistItems();
+        console.log("🧪 TEST: Items after deletion:", itemsAfter.length);
+        console.log("🧪 TEST: Expected change:", itemsBefore.length - 1, "Actual:", itemsAfter.length);
+
+        if (itemsAfter.length === itemsBefore.length - 1) {
+          console.log("✅ TEST: Local deletion successful");
+        } else {
+          console.log("❌ TEST: Local deletion failed");
+        }
+      }, 1000);
+
+      // Check for real-time sync after 3 seconds
+      setTimeout(() => {
+        console.log("🧪 TEST: Checking real-time sync after 3 seconds...");
+        const itemsAfterSync = HybridStorage.getWishlistItems();
+        console.log("🧪 TEST: Items after sync delay:", itemsAfterSync.length);
+      }, 3000);
+
     } else {
       console.log("🧪 TEST: No items to delete");
     }
