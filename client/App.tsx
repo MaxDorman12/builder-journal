@@ -25,6 +25,7 @@ import { HybridStorage } from "./lib/hybridStorage";
 import { useEffect } from "react";
 import "./lib/wishlistTest";
 import "./lib/mapPinTest";
+import "./lib/syncTest";
 
 const queryClient = new QueryClient();
 
