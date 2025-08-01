@@ -68,7 +68,7 @@ export class HybridStorage {
     LocalStorage.deleteJournalEntry(id);
     if (this.cloudEnabled) {
       try {
-        await CloudStorage.deleteJournalEntry(id);
+        await SupabaseDatabase.deleteJournalEntry(id);
       } catch (error) {
         console.warn("Failed to delete entry from cloud:", error);
       }
@@ -80,7 +80,7 @@ export class HybridStorage {
     LocalStorage.saveMapPin(pin);
     if (this.cloudEnabled) {
       try {
-        await CloudStorage.saveMapPin(pin);
+        await SupabaseDatabase.saveMapPin(pin);
       } catch (error) {
         console.warn("Failed to sync pin to cloud:", error);
       }
@@ -95,7 +95,7 @@ export class HybridStorage {
     LocalStorage.deleteMapPin(id);
     if (this.cloudEnabled) {
       try {
-        await CloudStorage.deleteMapPin(id);
+        await SupabaseDatabase.deleteMapPin(id);
       } catch (error) {
         console.warn("Failed to delete pin from cloud:", error);
       }
@@ -107,7 +107,7 @@ export class HybridStorage {
     LocalStorage.saveWishlistItem(item);
     if (this.cloudEnabled) {
       try {
-        await CloudStorage.saveWishlistItem(item);
+        await SupabaseDatabase.saveWishlistItem(item);
       } catch (error) {
         console.warn("Failed to sync wishlist item to cloud:", error);
       }
@@ -122,7 +122,7 @@ export class HybridStorage {
     LocalStorage.deleteWishlistItem(id);
     if (this.cloudEnabled) {
       try {
-        await CloudStorage.deleteWishlistItem(id);
+        await SupabaseDatabase.deleteWishlistItem(id);
       } catch (error) {
         console.warn("Failed to delete wishlist item from cloud:", error);
       }
@@ -137,7 +137,7 @@ export class HybridStorage {
     LocalStorage.setCharlieData(data);
     if (this.cloudEnabled) {
       try {
-        await CloudStorage.setCharlieData(data);
+        await SupabaseDatabase.setCharlieData(data);
       } catch (error) {
         console.warn("Failed to sync Charlie data to cloud:", error);
       }
@@ -158,15 +158,15 @@ export class HybridStorage {
 
       // Sync all data to cloud
       for (const entry of entries) {
-        await CloudStorage.saveJournalEntry(entry);
+        await SupabaseDatabase.saveJournalEntry(entry);
       }
       for (const pin of pins) {
-        await CloudStorage.saveMapPin(pin);
+        await SupabaseDatabase.saveMapPin(pin);
       }
       for (const item of wishlist) {
-        await CloudStorage.saveWishlistItem(item);
+        await SupabaseDatabase.saveWishlistItem(item);
       }
-      await CloudStorage.setCharlieData(charlie);
+      await SupabaseDatabase.setCharlieData(charlie);
 
       console.log("Local data synced to cloud successfully");
     } catch (error) {
@@ -184,7 +184,7 @@ export class HybridStorage {
 
     try {
       // Listen for journal entry changes
-      const entriesListener = CloudStorage.listenToJournalEntries(
+      const entriesListener = SupabaseDatabase.listenToJournalEntries(
         (cloudEntries) => {
           const localEntries = LocalStorage.getJournalEntries();
           const localIds = new Set(localEntries.map((e) => e.id));
@@ -202,7 +202,7 @@ export class HybridStorage {
       );
 
       // Listen for map pin changes
-      const pinsListener = CloudStorage.listenToMapPins((cloudPins) => {
+      const pinsListener = SupabaseDatabase.listenToMapPins((cloudPins) => {
         const localPins = LocalStorage.getMapPins();
         const localIds = new Set(localPins.map((p) => p.id));
 
@@ -216,7 +216,7 @@ export class HybridStorage {
       });
 
       // Listen for wishlist changes
-      const wishlistListener = CloudStorage.listenToWishlistItems(
+      const wishlistListener = SupabaseDatabase.listenToWishlistItems(
         (cloudItems) => {
           const localItems = LocalStorage.getWishlistItems();
           const localIds = new Set(localItems.map((i) => i.id));
@@ -233,7 +233,7 @@ export class HybridStorage {
 
       // Listen for Charlie data changes
       console.log("🔄 Setting up Charlie listener...");
-      const charlieListener = CloudStorage.listenToCharlieData((charlieData) => {
+      const charlieListener = SupabaseDatabase.listenToCharlieData((charlieData) => {
         console.log("🔥 Firebase Charlie update received:", {
           hasImage: !!charlieData.image,
           imageLength: charlieData.image?.length || 0,
@@ -282,7 +282,7 @@ export class HybridStorage {
   }
 
   static cleanup(): void {
-    CloudStorage.cleanup();
+    SupabaseDatabase.cleanup();
     this.listeners = [];
   }
 }
