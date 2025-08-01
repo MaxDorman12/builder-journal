@@ -24,6 +24,23 @@ export class SupabaseDatabase {
         longitude: entry.longitude,
         created_at: entry.createdAt,
         updated_at: new Date().toISOString(),
+        // Include all additional fields
+        date: entry.date || entry.createdAt,
+        location: entry.location || entry.locationName || "",
+        mood_rating: entry.moodRating || 3,
+        great_for: entry.greatFor || [],
+        is_busy: entry.isBusy || false,
+        area_type: entry.areaType || "town",
+        would_return_reason: entry.wouldReturnReason || "",
+        would_return: entry.wouldReturn !== undefined ? entry.wouldReturn : true,
+        has_free_parking_available: entry.hasFreeParkingAvailable || false,
+        parking_cost: entry.parkingCost || "",
+        is_paid_activity: entry.isPaidActivity || false,
+        activity_cost: entry.activityCost || "",
+        author: entry.author || "Family",
+        likes: entry.likes || 0,
+        comments: entry.comments || [],
+        tags: entry.tags || [],
       });
 
       if (error) {
