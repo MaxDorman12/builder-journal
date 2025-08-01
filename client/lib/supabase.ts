@@ -1,9 +1,9 @@
 // Supabase configuration for large media storage
 import { createClient } from '@supabase/supabase-js'
 
-// Supabase configuration
-const supabaseUrl = 'https://aqcbgkrtgoctnkicdnll.supabase.co'
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxY2Jna3J0Z29jdG5raWNkbmxsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5MTA0NTcsImV4cCI6MjA2OTQ4NjQ1N30.zr8JqxQbLNzLRH6yXWf25Mo_zwnPhM0h-gKzOoQAEwg'
+// Supabase configuration - YOUR project
+const supabaseUrl = 'https://vhdsguusgnhfpbicsewv.supabase.co'
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoZHNjdXVzZ25oZnBiaWNzZXd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwNzIzMjcsImV4cCI6MjA2OTY0ODMyN30.O2b_S1_JbMRbM9Geim0XNqrd9TcIZKZM03wBJr4Q_GE'
 
 // Create Supabase client with minimal configuration
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
