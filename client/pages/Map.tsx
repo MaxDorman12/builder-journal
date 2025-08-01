@@ -463,7 +463,7 @@ export default function Map() {
 
             {/* Instructions */}
             <div className="absolute bottom-4 right-4 bg-white/90 px-3 py-1 rounded-lg shadow-md text-xs text-gray-600">
-              🖱️ Click to add pin �� 🔍 Scroll to zoom • ✋ Drag to move • ⌨️
+              🖱️ Click to add pin • 🔍 Scroll to zoom • ✋ Drag to move • ⌨️
               Arrow keys to navigate
             </div>
           </div>
@@ -763,6 +763,21 @@ export default function Map() {
                 Coordinates: {selectedPin.lat.toFixed(2)},{" "}
                 {selectedPin.lng.toFixed(2)}
               </div>
+
+              {/* Delete button for family members */}
+              {isFamilyMember && (
+                <div className="flex justify-end pt-4 border-t">
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => handleDeletePin(selectedPin.id)}
+                    className="flex items-center space-x-2"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    <span>Delete Pin</span>
+                  </Button>
+                </div>
+              )}
             </div>
           </DialogContent>
         </Dialog>
