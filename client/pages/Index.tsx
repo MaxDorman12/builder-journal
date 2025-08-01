@@ -272,6 +272,25 @@ export default function Index() {
         )
       : 0;
 
+  const loadYoutubeData = async () => {
+    try {
+      const video = await HybridStorage.getYouTubeVideo();
+      if (video) {
+        setYoutubeVideo(video);
+        setYoutubeUrl(video.url);
+      } else {
+        // Set default URL if no video data exists
+        const defaultUrl = "https://www.youtube.com/@AWeeAdventures";
+        setYoutubeUrl(defaultUrl);
+      }
+    } catch (error) {
+      console.error("Failed to load YouTube data:", error);
+      // Set default URL on error
+      const defaultUrl = "https://www.youtube.com/@AWeeAdventures";
+      setYoutubeUrl(defaultUrl);
+    }
+  };
+
   const handleYoutubeEdit = () => {
     setTempYoutubeUrl(youtubeUrl);
     setTempYoutubeTitle(youtubeVideo?.title || "Our Scotland Adventures");
