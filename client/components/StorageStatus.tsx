@@ -68,8 +68,11 @@ export function StorageStatus() {
     return () => clearInterval(interval);
   }, []);
 
-  // Don't show anything if storage is working fine
-  if (!storageDisabled && storageUsage.totalSize < 20 * 1024 * 1024) {
+  // Show component if storage issues or network issues
+  const hasStorageIssues = storageDisabled || storageUsage.totalSize >= 20 * 1024 * 1024;
+  const hasNetworkIssues = networkStatus.supabaseEnabled && !networkStatus.healthy;
+
+  if (!hasStorageIssues && !hasNetworkIssues) {
     return null;
   }
 
