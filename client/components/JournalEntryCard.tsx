@@ -110,7 +110,7 @@ export function JournalEntryCard({
 
   const prevImage = () => {
     setCurrentImageIndex((prev) =>
-      prev === 0 ? entry.images.length - 1 : prev - 1,
+      prev === 0 ? (entry.images?.length || 0) - 1 : prev - 1,
     );
   };
 
