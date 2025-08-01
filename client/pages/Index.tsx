@@ -43,9 +43,12 @@ export default function Index() {
   const { isAuthenticated, isFamilyMember } = useAuth();
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [pins, setPins] = useState<MapPinType[]>([]);
+  const [youtubeVideo, setYoutubeVideo] = useState<YouTubeVideo | null>(null);
   const [youtubeUrl, setYoutubeUrl] = useState<string>("");
   const [isYoutubeDialogOpen, setIsYoutubeDialogOpen] = useState(false);
   const [tempYoutubeUrl, setTempYoutubeUrl] = useState<string>("");
+  const [tempYoutubeTitle, setTempYoutubeTitle] = useState<string>("");
+  const [tempYoutubeDescription, setTempYoutubeDescription] = useState<string>("");
   const [showAllStats, setShowAllStats] = useState(false);
   const [charlieData, setCharlieData] = useState({
     image: "",
@@ -246,10 +249,8 @@ export default function Index() {
     // Bucket must be created manually in Supabase dashboard
     // SupabaseStorage.initializeBucket();
 
-    // Load YouTube URL from localStorage
-    const savedYoutubeUrl = localStorage.getItem("familyjournal_youtube_url");
-    const defaultUrl = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
-    setYoutubeUrl(savedYoutubeUrl || defaultUrl);
+    // Load YouTube video data
+    loadYoutubeData();
 
     return () => {
       HybridStorage.cleanup();
@@ -273,21 +274,48 @@ export default function Index() {
 
   const handleYoutubeEdit = () => {
     setTempYoutubeUrl(youtubeUrl);
+    setTempYoutubeTitle(youtubeVideo?.title || "Our Scotland Adventures");
+    setTempYoutubeDescription(youtubeVideo?.description || "Watch our latest family adventures in Scotland");
     setIsYoutubeDialogOpen(true);
   };
 
-  const handleYoutubeSave = () => {
+  const handleYoutubeSave = async () => {
     if (tempYoutubeUrl.trim()) {
-      localStorage.setItem("familyjournal_youtube_url", tempYoutubeUrl.trim());
-      setYoutubeUrl(tempYoutubeUrl.trim());
-      setIsYoutubeDialogOpen(false);
-      setTempYoutubeUrl("");
+      try {
+        const newVideo: YouTubeVideo = {
+          id: youtubeVideo?.id || "main-video",
+          url: tempYoutubeUrl.trim(),
+          title: tempYoutubeTitle.trim() || "Our Scotland Adventures",
+          description: tempYoutubeDescription.trim() || "Watch our latest family adventures in Scotland",
+          updatedBy: currentUser || "Family",
+          createdAt: youtubeVideo?.createdAt || new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+
+        await HybridStorage.saveYouTubeVideo(newVideo);
+        setYoutubeVideo(newVideo);
+        setYoutubeUrl(newVideo.url);
+        setIsYoutubeDialogOpen(false);
+        setTempYoutubeUrl("");
+        setTempYoutubeTitle("");
+        setTempYoutubeDescription("");
+      } catch (error) {
+        console.error("Failed to save YouTube video:", error);
+        // Still update the URL locally in case of sync issues
+        setYoutubeUrl(tempYoutubeUrl.trim());
+        setIsYoutubeDialogOpen(false);
+        setTempYoutubeUrl("");
+        setTempYoutubeTitle("");
+        setTempYoutubeDescription("");
+      }
     }
   };
 
   const handleYoutubeCancel = () => {
     setIsYoutubeDialogOpen(false);
     setTempYoutubeUrl("");
+    setTempYoutubeTitle("");
+    setTempYoutubeDescription("");
   };
 
   const handleCharlieSave = async () => {
