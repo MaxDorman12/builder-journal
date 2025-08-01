@@ -50,6 +50,13 @@ export class CloudStorage {
           await setDoc(doc(db, "journal-entries", entry.id), lightEntry);
           console.log("✅ Lightweight journal entry saved (Supabase URLs only)");
           console.warn("⚠️ Base64 media excluded - ensure Supabase Storage works for full experience");
+
+          // Alert user about the situation
+          if (typeof window !== 'undefined') {
+            setTimeout(() => {
+              alert(`⚠️ Entry Saved with Reduced Quality\n\nOriginal: ${entrySizeMB.toFixed(1)}MB (too large)\nSaved: ${lightSize.toFixed(1)}MB (text + Supabase links only)\n\n🔧 To fix: Ensure Supabase Storage is working\nThen your photos/videos will upload properly!`);
+            }, 1000);
+          }
         } else {
           throw new Error(`Entry still too large: ${lightSize.toFixed(2)}MB`);
         }
