@@ -118,7 +118,7 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
       });
 
       try {
-        await CloudStorage.saveJournalEntry(entry);
+        await SupabaseDatabase.saveJournalEntry(entry);
         LocalStorage.saveJournalEntry(entry); // Backup to local
         console.log("✅ Journal entry saved to Firebase successfully");
       } catch (error) {
@@ -647,7 +647,7 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
                       parkingCost: e.target.value,
                     }))
                   }
-                  placeholder="e.g., £5 per hour, £15 all day"
+                  placeholder="e.g., ��5 per hour, £15 all day"
                   className="max-w-xs"
                 />
               </div>
