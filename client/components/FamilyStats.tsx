@@ -293,7 +293,7 @@ export function FamilyStats({
     {
       icon: Camera,
       value: stats.totalPhotos,
-      label: "📸 Photos Captured",
+      label: "📸🖼️ Photos Captured",
       color: "from-rose-200 to-red-300",
       textColor: "text-rose-700",
     },
