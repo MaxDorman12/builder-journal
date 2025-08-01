@@ -647,7 +647,7 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
                       parkingCost: e.target.value,
                     }))
                   }
-                  placeholder="e.g., ��5 per hour, £15 all day"
+                  placeholder="e.g., £5 per hour, £15 all day"
                   className="max-w-xs"
                 />
               </div>
@@ -673,7 +673,7 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
 
             {formData.isPaidActivity && (
               <div className="ml-6 space-y-2">
-                <Label htmlFor="activityCost">💳 Activity cost</Label>
+                <Label htmlFor="activityCost">��� Activity cost</Label>
                 <Input
                   id="activityCost"
                   value={formData.activityCost}
