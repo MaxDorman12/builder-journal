@@ -350,13 +350,13 @@ export default function Index() {
     setIsCharlieDialogOpen(true);
   };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      // Check file size (limit to 2MB for better performance)
-      if (file.size > 2 * 1024 * 1024) {
+      // Check file size (now allow larger files since we're using Supabase)
+      if (file.size > 10 * 1024 * 1024) {
         alert(
-          "Image size must be less than 2MB. Please choose a smaller image or compress it first.",
+          "Image size must be less than 10MB. Please choose a smaller image.",
         );
         return;
       }
@@ -367,52 +367,72 @@ export default function Index() {
         return;
       }
 
-      // Create canvas for image compression
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      const img = new Image();
+      console.log("🔄 Uploading Charlie's photo...", {
+        name: file.name,
+        size: file.size,
+        type: file.type
+      });
 
-      img.onload = async () => {
-        // Calculate new dimensions (max 800px width/height)
-        const maxSize = 800;
-        let { width, height } = img;
+      try {
+        // Try uploading to Supabase Storage first
+        const uploadedUrl = await SupabaseStorage.uploadFile(file, "charlie");
 
-        if (width > maxSize || height > maxSize) {
-          if (width > height) {
-            height = (height * maxSize) / width;
-            width = maxSize;
-          } else {
-            width = (width * maxSize) / height;
-            height = maxSize;
-          }
-        }
-
-        // Set canvas size and draw compressed image
-        canvas.width = width;
-        canvas.height = height;
-        ctx?.drawImage(img, 0, 0, width, height);
-
-        // Convert to base64 - simple and reliable
-        const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.7);
-
-        console.log("📸 Image processed:", {
-          originalSize: file.size,
-          compressedLength: compressedDataUrl.length,
-          dimensions: `${width}x${height}`,
-        });
+        console.log("✅ Charlie photo uploaded to Supabase:", uploadedUrl);
 
         setTempCharlieData({
           ...tempCharlieData,
-          image: compressedDataUrl,
+          image: uploadedUrl,
         });
-      };
+      } catch (error) {
+        console.warn("⚠️ Supabase upload failed, using compression fallback:", error);
 
-      // Load the file
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        img.src = e.target?.result as string;
-      };
-      reader.readAsDataURL(file);
+        // Fallback to compressed base64 if Supabase fails
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        const img = new Image();
+
+        img.onload = async () => {
+          // Calculate new dimensions (max 800px width/height)
+          const maxSize = 800;
+          let { width, height } = img;
+
+          if (width > maxSize || height > maxSize) {
+            if (width > height) {
+              height = (height * maxSize) / width;
+              width = maxSize;
+            } else {
+              width = (width * maxSize) / height;
+              height = maxSize;
+            }
+          }
+
+          // Set canvas size and draw compressed image
+          canvas.width = width;
+          canvas.height = height;
+          ctx?.drawImage(img, 0, 0, width, height);
+
+          // Convert to base64 as fallback
+          const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.7);
+
+          console.log("📸 Image compressed as fallback:", {
+            originalSize: file.size,
+            compressedLength: compressedDataUrl.length,
+            dimensions: `${width}x${height}`,
+          });
+
+          setTempCharlieData({
+            ...tempCharlieData,
+            image: compressedDataUrl,
+          });
+        };
+
+        // Load the file for compression fallback
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          img.src = e.target?.result as string;
+        };
+        reader.readAsDataURL(file);
+      }
     }
   };
 
