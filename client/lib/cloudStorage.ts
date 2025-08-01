@@ -248,6 +248,10 @@ export class CloudStorage {
   static listenToWishlistItems(
     callback: (items: WishlistItem[]) => void,
   ): Unsubscribe {
+    if (!this.isFirebaseAvailable()) {
+      console.warn("⚠️ Cannot setup wishlist listener - Firebase unavailable");
+      return () => {};
+    }
     return onSnapshot(collection(db, "wishlist-items"),
       (snapshot) => {
         const items = snapshot.docs.map((doc) => doc.data() as WishlistItem);
