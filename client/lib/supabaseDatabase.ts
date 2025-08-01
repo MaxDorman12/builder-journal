@@ -434,8 +434,11 @@ export class SupabaseDatabase {
   ) {
     console.log("🔄 Setting up real-time subscription for journal entries...");
 
+    const channelName = `journal_entries_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    console.log("📡 Creating unique channel:", channelName);
+
     const subscription = supabase
-      .channel("journal_entries_changes")
+      .channel(channelName)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "journal_entries" },
