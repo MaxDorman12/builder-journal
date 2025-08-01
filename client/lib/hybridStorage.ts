@@ -67,6 +67,9 @@ export class HybridStorage {
         // Start periodic sync as backup (every 30 seconds)
         this.startPeriodicSync();
 
+        // Monitor connection health every 2 minutes
+        this.startConnectionMonitoring();
+
         console.log(
           "🎉 Supabase auto-sync ready! Changes will sync across all devices.",
         );
