@@ -181,9 +181,9 @@ export class SupabaseDatabase {
           return [];
         }
 
-        throw new Error(
-          `Failed to fetch journal entries: ${error.message || error}`,
-        );
+        // For any other errors, also return empty array to prevent app crashes
+        console.error("⚠️ Unknown database error, returning empty journal entries to prevent app crash");
+        return [];
       }
 
       const entries: JournalEntry[] = (data || []).map((row) => ({
@@ -552,7 +552,7 @@ export class SupabaseDatabase {
         console.log("🐛 DEBUG: Full error object:", error);
         console.log("🐛 DEBUG: Error type:", typeof error);
         console.log("🐛 DEBUG: Error message:", error.message);
-        console.log("🐛 DEBUG: Error code:", error.code);
+        console.log("���� DEBUG: Error code:", error.code);
         console.log("🐛 DEBUG: Error details:", error.details);
 
         // Check if it's a network connectivity issue
