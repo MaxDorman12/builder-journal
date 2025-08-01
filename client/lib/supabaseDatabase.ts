@@ -27,8 +27,8 @@ export class SupabaseDatabase {
       });
 
       if (error) {
-        console.error("❌ Supabase Database save error:", error);
-        throw error;
+        console.error("❌ Supabase Database save error:", error.message || error);
+        throw new Error(`Failed to save journal entry: ${error.message || error}`);
       }
 
       console.log("✅ Journal entry saved to Supabase Database successfully");
@@ -441,7 +441,7 @@ export class SupabaseDatabase {
       .subscribe();
 
     return () => {
-      console.log("���� Unsubscribing from wishlist items");
+      console.log("🔇 Unsubscribing from wishlist items");
       supabase.removeChannel(subscription);
     };
   }
