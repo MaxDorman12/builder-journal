@@ -24,6 +24,7 @@ import NotFound from "./pages/NotFound";
 import { HybridStorage } from "./lib/hybridStorage";
 import { useEffect } from "react";
 import "./lib/wishlistTest";
+import "./lib/mapPinTest";
 
 const queryClient = new QueryClient();
 
