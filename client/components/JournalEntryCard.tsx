@@ -143,7 +143,7 @@ export function JournalEntryCard({
                 controls
                 preload="metadata"
               />
-              {entry.videos.length > 1 && (
+              {entry.videos && entry.videos.length > 1 && (
                 <Badge className="absolute top-2 right-2 bg-red-600 text-white">
                   <Video className="h-3 w-3 mr-1" />
                   {entry.videos.length}
@@ -156,7 +156,7 @@ export function JournalEntryCard({
             </div>
           )}
 
-          {entry.videos.length > 0 && (
+          {entry.videos && entry.videos.length > 0 && (
             <Badge className="absolute top-2 left-2 bg-red-600 text-white">
               <Video className="h-3 w-3 mr-1" />
               {entry.videos.length}
