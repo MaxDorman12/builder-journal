@@ -425,7 +425,7 @@ export default function Settings() {
             <AlertDescription>
               <strong>🚀 Real-Time Auto-Sync:</strong>
               <br />
-              📱 <strong>Edit on phone</strong> → 💻{" "}
+              ���� <strong>Edit on phone</strong> → 💻{" "}
               <strong>Instantly shows on PC!</strong>
               <br />
               🔄 No manual sync needed - changes appear automatically everywhere
@@ -539,7 +539,7 @@ export default function Settings() {
               OneDrive"
             </p>
             <p>
-              <strong>Step 3:</strong> ���� Enjoy synced journal across all
+              <strong>Step 3:</strong> 🎉 Enjoy synced journal across all
               devices!
             </p>
           </div>

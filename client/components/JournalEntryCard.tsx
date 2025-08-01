@@ -484,7 +484,7 @@ export function JournalEntryCard({
                 <div>
                   <strong>Parking:</strong>{" "}
                   {entry.hasFreeParkingAvailable
-                    ? "���️ Free parking"
+                    ? "🅿️ Free parking"
                     : "💰 Paid parking"}
                   {!entry.hasFreeParkingAvailable && entry.parkingCost && (
                     <span className="ml-1">({entry.parkingCost})</span>

@@ -99,7 +99,7 @@ export const FAMILY_MEMBERS: FamilyMember[] = [
 ];
 
 export const AREA_TYPES = [
-  { value: "town", label: "🏘️ Town", emoji: "��️" },
+  { value: "town", label: "🏘️ Town", emoji: "🏘️" },
   { value: "city", label: "🏙️ City", emoji: "🏙️" },
   { value: "loch", label: "🌊 Loch", emoji: "🌊" },
   { value: "mountain", label: "⛰️ Mountain", emoji: "⛰️" },

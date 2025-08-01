@@ -471,7 +471,7 @@ export default function Index() {
         <div className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-pink-200 to-purple-200 rounded-full shadow-lg bouncy">
           <Heart className="h-5 w-5 text-purple-600 fill-purple-600" />
           <span className="text-purple-700 font-medium">
-            �� Welcome to our magical adventures! ✨
+            🌟 Welcome to our magical adventures! ✨
           </span>
         </div>
 
