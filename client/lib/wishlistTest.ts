@@ -79,7 +79,6 @@ export class WishlistTest {
 // Make available globally for browser console testing
 if (typeof window !== "undefined") {
   window.WishlistTest = WishlistTest;
-  console.log(
-    "🧪 WishlistTest available globally. Use WishlistTest.deleteFirstItem() to test.",
-  );
+  console.log("🧪 WishlistTest available globally.");
+  console.log("🧪 Commands: WishlistTest.deleteFirstItem(), WishlistTest.checkSupabaseStatus(), WishlistTest.getItemCount()");
 }
