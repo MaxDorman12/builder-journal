@@ -320,27 +320,37 @@ export class CloudStorage {
   static listenToCharlieData(
     callback: (data: { image: string; description: string }) => void,
   ): Unsubscribe {
-    return onSnapshot(doc(db, "family-data", "charlie"), (snapshot) => {
-      console.log("🔥 Charlie Firebase snapshot:", {
-        exists: snapshot.exists(),
-      });
-      if (snapshot.exists()) {
-        const data = snapshot.data() as { image: string; description: string };
-        console.log("🔥 Charlie data from Firebase:", {
-          hasImage: !!data.image,
-          imageLength: data.image?.length || 0,
+    return onSnapshot(doc(db, "family-data", "charlie"),
+      (snapshot) => {
+        console.log("🔥 Charlie Firebase snapshot:", {
+          exists: snapshot.exists(),
         });
-        callback(data);
-      } else {
-        console.log("🔥 Charlie document doesn't exist in Firebase yet");
-        // Call with default data if document doesn't exist
+        if (snapshot.exists()) {
+          const data = snapshot.data() as { image: string; description: string };
+          console.log("🔥 Charlie data from Firebase:", {
+            hasImage: !!data.image,
+            imageLength: data.image?.length || 0,
+          });
+          callback(data);
+        } else {
+          console.log("🔥 Charlie document doesn't exist in Firebase yet");
+          // Call with default data if document doesn't exist
+          callback({
+            image: "",
+            description:
+              "No family adventure is complete without our beloved four-legged companion, Charlie! This loyal and energetic member of the Dorman family brings joy and excitement to every journey we embark on across Scotland.\n\nWhether it's hiking through the Scottish Highlands, exploring sandy beaches along the coast, or discovering dog-friendly trails in the countryside, Charlie is always ready for the next adventure with his tail wagging and spirit high.\n\nHis favorite activities include chasing sticks by the lochs, making friends with other dogs at campsites, and of course, being the star of many of our family photos. Charlie truly makes every adventure more memorable! 🐾",
+          });
+        }
+      },
+      (error) => {
+        console.warn("⚠️ Charlie data listener error (network issue):", error);
+        // Use default data when Firebase is unavailable
         callback({
           image: "",
-          description:
-            "No family adventure is complete without our beloved four-legged companion, Charlie! This loyal and energetic member of the Dorman family brings joy and excitement to every journey we embark on across Scotland.\n\nWhether it's hiking through the Scottish Highlands, exploring sandy beaches along the coast, or discovering dog-friendly trails in the countryside, Charlie is always ready for the next adventure with his tail wagging and spirit high.\n\nHis favorite activities include chasing sticks by the lochs, making friends with other dogs at campsites, and of course, being the star of many of our family photos. Charlie truly makes every adventure more memorable! 🐾",
+          description: "Charlie's data is temporarily unavailable due to network issues. The app will work offline until connection is restored."
         });
       }
-    });
+    );
   }
 
   // Cleanup listeners
