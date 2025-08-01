@@ -386,11 +386,13 @@ export class HybridStorage {
       );
 
       // Subscribe to wishlist changes
+      console.log("🔄 Setting up wishlist real-time subscription...");
       const wishlistListener = SupabaseDatabase.subscribeToWishlistItems(
         (supabaseItems) => {
           console.log(
-            `🔄 Real-time update: ${supabaseItems.length} wishlist items from Supabase`,
+            `🔄 WISHLIST Real-time update triggered: ${supabaseItems.length} wishlist items from Supabase`,
           );
+          console.log("🔄 WISHLIST items received:", supabaseItems.map(item => ({ id: item.id, title: item.title })));
 
           // Handle deletions and updates
           const localItems = LocalStorage.getWishlistItems();
