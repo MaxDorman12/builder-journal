@@ -36,7 +36,7 @@ export function StorageStatus() {
     // Check network/Supabase status
     const checkNetworkStatus = async () => {
       const supabaseStatus = HybridStorage.getSupabaseStatus();
-
+      
       if (supabaseStatus.enabled) {
         try {
           const healthCheck = await SupabaseDatabase.checkConnectionHealth();
@@ -71,7 +71,7 @@ export function StorageStatus() {
   // Show component if storage issues or network issues
   const hasStorageIssues = storageDisabled || storageUsage.totalSize >= 20 * 1024 * 1024;
   const hasNetworkIssues = networkStatus.supabaseEnabled && !networkStatus.healthy;
-
+  
   if (!hasStorageIssues && !hasNetworkIssues) {
     return null;
   }
@@ -138,32 +138,33 @@ export function StorageStatus() {
           </AlertDescription>
         </Alert>
       )}
-    </div>
-  );
 
-  return (
-    <Alert className="mb-4 border-yellow-200 bg-yellow-50">
-      <AlertTriangle className="h-4 w-4 text-yellow-600" />
-      <AlertDescription className="text-yellow-800">
-        <div className="flex items-center justify-between">
-          <div>
-            <strong>Storage Warning:</strong> Using {sizeMB}MB of local storage.
-            Consider cleaning up.
-          </div>
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => {
-              StorageCleanup.emergencyCleanup();
-              // Refresh the component
-              window.location.reload();
-            }}
-            className="h-7 text-xs ml-4"
-          >
-            🧹 Clean Now
-          </Button>
-        </div>
-      </AlertDescription>
-    </Alert>
+      {/* Storage Size Warning */}
+      {!storageDisabled && storageUsage.totalSize >= 20 * 1024 * 1024 && (
+        <Alert className="border-yellow-200 bg-yellow-50">
+          <AlertTriangle className="h-4 w-4 text-yellow-600" />
+          <AlertDescription className="text-yellow-800">
+            <div className="flex items-center justify-between">
+              <div>
+                <strong>Storage Warning:</strong> Using {sizeMB}MB of local storage.
+                Consider cleaning up.
+              </div>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  StorageCleanup.emergencyCleanup();
+                  // Refresh the component
+                  window.location.reload();
+                }}
+                className="h-7 text-xs ml-4"
+              >
+                🧹 Clean Now
+              </Button>
+            </div>
+          </AlertDescription>
+        </Alert>
+      )}
+    </div>
   );
 }
