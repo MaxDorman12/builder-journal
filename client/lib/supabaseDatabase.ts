@@ -790,33 +790,49 @@ export class SupabaseDatabase {
       console.log(`✅ Loaded ${items.length} wishlist items from Supabase`);
       return items;
     } catch (error) {
-      console.error("❌ Failed to get wishlist items:", error);
+      // Better error logging
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorName = error instanceof Error ? error.name : typeof error;
+      console.error("❌ Failed to get wishlist items:", {
+        message: errorMessage,
+        name: errorName,
+        error: error instanceof Error ? error : String(error)
+      });
 
       // Check if it's a network connectivity issue
       if (error instanceof Error) {
+        const lowerErrorMessage = errorMessage.toLowerCase();
+
         if (
-          error.message.includes("Failed to fetch") ||
-          error.name === "AbortError" ||
-          error.message.includes("NetworkError") ||
-          error.message.includes("fetch")
+          lowerErrorMessage.includes("failed to fetch") ||
+          errorName === "AbortError" ||
+          lowerErrorMessage.includes("networkerror") ||
+          lowerErrorMessage.includes("fetch") ||
+          lowerErrorMessage.includes("timeout") ||
+          lowerErrorMessage.includes("connection") ||
+          lowerErrorMessage.includes("network") ||
+          lowerErrorMessage.includes("aborted")
         ) {
-          console.error(
-            "🌐 Network connectivity issue detected for wishlist. Possible causes:",
+          console.log(
+            "🌐 Network connectivity issue detected for wishlist. Returning empty array.",
           );
-          console.error("  - Internet connection lost");
-          console.error("  - Supabase service temporarily unavailable");
-          console.error("  - Request timeout (>10 seconds)");
-          console.error("  - CORS or firewall blocking request");
+          console.log("  💡 Common causes:");
+          console.log("    - Internet connection lost");
+          console.log("    - Supabase service temporarily unavailable");
+          console.log("    - Request timeout (>10 seconds)");
+          console.log("    - CORS or firewall blocking request");
 
           // Return empty array for network issues to allow app to continue
           return [];
         }
       }
 
-      // For other errors, throw to propagate to HybridStorage
-      throw new Error(
-        `Failed to get wishlist items: ${error.message || error}`,
+      // For any other errors, also return empty array to prevent app crashes
+      console.log(
+        "⚠️ Unknown database error, returning empty wishlist items to prevent app crash:",
+        { errorMessage, errorName }
       );
+      return [];
     }
   }
 
