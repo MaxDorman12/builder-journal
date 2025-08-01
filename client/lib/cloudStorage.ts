@@ -362,11 +362,27 @@ export class CloudStorage {
   // Enable/disable cloud sync
   static async enableCloudSync(): Promise<boolean> {
     try {
-      // Test connection by writing a simple document
-      await setDoc(doc(db, "system", "test"), {
+      // First test basic network connectivity
+      await fetch('https://www.google.com/favicon.ico', {
+        mode: 'no-cors',
+        cache: 'no-cache',
+        timeout: 5000
+      });
+
+      // Then test Firebase connection with timeout
+      const testPromise = setDoc(doc(db, "system", "test"), {
         timestamp: new Date(),
         test: true,
       });
+
+      // Add 10 second timeout for Firebase test
+      await Promise.race([
+        testPromise,
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Firebase connection timeout')), 10000)
+        )
+      ]);
+
       console.log("✅ Firebase cloud sync enabled successfully");
       return true;
     } catch (error) {
