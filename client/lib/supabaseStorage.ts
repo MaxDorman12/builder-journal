@@ -53,7 +53,9 @@ export class SupabaseStorage {
         fileName: file.name,
         size: file.size,
         type: file.type,
-        entryId: entryId
+        entryId: entryId,
+        bucketName: this.BUCKET_NAME,
+        supabaseUrl: 'https://vhdsguusgnhfpbicsewv.supabase.co'
       })
 
       // Create unique file path with generic extension to bypass MIME detection
