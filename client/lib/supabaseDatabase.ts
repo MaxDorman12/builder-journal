@@ -155,13 +155,17 @@ export class SupabaseDatabase {
         }
 
         // Check if it's a network connectivity issue before throwing
+        const errorMessage = (error.message || String(error)).toLowerCase();
         if (
-          error.message?.includes("Failed to fetch") ||
-          error.message?.includes("NetworkError") ||
-          error.message?.includes("fetch") ||
-          error.message?.toLowerCase().includes("timeout") ||
-          error.message?.toLowerCase().includes("connection") ||
-          error.code === "PGRST301"
+          errorMessage.includes("failed to fetch") ||
+          errorMessage.includes("networkerror") ||
+          errorMessage.includes("fetch") ||
+          errorMessage.includes("timeout") ||
+          errorMessage.includes("connection") ||
+          errorMessage.includes("network") ||
+          errorMessage.includes("cors") ||
+          error.code === "PGRST301" ||
+          error.name === "TypeError"
         ) {
           console.error(
             "🌐 Network connectivity issue during journal entries fetch:",
