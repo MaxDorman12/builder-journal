@@ -315,6 +315,17 @@ export class SupabaseDatabase {
 
       if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
         console.error("❌ Failed to fetch Charlie data:", error.message || error);
+
+        // Check if it's a missing table error
+        if (error.message?.includes('relation "charlie_data" does not exist') ||
+            error.code === '42P01') {
+          console.error("💡 Database tables not created yet. Please run the SQL migration.");
+          return {
+            image: "",
+            description: "Database tables not created yet. Please run the SQL migration script."
+          };
+        }
+
         throw new Error(`Failed to fetch Charlie data: ${error.message || error}`);
       }
 
