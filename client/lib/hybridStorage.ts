@@ -3,6 +3,8 @@ import { LocalStorage } from "./storage";
 import { SupabaseDatabase } from "./supabaseDatabase";
 import { SupabaseSetupInstructions } from "./supabaseSetupInstructions";
 import { JournalEntry, MapPin, WishlistItem } from "@shared/api";
+// Import test for debugging
+import "./realtimeTest";
 
 export class HybridStorage {
   private static supabaseEnabled = false;
