@@ -380,6 +380,17 @@ export class SupabaseDatabase {
 
       if (error) {
         console.error("❌ Failed to fetch wishlist items:", error);
+
+        // Check if it's a network connectivity issue
+        if (error.message?.includes('Failed to fetch') ||
+            error.message?.includes('NetworkError') ||
+            error.message?.includes('fetch') ||
+            error.code === 'PGRST301') {
+          console.error('🌐 Network connectivity issue during wishlist fetch');
+          console.log('⚠️ Returning empty wishlist due to network issue');
+          return [];
+        }
+
         throw error;
       }
 
