@@ -2,7 +2,7 @@
 import { LocalStorage } from "./storage";
 import { SupabaseDatabase } from "./supabaseDatabase";
 import { SupabaseSetupInstructions } from "./supabaseSetupInstructions";
-import { JournalEntry, MapPin, WishlistItem } from "@shared/api";
+import { JournalEntry, MapPin, WishlistItem, YouTubeVideo } from "@shared/api";
 // Import test for debugging
 import "./realtimeTest";
 
@@ -341,6 +341,86 @@ export class HybridStorage {
 
   static getCharlieData(): { image: string; description: string } {
     return LocalStorage.getCharlieData();
+  }
+
+  // YouTube Video methods
+  static async saveYouTubeVideo(video: YouTubeVideo): Promise<void> {
+    // Always save locally first
+    LocalStorage.saveYouTubeVideo(video);
+
+    // Then sync to Supabase if available
+    if (this.supabaseEnabled) {
+      try {
+        await SupabaseDatabase.saveYouTubeVideo(video);
+      } catch (error) {
+        // Check if it's a network connectivity issue
+        if (error instanceof Error) {
+          const errorMessage = error.message?.toLowerCase() || "";
+          const errorName = error.name || "";
+
+          if (
+            errorMessage.includes("failed to fetch") ||
+            errorMessage.includes("networkerror") ||
+            errorMessage.includes("fetch") ||
+            errorMessage.includes("timeout") ||
+            errorMessage.includes("connection") ||
+            errorName === "AbortError" ||
+            errorName === "TypeError"
+          ) {
+            console.log("🌐 Network connectivity issue detected during YouTube video save - skipping sync");
+            console.log("📺 Video saved locally and will sync when connection is restored");
+            return;
+          }
+        }
+
+        console.warn("⚠️ Failed to sync YouTube video to Supabase (non-network error):", error);
+      }
+    }
+
+    // Notify listeners
+    this.notifyListeners();
+  }
+
+  static async getYouTubeVideo(): Promise<YouTubeVideo | null> {
+    // First try to get from local storage
+    const localVideo = LocalStorage.getYouTubeVideo();
+
+    // If we have Supabase enabled, also try to get latest from cloud
+    if (this.supabaseEnabled) {
+      try {
+        const cloudVideo = await SupabaseDatabase.getYouTubeVideo();
+
+        // If cloud has a newer version, save it locally and return it
+        if (cloudVideo && (!localVideo || new Date(cloudVideo.updatedAt) > new Date(localVideo.updatedAt))) {
+          LocalStorage.saveYouTubeVideo(cloudVideo);
+          return cloudVideo;
+        }
+      } catch (error) {
+        console.warn("Failed to fetch YouTube video from cloud, using local version:", error);
+      }
+    }
+
+    return localVideo;
+  }
+
+  static async deleteYouTubeVideo(): Promise<void> {
+    // Delete from local storage first
+    LocalStorage.deleteYouTubeVideo();
+
+    // Then delete from Supabase if available
+    if (this.supabaseEnabled) {
+      try {
+        const video = await SupabaseDatabase.getYouTubeVideo();
+        if (video) {
+          await SupabaseDatabase.deleteYouTubeVideo(video.id);
+        }
+      } catch (error) {
+        console.warn("Failed to delete YouTube video from cloud:", error);
+      }
+    }
+
+    // Notify listeners
+    this.notifyListeners();
   }
 
   // Sync local data to Supabase
