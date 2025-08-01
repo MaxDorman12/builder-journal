@@ -1,6 +1,6 @@
 // Hybrid storage that uses both localStorage and Firebase for real-time sync
 import { LocalStorage } from "./storage";
-import { CloudStorage } from "./cloudStorage";
+import { SupabaseDatabase } from "./supabaseDatabase";
 import { JournalEntry, MapPin, WishlistItem } from "@shared/api";
 
 export class HybridStorage {
