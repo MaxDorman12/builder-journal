@@ -80,7 +80,28 @@ export class HybridStorage {
       try {
         await SupabaseDatabase.saveJournalEntry(entry);
       } catch (error) {
-        console.warn("Failed to sync entry to Supabase:", error);
+        // Check if it's a network connectivity issue
+        if (error instanceof Error) {
+          const errorMessage = error.message?.toLowerCase() || '';
+          const errorName = error.name || '';
+
+          if (
+            errorMessage.includes("failed to fetch") ||
+            errorMessage.includes("networkerror") ||
+            errorMessage.includes("fetch") ||
+            errorMessage.includes("timeout") ||
+            errorMessage.includes("connection") ||
+            errorName === "AbortError" ||
+            errorName === "TypeError"
+          ) {
+            console.log("🌐 Network connectivity issue detected during journal entry save - skipping sync to preserve data");
+            console.log("📱 Entry saved locally and will sync when connection is restored");
+            return; // Don't throw error for network issues
+          }
+        }
+
+        console.warn("⚠️ Failed to sync entry to Supabase (non-network error):", error);
+        // Still don't throw - we have the data saved locally
       }
     }
   }
