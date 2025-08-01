@@ -476,7 +476,7 @@ export default function Map() {
 
             {/* Instructions */}
             <div className="absolute bottom-4 right-4 bg-white/90 px-3 py-1 rounded-lg shadow-md text-xs text-gray-600">
-              🖱️ Click to add pin • 🔍 Scroll to zoom • ✋ Drag to move • ⌨️
+              🖱️ Click to add pin • 🔍 Scroll to zoom • �� Drag to move • ⌨️
               Arrow keys to navigate
             </div>
           </div>
@@ -740,6 +740,9 @@ export default function Map() {
         <Dialog open={!!selectedPin} onOpenChange={() => setSelectedPin(null)}>
           <DialogContent>
             <DialogHeader>
+              <DialogDescription>
+                View details about this adventure location.
+              </DialogDescription>
               <DialogTitle className="flex items-center justify-between">
                 <span>{selectedPin.title}</span>
                 {MOOD_RATINGS.find(
