@@ -84,6 +84,16 @@ export interface WishlistItem {
   updatedAt: string;
 }
 
+export interface YouTubeVideo {
+  id: string;
+  url: string;
+  title: string;
+  description: string;
+  updatedBy: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface AuthState {
   isAuthenticated: boolean;
   isFamilyMember: boolean;
