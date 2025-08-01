@@ -867,7 +867,7 @@ export class SupabaseDatabase {
     console.log("🔄 Setting up real-time subscription for journal entries...");
 
     const channelName = `journal_entries_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    console.log("📡 Creating unique channel:", channelName);
+    console.log("��� Creating unique channel:", channelName);
 
     const subscription = supabase
       .channel(channelName)
@@ -991,8 +991,14 @@ export class SupabaseDatabase {
           if (payload.eventType === "DELETE") {
             console.log("🗑️ CHARLIE DATA DELETE event detected in real-time!");
           }
-          const data = await this.getCharlieData();
-          callback(data);
+          try {
+            const data = await this.getCharlieData();
+            callback(data);
+          } catch (error) {
+            console.error("❌ Error in Charlie data subscription callback:", error);
+            console.log("⚠️ Continuing with default Charlie data to prevent subscription crash...");
+            callback({ image: "", description: "Charlie data unavailable" });
+          }
         },
       )
       .subscribe();
