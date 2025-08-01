@@ -375,11 +375,13 @@ export class HybridStorage {
           localItems.forEach((localItem) => {
             if (!supabaseIds.has(localItem.id)) {
               console.log(
-                `🗑️ Removing deleted wishlist item: ${localItem.title}`,
+                `🗑️ SYNC: Removing deleted wishlist item: ${localItem.title}`,
               );
               LocalStorage.deleteWishlistItem(localItem.id);
             }
           });
+
+          console.log(`📊 SYNC: Local items before: ${localItems.length}, Supabase items: ${supabaseItems.length}`);
 
           // Add/update items from Supabase
           supabaseItems.forEach((item) => {
