@@ -214,12 +214,21 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
           });
         } catch (error) {
           console.warn("Supabase upload failed, using base64 fallback:", error);
-          // Fallback to base64 if Supabase fails
-          const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.8);
-          setFormData((prev) => ({
-            ...prev,
-            images: [...prev.images, compressedDataUrl],
-          }));
+
+          // Only use base64 fallback for compressed images (should be small)
+          const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.6); // Lower quality for smaller size
+          const estimatedSize = compressedDataUrl.length * 0.75 / 1024 / 1024; // Rough size in MB
+
+          if (estimatedSize < 0.8) { // Only if under 800KB
+            console.log(`📦 Using base64 fallback for compressed image: ~${estimatedSize.toFixed(2)}MB`);
+            setFormData((prev) => ({
+              ...prev,
+              images: [...prev.images, compressedDataUrl],
+            }));
+          } else {
+            console.error(`❌ Image too large even after compression: ~${estimatedSize.toFixed(2)}MB`);
+            alert(`❌ Image too large for fallback storage.\n\nSupabase Storage is required for this image.\n\nPlease check your Supabase bucket setup.`);
+          }
         }
       };
 
