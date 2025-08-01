@@ -20,16 +20,43 @@ export class CloudStorage {
   // Journal Entries
   static async saveJournalEntry(entry: JournalEntry): Promise<void> {
     try {
+      const entrySize = JSON.stringify(entry).length;
+      const entrySizeMB = entrySize / (1024 * 1024);
+
       console.log("💾 Saving journal entry to Firebase:", {
         id: entry.id,
         title: entry.title,
         imagesCount: entry.images?.length || 0,
         videosCount: entry.videos?.length || 0,
-        totalSize: JSON.stringify(entry).length,
+        totalSize: entrySize,
+        sizeMB: entrySizeMB.toFixed(2)
       });
 
-      await setDoc(doc(db, "journal-entries", entry.id), entry);
-      console.log("✅ Journal entry saved to Firebase successfully");
+      // Check if entry is too large for Firebase (1MB limit)
+      if (entrySizeMB > 0.9) { // 900KB threshold to be safe
+        console.error(`❌ Entry too large for Firebase: ${entrySizeMB.toFixed(2)}MB - creating lightweight version`);
+
+        // Create lightweight version without base64 data
+        const lightEntry = {
+          ...entry,
+          images: entry.images?.filter(img => !img.startsWith('data:')) || [],
+          videos: entry.videos?.filter(vid => !vid.startsWith('data:')) || []
+        };
+
+        const lightSize = JSON.stringify(lightEntry).length / (1024 * 1024);
+        console.log(`🪶 Lightweight version: ${lightSize.toFixed(2)}MB`);
+
+        if (lightSize < 0.9) {
+          await setDoc(doc(db, "journal-entries", entry.id), lightEntry);
+          console.log("✅ Lightweight journal entry saved (Supabase URLs only)");
+          console.warn("⚠️ Base64 media excluded - ensure Supabase Storage works for full experience");
+        } else {
+          throw new Error(`Entry still too large: ${lightSize.toFixed(2)}MB`);
+        }
+      } else {
+        await setDoc(doc(db, "journal-entries", entry.id), entry);
+        console.log("✅ Journal entry saved to Firebase successfully");
+      }
     } catch (error) {
       console.error("❌ Firebase journal entry save failed:", error);
       throw error;
