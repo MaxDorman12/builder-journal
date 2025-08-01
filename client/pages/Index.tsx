@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { LocalStorage } from "@/lib/storage";
 import { HybridStorage } from "@/lib/hybridStorage";
-import { CloudStorage } from "@/lib/cloudStorage";
+import { SupabaseDatabase } from "@/lib/supabaseDatabase";
 import { SupabaseStorage } from "@/lib/supabaseStorage";
 import { StorageCleanup } from "@/lib/storageCleanup";
 import { StorageStatus } from "@/components/StorageStatus";
@@ -131,7 +131,7 @@ export default function Index() {
           console.log(
             "✅ Auto-sync completed - all data refreshed from Firebase!",
           );
-          console.log("�� New visitors will see:", {
+          console.log("👀 New visitors will see:", {
             charlieHasImage: !!freshCharlieData.image,
             entriesCount: freshEntries.length,
             pinsCount: freshPins.length,
