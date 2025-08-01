@@ -20,7 +20,12 @@ export class WishlistTest {
 
     if (itemsBefore.length > 0) {
       const itemToDelete = itemsBefore[0];
-      console.log("🧪 TEST: Deleting first wishlist item:", itemToDelete.title, "ID:", itemToDelete.id);
+      console.log(
+        "🧪 TEST: Deleting first wishlist item:",
+        itemToDelete.title,
+        "ID:",
+        itemToDelete.id,
+      );
 
       await HybridStorage.deleteWishlistItem(itemToDelete.id);
       console.log("🧪 TEST: Delete operation completed");
@@ -29,7 +34,12 @@ export class WishlistTest {
       setTimeout(() => {
         const itemsAfter = HybridStorage.getWishlistItems();
         console.log("🧪 TEST: Items after deletion:", itemsAfter.length);
-        console.log("🧪 TEST: Expected change:", itemsBefore.length - 1, "Actual:", itemsAfter.length);
+        console.log(
+          "🧪 TEST: Expected change:",
+          itemsBefore.length - 1,
+          "Actual:",
+          itemsAfter.length,
+        );
 
         if (itemsAfter.length === itemsBefore.length - 1) {
           console.log("✅ TEST: Local deletion successful");
@@ -44,7 +54,6 @@ export class WishlistTest {
         const itemsAfterSync = HybridStorage.getWishlistItems();
         console.log("🧪 TEST: Items after sync delay:", itemsAfterSync.length);
       }, 3000);
-
     } else {
       console.log("🧪 TEST: No items to delete");
     }
@@ -65,7 +74,9 @@ export class WishlistTest {
     const localItems = HybridStorage.getWishlistItems();
     console.log("🧪 STATUS: Local wishlist items:", localItems.length);
     localItems.forEach((item, index) => {
-      console.log(`🧪 STATUS: Item ${index + 1}: ${item.title} (ID: ${item.id})`);
+      console.log(
+        `🧪 STATUS: Item ${index + 1}: ${item.title} (ID: ${item.id})`,
+      );
     });
   }
 
@@ -80,5 +91,7 @@ export class WishlistTest {
 if (typeof window !== "undefined") {
   window.WishlistTest = WishlistTest;
   console.log("🧪 WishlistTest available globally.");
-  console.log("🧪 Commands: WishlistTest.deleteFirstItem(), WishlistTest.checkSupabaseStatus(), WishlistTest.getItemCount()");
+  console.log(
+    "🧪 Commands: WishlistTest.deleteFirstItem(), WishlistTest.checkSupabaseStatus(), WishlistTest.getItemCount()",
+  );
 }

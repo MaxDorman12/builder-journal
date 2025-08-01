@@ -349,7 +349,9 @@ export class SupabaseDatabase {
           console.error("  - CORS or firewall blocking request");
 
           // Don't throw error for network issues during sync to allow app to continue
-          console.log("⚠️ CONFIRMED: Skipping wishlist item save due to network issue - RETURNING WITHOUT THROWING");
+          console.log(
+            "⚠️ CONFIRMED: Skipping wishlist item save due to network issue - RETURNING WITHOUT THROWING",
+          );
           return;
         }
 
@@ -366,8 +368,14 @@ export class SupabaseDatabase {
       // DEBUG: Log full error structure in catch block
       console.log("🐛 DEBUG CATCH: Full error object:", error);
       console.log("🐛 DEBUG CATCH: Error type:", typeof error);
-      console.log("🐛 DEBUG CATCH: Error message:", error instanceof Error ? error.message : String(error));
-      console.log("🐛 DEBUG CATCH: Error name:", error instanceof Error ? error.name : 'unknown');
+      console.log(
+        "🐛 DEBUG CATCH: Error message:",
+        error instanceof Error ? error.message : String(error),
+      );
+      console.log(
+        "🐛 DEBUG CATCH: Error name:",
+        error instanceof Error ? error.name : "unknown",
+      );
 
       // Check if it's a network connectivity issue - DO NOT THROW for network errors
       if (error instanceof Error) {
@@ -380,21 +388,29 @@ export class SupabaseDatabase {
           error.message?.toLowerCase().includes("timeout") ||
           error.message?.toLowerCase().includes("connection")
         ) {
-          console.error("🌐 Network connectivity issue during wishlist save (catch block):");
+          console.error(
+            "🌐 Network connectivity issue during wishlist save (catch block):",
+          );
           console.error("  - Internet connection lost");
           console.error("  - Supabase service temporarily unavailable");
           console.error("  - Request timeout (>10 seconds)");
           console.error("  - CORS or firewall blocking request");
 
-          console.log("⚠️ CONFIRMED: Skipping wishlist item save due to network issue (catch block) - RETURNING WITHOUT THROWING");
+          console.log(
+            "⚠️ CONFIRMED: Skipping wishlist item save due to network issue (catch block) - RETURNING WITHOUT THROWING",
+          );
           return; // DO NOT THROW - just return
         }
       }
 
       // Also check string errors
-      if (typeof error === 'string' && error.includes('Failed to fetch')) {
-        console.error("🌐 Network connectivity issue (string error) during wishlist save");
-        console.log("⚠️ Skipping wishlist item save due to network issue (string error)");
+      if (typeof error === "string" && error.includes("Failed to fetch")) {
+        console.error(
+          "🌐 Network connectivity issue (string error) during wishlist save",
+        );
+        console.log(
+          "⚠️ Skipping wishlist item save due to network issue (string error)",
+        );
         return; // DO NOT THROW - just return
       }
 

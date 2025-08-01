@@ -392,7 +392,10 @@ export class HybridStorage {
           console.log(
             `🔄 WISHLIST Real-time update triggered: ${supabaseItems.length} wishlist items from Supabase`,
           );
-          console.log("🔄 WISHLIST items received:", supabaseItems.map(item => ({ id: item.id, title: item.title })));
+          console.log(
+            "🔄 WISHLIST items received:",
+            supabaseItems.map((item) => ({ id: item.id, title: item.title })),
+          );
 
           // Handle deletions and updates
           const localItems = LocalStorage.getWishlistItems();
