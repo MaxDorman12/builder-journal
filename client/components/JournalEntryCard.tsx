@@ -248,7 +248,7 @@ export function JournalEntryCard({
             ))}
             {entry.greatFor && entry.greatFor.length > 2 && (
               <Badge variant="secondary" className="text-xs">
-                +{entry.greatFor.length - 2} more
+                +{(entry.greatFor?.length || 0) - 2} more
               </Badge>
             )}
           </div>
