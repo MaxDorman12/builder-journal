@@ -54,7 +54,7 @@ export class HybridStorage {
     // If localStorage is disabled and we get no entries, we need to load from Firebase
     if (localEntries.length === 0 && this.supabaseEnabled) {
       console.warn(
-        "📵 localStorage disabled, entries should be loaded from Firebase directly",
+        "��� localStorage disabled, entries should be loaded from Firebase directly",
       );
       console.warn(
         "🔄 Journal page should use direct Firebase loading when localStorage disabled",
@@ -156,7 +156,7 @@ export class HybridStorage {
       const wishlist = LocalStorage.getWishlistItems();
       const charlie = LocalStorage.getCharlieData();
 
-      // Sync all data to cloud
+      // Sync all data to Supabase
       for (const entry of entries) {
         await SupabaseDatabase.saveJournalEntry(entry);
       }
@@ -168,9 +168,9 @@ export class HybridStorage {
       }
       await SupabaseDatabase.setCharlieData(charlie);
 
-      console.log("Local data synced to cloud successfully");
+      console.log("Local data synced to Supabase successfully");
     } catch (error) {
-      console.warn("Failed to sync local data to cloud:", error);
+      console.warn("Failed to sync local data to Supabase:", error);
     }
   }
 
