@@ -29,27 +29,36 @@ export class CloudStorage {
         imagesCount: entry.images?.length || 0,
         videosCount: entry.videos?.length || 0,
         totalSize: entrySize,
-        sizeMB: entrySizeMB.toFixed(2)
+        sizeMB: entrySizeMB.toFixed(2),
       });
 
       // Reject entries over 50MB immediately - Firebase will never accept these
       if (entrySizeMB > 50) {
         console.error(`🚨 MASSIVE ENTRY REJECTED: ${entrySizeMB.toFixed(2)}MB`);
-        console.error('❗ This indicates Supabase Storage is completely broken');
-        console.error('📸 Images/videos are being stored as base64 instead of Supabase URLs');
+        console.error(
+          "❗ This indicates Supabase Storage is completely broken",
+        );
+        console.error(
+          "📸 Images/videos are being stored as base64 instead of Supabase URLs",
+        );
 
-        throw new Error(`Entry way too large: ${entrySizeMB.toFixed(2)}MB - Supabase Storage must be fixed`);
+        throw new Error(
+          `Entry way too large: ${entrySizeMB.toFixed(2)}MB - Supabase Storage must be fixed`,
+        );
       }
 
       // Check if entry is too large for Firebase (1MB limit)
-      if (entrySizeMB > 0.9) { // 900KB threshold to be safe
-        console.error(`❌ Entry too large for Firebase: ${entrySizeMB.toFixed(2)}MB - creating lightweight version`);
+      if (entrySizeMB > 0.9) {
+        // 900KB threshold to be safe
+        console.error(
+          `❌ Entry too large for Firebase: ${entrySizeMB.toFixed(2)}MB - creating lightweight version`,
+        );
 
         // Create lightweight version without base64 data
         const lightEntry = {
           ...entry,
-          images: entry.images?.filter(img => !img.startsWith('data:')) || [],
-          videos: entry.videos?.filter(vid => !vid.startsWith('data:')) || []
+          images: entry.images?.filter((img) => !img.startsWith("data:")) || [],
+          videos: entry.videos?.filter((vid) => !vid.startsWith("data:")) || [],
         };
 
         const lightSize = JSON.stringify(lightEntry).length / (1024 * 1024);
@@ -57,13 +66,19 @@ export class CloudStorage {
 
         if (lightSize < 0.9) {
           await setDoc(doc(db, "journal-entries", entry.id), lightEntry);
-          console.log("✅ Lightweight journal entry saved (Supabase URLs only)");
-          console.warn("⚠️ Base64 media excluded - ensure Supabase Storage works for full experience");
+          console.log(
+            "✅ Lightweight journal entry saved (Supabase URLs only)",
+          );
+          console.warn(
+            "⚠️ Base64 media excluded - ensure Supabase Storage works for full experience",
+          );
 
           // Alert user about the situation
-          if (typeof window !== 'undefined') {
+          if (typeof window !== "undefined") {
             setTimeout(() => {
-              alert(`⚠️ Entry Saved with Reduced Quality\n\nOriginal: ${entrySizeMB.toFixed(1)}MB (too large)\nSaved: ${lightSize.toFixed(1)}MB (text + Supabase links only)\n\n🔧 To fix: Ensure Supabase Storage is working\nThen your photos/videos will upload properly!`);
+              alert(
+                `⚠️ Entry Saved with Reduced Quality\n\nOriginal: ${entrySizeMB.toFixed(1)}MB (too large)\nSaved: ${lightSize.toFixed(1)}MB (text + Supabase links only)\n\n🔧 To fix: Ensure Supabase Storage is working\nThen your photos/videos will upload properly!`,
+              );
             }, 1000);
           }
         } else {
@@ -77,11 +92,15 @@ export class CloudStorage {
       console.error("❌ Firebase journal entry save failed:", error);
 
       // Check if it's a size/fetch error
-      if (error.toString().includes('Failed to fetch') ||
-          error.toString().includes('payload') ||
-          error.toString().includes('size')) {
-        console.error('🚨 Firebase refusing the document - likely too large even after cleanup');
-        console.error('📊 Original entry size:', entrySize, 'bytes');
+      if (
+        error.toString().includes("Failed to fetch") ||
+        error.toString().includes("payload") ||
+        error.toString().includes("size")
+      ) {
+        console.error(
+          "🚨 Firebase refusing the document - likely too large even after cleanup",
+        );
+        console.error("📊 Original entry size:", entrySize, "bytes");
 
         // Try to save a minimal version with just text
         try {
@@ -95,28 +114,38 @@ export class CloudStorage {
             areaType: entry.areaType,
             images: [], // No images at all
             videos: [], // No videos at all
-            comments: []
+            comments: [],
           };
 
-          const minimalSize = JSON.stringify(minimalEntry).length / (1024 * 1024);
-          console.log(`💡 Trying minimal text-only version: ${minimalSize.toFixed(2)}MB`);
+          const minimalSize =
+            JSON.stringify(minimalEntry).length / (1024 * 1024);
+          console.log(
+            `💡 Trying minimal text-only version: ${minimalSize.toFixed(2)}MB`,
+          );
 
-          if (minimalSize < 0.1) { // Under 100KB
+          if (minimalSize < 0.1) {
+            // Under 100KB
             await setDoc(doc(db, "journal-entries", entry.id), minimalEntry);
             console.log("✅ Minimal text-only entry saved to Firebase");
 
             // Alert user about the issue
-            if (typeof window !== 'undefined') {
+            if (typeof window !== "undefined") {
               setTimeout(() => {
-                alert(`⚠️ Entry Saved as Text Only\n\nYour photos/videos couldn't be saved due to Supabase Storage issues.\n\nTo fix:\n1. Check Supabase bucket exists\n2. Verify RLS policies are working\n3. Entry saved with title: "${entry.title}"`);
+                alert(
+                  `⚠️ Entry Saved as Text Only\n\nYour photos/videos couldn't be saved due to Supabase Storage issues.\n\nTo fix:\n1. Check Supabase bucket exists\n2. Verify RLS policies are working\n3. Entry saved with title: "${entry.title}"`,
+                );
               }, 1000);
             }
           } else {
-            throw new Error(`Even minimal entry too large: ${minimalSize.toFixed(2)}MB`);
+            throw new Error(
+              `Even minimal entry too large: ${minimalSize.toFixed(2)}MB`,
+            );
           }
         } catch (minimalError) {
-          console.error('❌ Even minimal save failed:', minimalError);
-          throw new Error(`Complete save failure - entry too large even without media`);
+          console.error("❌ Even minimal save failed:", minimalError);
+          throw new Error(
+            `Complete save failure - entry too large even without media`,
+          );
         }
       } else {
         throw error;

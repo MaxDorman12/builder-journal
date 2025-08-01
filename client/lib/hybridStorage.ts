@@ -51,8 +51,12 @@ export class HybridStorage {
 
     // If localStorage is disabled and we get no entries, we need to load from Firebase
     if (localEntries.length === 0 && this.cloudEnabled) {
-      console.warn('📵 localStorage disabled, entries should be loaded from Firebase directly');
-      console.warn('🔄 Journal page should use direct Firebase loading when localStorage disabled');
+      console.warn(
+        "📵 localStorage disabled, entries should be loaded from Firebase directly",
+      );
+      console.warn(
+        "🔄 Journal page should use direct Firebase loading when localStorage disabled",
+      );
     }
 
     return localEntries;

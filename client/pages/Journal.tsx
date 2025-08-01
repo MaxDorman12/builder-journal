@@ -44,13 +44,17 @@ export default function Journal() {
   }, []);
 
   const loadEntries = () => {
-    console.log('📖 Journal page loading entries...');
+    console.log("📖 Journal page loading entries...");
 
     try {
       const allEntries = HybridStorage.getJournalEntries();
-      console.log('📖 Entries loaded from HybridStorage:', {
+      console.log("📖 Entries loaded from HybridStorage:", {
         count: allEntries.length,
-        entries: allEntries.map(e => ({ id: e.id, title: e.title, createdAt: e.createdAt }))
+        entries: allEntries.map((e) => ({
+          id: e.id,
+          title: e.title,
+          createdAt: e.createdAt,
+        })),
       });
 
       setEntries(
@@ -61,25 +65,37 @@ export default function Journal() {
       );
 
       if (allEntries.length === 0) {
-        console.warn('⚠️ No entries found in HybridStorage - loading directly from Firebase...');
+        console.warn(
+          "⚠️ No entries found in HybridStorage - loading directly from Firebase...",
+        );
 
         // Load directly from Firebase when localStorage is disabled
-        import('@/lib/cloudStorage').then(({ CloudStorage }) => {
-          CloudStorage.getJournalEntries().then(firebaseEntries => {
-            console.log(`🔥 Loaded ${firebaseEntries.length} entries directly from Firebase!`);
-            if (firebaseEntries.length > 0) {
-              setEntries(firebaseEntries.sort(
-                (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-              ));
-              console.log('✅ Journal entries loaded successfully from Firebase');
-            }
-          }).catch(err => {
-            console.error('❌ Direct Firebase load failed:', err);
-          });
+        import("@/lib/cloudStorage").then(({ CloudStorage }) => {
+          CloudStorage.getJournalEntries()
+            .then((firebaseEntries) => {
+              console.log(
+                `🔥 Loaded ${firebaseEntries.length} entries directly from Firebase!`,
+              );
+              if (firebaseEntries.length > 0) {
+                setEntries(
+                  firebaseEntries.sort(
+                    (a, b) =>
+                      new Date(b.createdAt).getTime() -
+                      new Date(a.createdAt).getTime(),
+                  ),
+                );
+                console.log(
+                  "✅ Journal entries loaded successfully from Firebase",
+                );
+              }
+            })
+            .catch((err) => {
+              console.error("❌ Direct Firebase load failed:", err);
+            });
         });
       }
     } catch (error) {
-      console.error('❌ Error loading entries:', error);
+      console.error("❌ Error loading entries:", error);
     }
   };
 

@@ -217,17 +217,24 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
 
           // Only use base64 fallback for compressed images (should be small)
           const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.6); // Lower quality for smaller size
-          const estimatedSize = compressedDataUrl.length * 0.75 / 1024 / 1024; // Rough size in MB
+          const estimatedSize = (compressedDataUrl.length * 0.75) / 1024 / 1024; // Rough size in MB
 
-          if (estimatedSize < 0.8) { // Only if under 800KB
-            console.log(`📦 Using base64 fallback for compressed image: ~${estimatedSize.toFixed(2)}MB`);
+          if (estimatedSize < 0.8) {
+            // Only if under 800KB
+            console.log(
+              `📦 Using base64 fallback for compressed image: ~${estimatedSize.toFixed(2)}MB`,
+            );
             setFormData((prev) => ({
               ...prev,
               images: [...prev.images, compressedDataUrl],
             }));
           } else {
-            console.error(`❌ Image too large even after compression: ~${estimatedSize.toFixed(2)}MB`);
-            alert(`❌ Image too large for fallback storage.\n\nSupabase Storage is required for this image.\n\nPlease check your Supabase bucket setup.`);
+            console.error(
+              `❌ Image too large even after compression: ~${estimatedSize.toFixed(2)}MB`,
+            );
+            alert(
+              `❌ Image too large for fallback storage.\n\nSupabase Storage is required for this image.\n\nPlease check your Supabase bucket setup.`,
+            );
           }
         }
       };
@@ -283,7 +290,9 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
 
           // Only use base64 fallback for very small files (under 1MB)
           if (sizeMB < 1) {
-            console.log(`📦 Using base64 fallback for small video: ${sizeMB.toFixed(2)}MB`);
+            console.log(
+              `📦 Using base64 fallback for small video: ${sizeMB.toFixed(2)}MB`,
+            );
             const reader = new FileReader();
             reader.onload = (event) => {
               if (event.target?.result) {
@@ -296,7 +305,9 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
             };
             reader.readAsDataURL(file);
           } else {
-            alert(`❌ Video too large for fallback storage: ${sizeMB.toFixed(1)}MB\n\nSupabase Storage must be working for large files.\n\nPlease check your Supabase bucket setup.`);
+            alert(
+              `❌ Video too large for fallback storage: ${sizeMB.toFixed(1)}MB\n\nSupabase Storage must be working for large files.\n\nPlease check your Supabase bucket setup.`,
+            );
           }
         }
       }
