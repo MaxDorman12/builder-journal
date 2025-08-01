@@ -65,12 +65,17 @@ export class SupabaseDatabase {
     message: string;
   }> {
     try {
-      // Simple query to test connection
+      // Simple query to test connection with more generous timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+
       const { data, error } = await supabase
         .from("journal_entries")
         .select("id")
         .limit(1)
-        .abortSignal(AbortSignal.timeout(5000)); // 5 second timeout
+        .abortSignal(controller.signal);
+
+      clearTimeout(timeoutId);
 
       if (error) {
         if (this.isNetworkError(error)) {
@@ -182,7 +187,7 @@ export class SupabaseDatabase {
         );
       }
 
-      console.log("�� Journal entry saved to Supabase Database successfully");
+      console.log("✅ Journal entry saved to Supabase Database successfully");
     } catch (error) {
       // Check if it's a network connectivity issue (catch block)
       if (error instanceof Error) {
