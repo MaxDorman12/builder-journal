@@ -222,12 +222,20 @@ export class SupabaseDatabase {
       console.error("❌ Failed to get journal entries:", error);
 
       // Check if it's a network connectivity issue
-      if (error instanceof Error) {
+      if (error instanceof Error || typeof error === 'string') {
+        const errorMessage = (error instanceof Error ? error.message : String(error)).toLowerCase();
+        const errorName = error instanceof Error ? error.name : '';
+
         if (
-          error.message.includes("Failed to fetch") ||
-          error.name === "AbortError" ||
-          error.message.includes("NetworkError") ||
-          error.message.includes("fetch")
+          errorMessage.includes("failed to fetch") ||
+          errorName === "AbortError" ||
+          errorName === "TypeError" ||
+          errorMessage.includes("networkerror") ||
+          errorMessage.includes("fetch") ||
+          errorMessage.includes("timeout") ||
+          errorMessage.includes("connection") ||
+          errorMessage.includes("network") ||
+          errorMessage.includes("cors")
         ) {
           console.error(
             "🌐 Network connectivity issue detected. Possible causes:",
