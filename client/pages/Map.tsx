@@ -64,8 +64,18 @@ export default function Map() {
   const [pendingPinData, setPendingPinData] = useState<any>(null);
 
   useEffect(() => {
-    setPins(HybridStorage.getMapPins());
-    setEntries(HybridStorage.getJournalEntries());
+    const loadMapData = () => {
+      setPins(HybridStorage.getMapPins());
+      setEntries(HybridStorage.getJournalEntries());
+    };
+
+    loadMapData();
+
+    // Listen for real-time updates from HybridStorage
+    const unsubscribe = HybridStorage.onUpdate(() => {
+      console.log("🔄 MAP: Real-time update received, refreshing map data...");
+      loadMapData();
+    });
 
     // Check if we're in pin placement mode
     const mode = searchParams.get("mode");
@@ -88,6 +98,8 @@ export default function Map() {
         }));
       }
     }
+
+    return () => unsubscribe();
   }, [searchParams]);
 
   // Add keyboard navigation
