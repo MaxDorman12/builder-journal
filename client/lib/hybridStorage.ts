@@ -250,10 +250,10 @@ export class HybridStorage {
         charlieListener,
       );
     } catch (error) {
-      console.warn("⚠️ Failed to setup Firebase listeners (network issue):", error);
+      console.warn("⚠️ Failed to setup Supabase subscriptions (network issue):", error);
       console.log("📱 App will work in offline mode with localStorage only");
 
-      // Disable cloud sync to prevent further connection attempts
+      // Disable Supabase sync to prevent further connection attempts
       this.supabaseEnabled = false;
     }
   }
