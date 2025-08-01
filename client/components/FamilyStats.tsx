@@ -272,7 +272,7 @@ export function FamilyStats({
     {
       icon: Users,
       value: 5,
-      label: "👨‍👩‍👧‍👦 Family Members",
+      label: "👨‍👩‍👧‍👦❤️ Family Members",
       color: "from-blue-200 to-blue-300",
       textColor: "text-blue-700",
     },
