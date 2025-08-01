@@ -528,6 +528,26 @@ export class SupabaseDatabase {
     };
   }
 
+  // Test real-time connection
+  static testRealtime(): void {
+    console.log("🧪 Testing Supabase real-time connection...");
+
+    const testChannel = supabase
+      .channel("realtime_test")
+      .subscribe((status) => {
+        console.log("📡 Real-time test status:", status);
+        if (status === "SUBSCRIBED") {
+          console.log("✅ Real-time connection working!");
+          setTimeout(() => {
+            supabase.removeChannel(testChannel);
+            console.log("🧪 Real-time test completed");
+          }, 2000);
+        } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+          console.error("❌ Real-time connection failed:", status);
+        }
+      });
+  }
+
   // Test connection
   static async testConnection(): Promise<{
     success: boolean;
