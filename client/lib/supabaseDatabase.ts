@@ -56,6 +56,45 @@ export class SupabaseDatabase {
 
     throw lastError;
   }
+
+  // Connection health check
+  static async checkConnectionHealth(): Promise<{ healthy: boolean; message: string }> {
+    try {
+      // Simple query to test connection
+      const { data, error } = await supabase
+        .from('journal_entries')
+        .select('id')
+        .limit(1)
+        .abortSignal(AbortSignal.timeout(5000)); // 5 second timeout
+
+      if (error) {
+        if (this.isNetworkError(error)) {
+          return {
+            healthy: false,
+            message: "Network connectivity issue - check internet connection"
+          };
+        }
+        return {
+          healthy: false,
+          message: `Database error: ${error.message}`
+        };
+      }
+
+      return { healthy: true, message: "Connection healthy" };
+    } catch (error) {
+      if (this.isNetworkError(error)) {
+        return {
+          healthy: false,
+          message: "Network timeout or connectivity issue"
+        };
+      }
+      return {
+        healthy: false,
+        message: `Connection test failed: ${error instanceof Error ? error.message : String(error)}`
+      };
+    }
+  }
+
   // Journal Entries
   static async saveJournalEntry(entry: JournalEntry): Promise<void> {
     console.log("💾 Saving journal entry to Supabase Database:", {
