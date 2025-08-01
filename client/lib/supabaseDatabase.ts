@@ -81,6 +81,24 @@ export class SupabaseDatabase {
         latitude: row.latitude,
         longitude: row.longitude,
         createdAt: row.created_at,
+        // Add default values for fields that might be missing
+        date: row.created_at || new Date().toISOString(),
+        location: row.location_name || "",
+        moodRating: row.mood_rating || 3,
+        greatFor: row.great_for || [],
+        isBusy: row.is_busy || false,
+        areaType: row.area_type || "town",
+        wouldReturnReason: row.would_return_reason || "",
+        wouldReturn: row.would_return || true,
+        hasFreeParkingAvailable: row.has_free_parking_available || false,
+        parkingCost: row.parking_cost || "",
+        isPaidActivity: row.is_paid_activity || false,
+        activityCost: row.activity_cost || "",
+        author: row.author || "Family",
+        likes: row.likes || 0,
+        comments: row.comments || [],
+        tags: row.tags || [],
+        updatedAt: row.updated_at || row.created_at || new Date().toISOString(),
       }));
 
       console.log(`✅ Loaded ${entries.length} journal entries from Supabase`);
