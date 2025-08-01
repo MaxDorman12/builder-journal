@@ -258,7 +258,7 @@ export function FamilyStats({
     {
       icon: MapPin,
       value: stats.totalPins,
-      label: "🌟 Places Visited",
+      label: "🗺️✨ Places Visited",
       color: "from-pink-200 to-pink-300",
       textColor: "text-pink-700",
     },
