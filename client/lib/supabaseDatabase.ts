@@ -414,13 +414,20 @@ export class SupabaseDatabase {
   }
 
   static async deleteWishlistItem(id: string): Promise<void> {
-    console.log("��️ Deleting wishlist item from Supabase:", id);
+    console.log("🗑️ Deleting wishlist item from Supabase:", id);
 
     try {
+      // Add timeout for network issues
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
       const { error } = await supabase
         .from("wishlist_items")
         .delete()
-        .eq("id", id);
+        .eq("id", id)
+        .abortSignal(controller.signal);
+
+      clearTimeout(timeoutId);
 
       if (error) {
         console.error("❌ Failed to delete wishlist item:", error);
