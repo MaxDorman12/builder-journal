@@ -62,10 +62,12 @@ export default function Index() {
     // Initialize sample data if no data exists
     initializeSampleData();
 
-    // Initialize hybrid storage with auto-sync
-    const initializeStorage = async () => {
-      const cloudEnabled = await HybridStorage.initialize();
-      setIsCloudSyncEnabled(cloudEnabled);
+    // Check hybrid storage status (initialization happens globally in App.tsx)
+    const checkStorageStatus = async () => {
+      // Wait a moment for global initialization to complete
+      await new Promise(resolve => setTimeout(resolve, 100));
+      const status = HybridStorage.getSupabaseStatus();
+      setIsCloudSyncEnabled(status.enabled);
 
       // If localStorage is disabled, force direct Supabase access
       if (StorageHealth.isDisabled()) {
@@ -652,7 +654,7 @@ export default function Index() {
                         "🔄 FORCE SYNC START - Device:",
                         navigator.userAgent.substring(0, 50),
                       );
-                      console.log("🔄 Clearing cache...");
+                      console.log("���� Clearing cache...");
 
                       // Clear all local storage
                       localStorage.clear();
