@@ -69,12 +69,12 @@ export default function Journal() {
           "⚠️ No entries found in HybridStorage - loading directly from Firebase...",
         );
 
-        // Load directly from Firebase when localStorage is disabled
-        import("@/lib/cloudStorage").then(({ CloudStorage }) => {
-          CloudStorage.getJournalEntries()
-            .then((firebaseEntries) => {
+        // Load directly from Supabase when localStorage is disabled
+        import("@/lib/supabaseDatabase").then(({ SupabaseDatabase }) => {
+          SupabaseDatabase.getJournalEntries()
+            .then((supabaseEntries) => {
               console.log(
-                `🔥 Loaded ${firebaseEntries.length} entries directly from Firebase!`,
+                `🔄 Loaded ${supabaseEntries.length} entries directly from Supabase!`,
               );
               if (firebaseEntries.length > 0) {
                 setEntries(
