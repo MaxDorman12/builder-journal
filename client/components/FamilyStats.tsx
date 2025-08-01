@@ -300,7 +300,7 @@ export function FamilyStats({
     {
       icon: Heart,
       value: stats.totalLikes,
-      label: "❤️ Total Likes",
+      label: "❤️👍 Total Likes",
       color: "from-red-200 to-pink-300",
       textColor: "text-red-700",
     },
