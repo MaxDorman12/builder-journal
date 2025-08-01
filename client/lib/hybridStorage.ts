@@ -161,7 +161,27 @@ export class HybridStorage {
       try {
         await SupabaseDatabase.saveMapPin(pin);
       } catch (error) {
-        console.warn("Failed to sync pin to cloud:", error);
+        // Check if it's a network connectivity issue
+        if (error instanceof Error) {
+          const errorMessage = error.message?.toLowerCase() || '';
+          const errorName = error.name || '';
+
+          if (
+            errorMessage.includes("failed to fetch") ||
+            errorMessage.includes("networkerror") ||
+            errorMessage.includes("fetch") ||
+            errorMessage.includes("timeout") ||
+            errorMessage.includes("connection") ||
+            errorName === "AbortError" ||
+            errorName === "TypeError"
+          ) {
+            console.log("🌐 Network connectivity issue detected during map pin save - skipping sync");
+            console.log("📍 Pin saved locally and will sync when connection is restored");
+            return;
+          }
+        }
+
+        console.warn("⚠️ Failed to sync pin to cloud (non-network error):", error);
       }
     }
   }
