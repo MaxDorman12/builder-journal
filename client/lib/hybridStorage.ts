@@ -87,12 +87,20 @@ export class HybridStorage {
   }
 
   static async deleteJournalEntry(id: string): Promise<void> {
+    console.log("🗑️ DELETE: Starting delete process for entry:", id);
+
+    // Delete from local storage first
     LocalStorage.deleteJournalEntry(id);
+    console.log("✅ DELETE: Removed from localStorage");
+
     if (this.supabaseEnabled) {
       try {
+        console.log("🗑️ DELETE: Removing from Supabase...");
         await SupabaseDatabase.deleteJournalEntry(id);
+        console.log("✅ DELETE: Successfully removed from Supabase");
+        console.log("🔔 DELETE: This should trigger real-time sync on other devices");
       } catch (error) {
-        console.warn("Failed to delete entry from cloud:", error);
+        console.error("❌ DELETE: Failed to delete entry from Supabase:", error);
       }
     }
   }
@@ -252,7 +260,7 @@ export class HybridStorage {
       const pinsListener = SupabaseDatabase.subscribeToMapPins(
         (supabasePins) => {
           console.log(
-            `🔄 Real-time update: ${supabasePins.length} map pins from Supabase`,
+            `���� Real-time update: ${supabasePins.length} map pins from Supabase`,
           );
 
           // Handle deletions and updates
