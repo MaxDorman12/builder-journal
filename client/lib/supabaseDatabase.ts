@@ -3,6 +3,59 @@ import { supabase } from "./supabase";
 import { JournalEntry, MapPin, WishlistItem } from "@shared/api";
 
 export class SupabaseDatabase {
+  // Network error detection utility
+  private static isNetworkError(error: any): boolean {
+    if (error instanceof Error) {
+      const errorMessage = error.message?.toLowerCase() || '';
+      const errorName = error.name || '';
+
+      return (
+        errorMessage.includes("failed to fetch") ||
+        errorMessage.includes("networkerror") ||
+        errorMessage.includes("fetch") ||
+        errorMessage.includes("timeout") ||
+        errorMessage.includes("connection") ||
+        errorName === "AbortError" ||
+        errorName === "TypeError"
+      );
+    }
+
+    if (typeof error === "string") {
+      return error.toLowerCase().includes("failed to fetch");
+    }
+
+    return false;
+  }
+
+  // Retry mechanism for network operations
+  private static async retryOperation<T>(
+    operation: () => Promise<T>,
+    maxRetries: number = 2,
+    delayMs: number = 1000
+  ): Promise<T> {
+    let lastError: any;
+
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        return await operation();
+      } catch (error) {
+        lastError = error;
+
+        // If it's a network error and we have retries left, wait and retry
+        if (this.isNetworkError(error) && attempt < maxRetries) {
+          console.log(`🔄 Network error detected, retrying in ${delayMs}ms (attempt ${attempt + 1}/${maxRetries + 1})`);
+          await new Promise(resolve => setTimeout(resolve, delayMs));
+          delayMs *= 2; // Exponential backoff
+          continue;
+        }
+
+        // If not a network error or no retries left, throw
+        throw error;
+      }
+    }
+
+    throw lastError;
+  }
   // Journal Entries
   static async saveJournalEntry(entry: JournalEntry): Promise<void> {
     console.log("💾 Saving journal entry to Supabase Database:", {
