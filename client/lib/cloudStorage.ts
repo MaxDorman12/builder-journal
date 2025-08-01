@@ -170,10 +170,17 @@ export class CloudStorage {
       collection(db, "journal-entries"),
       orderBy("createdAt", "desc"),
     );
-    return onSnapshot(q, (snapshot) => {
-      const entries = snapshot.docs.map((doc) => doc.data() as JournalEntry);
-      callback(entries);
-    });
+    return onSnapshot(q,
+      (snapshot) => {
+        const entries = snapshot.docs.map((doc) => doc.data() as JournalEntry);
+        callback(entries);
+      },
+      (error) => {
+        console.warn("⚠️ Journal entries listener error (network issue):", error);
+        // Continue with empty array to prevent crashes
+        callback([]);
+      }
+    );
   }
 
   static async deleteJournalEntry(id: string): Promise<void> {
