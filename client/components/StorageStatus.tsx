@@ -78,39 +78,68 @@ export function StorageStatus() {
 
   const sizeMB = (storageUsage.totalSize / 1024 / 1024).toFixed(1);
 
-  if (storageDisabled) {
-    return (
-      <Alert className="mb-4 border-red-200 bg-red-50">
-        <CloudOff className="h-4 w-4 text-red-600" />
-        <AlertDescription className="text-red-800">
-          <div className="flex items-center justify-between">
-            <div>
-              <strong>Device Storage Full!</strong> Changes won't save locally
-              but will sync to cloud.
-            </div>
-            <div className="flex gap-2 ml-4">
+  return (
+    <div className="space-y-4">
+      {/* Network Status Alert */}
+      {hasNetworkIssues && (
+        <Alert className="border-orange-200 bg-orange-50">
+          <WifiOff className="h-4 w-4 text-orange-600" />
+          <AlertDescription className="text-orange-800">
+            <div className="flex items-center justify-between">
+              <div>
+                <strong>Network Issue:</strong> {networkStatus.message}
+                <br />
+                <span className="text-sm">
+                  📱 Changes save locally and will sync when connection is restored
+                </span>
+              </div>
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => StorageCleanup.emergencyCleanup()}
+                onClick={() => window.location.reload()}
                 className="h-7 text-xs"
               >
-                🧹 Clean
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => StorageCleanup.nuclearReset()}
-                className="h-7 text-xs bg-red-100"
-              >
-                💥 Reset
+                🔄 Retry
               </Button>
             </div>
-          </div>
-        </AlertDescription>
-      </Alert>
-    );
-  }
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {/* Storage Issues Alert */}
+      {storageDisabled && (
+        <Alert className="border-red-200 bg-red-50">
+          <CloudOff className="h-4 w-4 text-red-600" />
+          <AlertDescription className="text-red-800">
+            <div className="flex items-center justify-between">
+              <div>
+                <strong>Device Storage Full!</strong> Changes won't save locally
+                but will sync to cloud.
+              </div>
+              <div className="flex gap-2 ml-4">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => StorageCleanup.emergencyCleanup()}
+                  className="h-7 text-xs"
+                >
+                  🧹 Clean
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => StorageCleanup.nuclearReset()}
+                  className="h-7 text-xs bg-red-100"
+                >
+                  💥 Reset
+                </Button>
+              </div>
+            </div>
+          </AlertDescription>
+        </Alert>
+      )}
+    </div>
+  );
 
   return (
     <Alert className="mb-4 border-yellow-200 bg-yellow-50">
