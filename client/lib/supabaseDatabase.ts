@@ -439,13 +439,20 @@ export class SupabaseDatabase {
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "journal_entries" },
-        async () => {
-          console.log("🔄 Journal entries changed, fetching latest...");
+        async (payload) => {
+          console.log("🔄 Journal entries DB change detected:", payload);
+          console.log("🔄 Fetching latest journal entries...");
           const entries = await this.getJournalEntries();
+          console.log(`✅ Fetched ${entries.length} entries, calling callback...`);
           callback(entries);
         },
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log("📡 Journal entries subscription status:", status);
+      });
+
+    // Log subscription details
+    console.log("📡 Journal entries subscription created:", subscription);
 
     return () => {
       console.log("🔇 Unsubscribing from journal entries");
