@@ -958,8 +958,14 @@ export class SupabaseDatabase {
           if (payload.eventType === "DELETE") {
             console.log("🗑️ WISHLIST DELETE event detected in real-time!");
           }
-          const items = await this.getWishlistItems();
-          callback(items);
+          try {
+            const items = await this.getWishlistItems();
+            callback(items);
+          } catch (error) {
+            console.error("❌ Error in wishlist subscription callback:", error);
+            console.log("⚠️ Continuing with empty items to prevent subscription crash...");
+            callback([]);
+          }
         },
       )
       .subscribe();
