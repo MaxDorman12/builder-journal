@@ -1302,6 +1302,48 @@ export class SupabaseDatabase {
     };
   }
 
+  static subscribeToYouTubeVideo(
+    callback: (video: YouTubeVideo | null) => void,
+  ) {
+    console.log("🔄 Setting up real-time subscription for YouTube video...");
+
+    const subscription = supabase
+      .channel("youtube_videos_changes")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "youtube_videos" },
+        async (payload) => {
+          console.log("🔄 YouTube video DB change detected:", payload);
+          if (payload.eventType === "DELETE") {
+            console.log("🗑️ YOUTUBE DELETE event detected in real-time!");
+          }
+          try {
+            const video = await this.getYouTubeVideo();
+            callback(video);
+          } catch (error) {
+            // Better error logging for subscription callbacks
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            const errorName = error instanceof Error ? error.name : typeof error;
+            console.log("⚠️ Error in YouTube video subscription callback:", {
+              message: errorMessage,
+              name: errorName,
+              error: error instanceof Error ? error : String(error)
+            });
+            console.log(
+              "🔄 Continuing with null video to prevent subscription crash...",
+            );
+            callback(null);
+          }
+        },
+      )
+      .subscribe();
+
+    return () => {
+      console.log("🔇 Unsubscribing from YouTube video");
+      supabase.removeChannel(subscription);
+    };
+  }
+
   static subscribeToCharlieData(
     callback: (data: { image: string; description: string }) => void,
   ) {
