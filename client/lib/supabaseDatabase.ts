@@ -325,6 +325,23 @@ export class SupabaseDatabase {
           "❌ Failed to save wishlist item:",
           error.message || error,
         );
+
+        // Check if it's a network connectivity issue
+        if (error.message?.includes('Failed to fetch') ||
+            error.message?.includes('NetworkError') ||
+            error.message?.includes('fetch') ||
+            error.code === 'PGRST301') {
+          console.error('🌐 Network connectivity issue during wishlist save:');
+          console.error('  - Internet connection lost');
+          console.error('  - Supabase service temporarily unavailable');
+          console.error('  - Request timeout (>10 seconds)');
+          console.error('  - CORS or firewall blocking request');
+
+          // Don't throw error for network issues during sync to allow app to continue
+          console.log('⚠️ Skipping wishlist item save due to network issue');
+          return;
+        }
+
         throw new Error(
           `Failed to save wishlist item: ${error.message || error}`,
         );
