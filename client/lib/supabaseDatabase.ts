@@ -902,6 +902,160 @@ export class SupabaseDatabase {
     }
   }
 
+  // YouTube Video methods
+  static async saveYouTubeVideo(video: YouTubeVideo): Promise<void> {
+    console.log("📺 Saving YouTube video to Supabase Database:", video.title);
+
+    try {
+      // Add timeout for network issues
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+
+      const { error } = await supabase
+        .from("youtube_videos")
+        .upsert({
+          id: video.id,
+          url: video.url,
+          title: video.title,
+          description: video.description,
+          updated_by: video.updatedBy,
+          created_at: video.createdAt,
+          updated_at: video.updatedAt,
+        })
+        .abortSignal(controller.signal);
+
+      clearTimeout(timeoutId);
+
+      if (error) {
+        console.error("❌ Supabase Database YouTube save error:", error.message || error);
+
+        // Check if it's a network connectivity issue
+        if (
+          error.message?.includes("Failed to fetch") ||
+          error.message?.includes("NetworkError") ||
+          error.message?.includes("fetch") ||
+          error.message?.toLowerCase().includes("timeout") ||
+          error.message?.toLowerCase().includes("connection") ||
+          error.code === "PGRST301"
+        ) {
+          console.log("🌐 Network connectivity issue during YouTube video save - skipping sync");
+          return;
+        }
+
+        throw new Error(`Failed to save YouTube video: ${error.message || error}`);
+      }
+
+      console.log("✅ YouTube video saved to Supabase Database successfully");
+    } catch (error) {
+      // Check if it's a network connectivity issue (catch block)
+      if (error instanceof Error) {
+        if (
+          error.message?.includes("Failed to fetch") ||
+          error.name === "AbortError" ||
+          error.message?.includes("NetworkError") ||
+          error.message?.includes("fetch") ||
+          error.message?.includes("network") ||
+          error.message?.toLowerCase().includes("timeout") ||
+          error.message?.toLowerCase().includes("connection")
+        ) {
+          console.log("🌐 Network connectivity issue during YouTube video save - video will be queued for sync");
+          return; // Don't throw error for network issues
+        }
+      }
+
+      console.error("❌ Failed to save YouTube video to Supabase:", error);
+      throw error;
+    }
+  }
+
+  static async getYouTubeVideo(): Promise<YouTubeVideo | null> {
+    console.log("📺 Fetching YouTube video from Supabase Database...");
+
+    try {
+      // Add timeout for network issues
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+
+      const { data, error } = await supabase
+        .from("youtube_videos")
+        .select("*")
+        .order("updated_at", { ascending: false })
+        .limit(1)
+        .abortSignal(controller.signal);
+
+      clearTimeout(timeoutId);
+
+      if (error) {
+        console.error("❌ Failed to fetch YouTube video:", error.message || error);
+
+        // Check if it's a network connectivity issue
+        if (
+          error.message?.includes("Failed to fetch") ||
+          error.message?.includes("NetworkError") ||
+          error.message?.includes("fetch") ||
+          error.code === "PGRST301"
+        ) {
+          console.log("🌐 Network connectivity issue during YouTube video fetch");
+          return null;
+        }
+
+        return null; // Return null for any errors to prevent app crashes
+      }
+
+      if (!data || data.length === 0) {
+        console.log("📺 No YouTube video found in database");
+        return null;
+      }
+
+      const row = data[0];
+      const video: YouTubeVideo = {
+        id: row.id,
+        url: row.url,
+        title: row.title,
+        description: row.description,
+        updatedBy: row.updated_by,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at,
+      };
+
+      console.log("✅ Loaded YouTube video from Supabase");
+      return video;
+    } catch (error) {
+      // Better error logging
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorName = error instanceof Error ? error.name : typeof error;
+      console.error("❌ Failed to get YouTube video:", {
+        message: errorMessage,
+        name: errorName,
+        error: error instanceof Error ? error : String(error)
+      });
+
+      // Check if it's a network connectivity issue
+      if (error instanceof Error || typeof error === "string") {
+        const lowerErrorMessage = errorMessage.toLowerCase();
+
+        if (
+          lowerErrorMessage.includes("failed to fetch") ||
+          errorName === "AbortError" ||
+          errorName === "TypeError" ||
+          lowerErrorMessage.includes("networkerror") ||
+          lowerErrorMessage.includes("fetch") ||
+          lowerErrorMessage.includes("timeout") ||
+          lowerErrorMessage.includes("connection") ||
+          lowerErrorMessage.includes("network") ||
+          lowerErrorMessage.includes("aborted")
+        ) {
+          console.log("🌐 Network connectivity issue detected during YouTube video fetch. Returning null.");
+          return null;
+        }
+      }
+
+      // For any other errors, return null to prevent app crashes
+      console.log("⚠️ Unknown error in YouTube video fetch, returning null to prevent app crash:", { errorMessage, errorName });
+      return null;
+    }
+  }
+
   // Charlie Data
   static async setCharlieData(data: {
     image: string;
