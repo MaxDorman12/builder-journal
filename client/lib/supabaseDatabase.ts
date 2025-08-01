@@ -298,8 +298,8 @@ export class SupabaseDatabase {
         .single();
 
       if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
-        console.error("❌ Failed to fetch Charlie data:", error);
-        throw error;
+        console.error("❌ Failed to fetch Charlie data:", error.message || error);
+        throw new Error(`Failed to fetch Charlie data: ${error.message || error}`);
       }
 
       if (!data) {
