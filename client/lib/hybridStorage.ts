@@ -98,9 +98,14 @@ export class HybridStorage {
         console.log("🗑️ DELETE: Removing from Supabase...");
         await SupabaseDatabase.deleteJournalEntry(id);
         console.log("✅ DELETE: Successfully removed from Supabase");
-        console.log("🔔 DELETE: This should trigger real-time sync on other devices");
+        console.log(
+          "🔔 DELETE: This should trigger real-time sync on other devices",
+        );
       } catch (error) {
-        console.error("❌ DELETE: Failed to delete entry from Supabase:", error);
+        console.error(
+          "❌ DELETE: Failed to delete entry from Supabase:",
+          error,
+        );
       }
     }
   }

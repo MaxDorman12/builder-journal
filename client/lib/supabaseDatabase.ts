@@ -448,10 +448,10 @@ export class SupabaseDatabase {
             table: payload.table,
             schema: payload.schema,
             new: payload.new,
-            old: payload.old
+            old: payload.old,
           });
 
-          if (payload.eventType === 'DELETE') {
+          if (payload.eventType === "DELETE") {
             console.log("🗑️ DELETE event detected in real-time!");
           }
 
