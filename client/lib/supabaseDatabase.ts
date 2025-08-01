@@ -647,6 +647,18 @@ export class SupabaseDatabase {
         };
       }
 
+      // Check for network connectivity issues
+      if (error instanceof Error &&
+          (error.message.includes('Failed to fetch') ||
+           error.name === 'AbortError' ||
+           error.message.includes('NetworkError') ||
+           error.message.includes('fetch'))) {
+        return {
+          success: false,
+          message: "Network connectivity issue - check internet connection and try again",
+        };
+      }
+
       return {
         success: false,
         message: `Connection error: ${error.message || error}`,
