@@ -4,7 +4,13 @@ import { Button } from "@/components/ui/button";
 import { StorageCleanup } from "@/lib/storageCleanup";
 import { HybridStorage } from "@/lib/hybridStorage";
 import { SupabaseDatabase } from "@/lib/supabaseDatabase";
-import { AlertTriangle, CloudOff, HardDrive, Wifi, WifiOff } from "lucide-react";
+import {
+  AlertTriangle,
+  CloudOff,
+  HardDrive,
+  Wifi,
+  WifiOff,
+} from "lucide-react";
 
 export function StorageStatus() {
   const [storageDisabled, setStorageDisabled] = useState(false);
@@ -36,27 +42,27 @@ export function StorageStatus() {
     // Check network/Supabase status
     const checkNetworkStatus = async () => {
       const supabaseStatus = HybridStorage.getSupabaseStatus();
-      
+
       if (supabaseStatus.enabled) {
         try {
           const healthCheck = await SupabaseDatabase.checkConnectionHealth();
           setNetworkStatus({
             healthy: healthCheck.healthy,
             message: healthCheck.message,
-            supabaseEnabled: true
+            supabaseEnabled: true,
           });
         } catch (error) {
           setNetworkStatus({
             healthy: false,
             message: "Connection check failed",
-            supabaseEnabled: true
+            supabaseEnabled: true,
           });
         }
       } else {
         setNetworkStatus({
           healthy: false,
           message: "Supabase not connected",
-          supabaseEnabled: false
+          supabaseEnabled: false,
         });
       }
     };
@@ -69,9 +75,11 @@ export function StorageStatus() {
   }, []);
 
   // Show component if storage issues or network issues
-  const hasStorageIssues = storageDisabled || storageUsage.totalSize >= 20 * 1024 * 1024;
-  const hasNetworkIssues = networkStatus.supabaseEnabled && !networkStatus.healthy;
-  
+  const hasStorageIssues =
+    storageDisabled || storageUsage.totalSize >= 20 * 1024 * 1024;
+  const hasNetworkIssues =
+    networkStatus.supabaseEnabled && !networkStatus.healthy;
+
   if (!hasStorageIssues && !hasNetworkIssues) {
     return null;
   }
@@ -90,7 +98,8 @@ export function StorageStatus() {
                 <strong>Network Issue:</strong> {networkStatus.message}
                 <br />
                 <span className="text-sm">
-                  📱 Changes save locally and will sync when connection is restored
+                  📱 Changes save locally and will sync when connection is
+                  restored
                 </span>
               </div>
               <Button
@@ -146,8 +155,8 @@ export function StorageStatus() {
           <AlertDescription className="text-yellow-800">
             <div className="flex items-center justify-between">
               <div>
-                <strong>Storage Warning:</strong> Using {sizeMB}MB of local storage.
-                Consider cleaning up.
+                <strong>Storage Warning:</strong> Using {sizeMB}MB of local
+                storage. Consider cleaning up.
               </div>
               <Button
                 size="sm"

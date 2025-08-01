@@ -33,21 +33,27 @@ export class HybridStorage {
     }
 
     // Check connection health every 2 minutes
-    this.connectionMonitorInterval = setInterval(async () => {
-      if (this.supabaseEnabled) {
-        try {
-          const healthCheck = await SupabaseDatabase.checkConnectionHealth();
-          if (!healthCheck.healthy) {
-            console.warn("⚠️ Connection health check failed:", healthCheck.message);
-            console.log("🔄 Connection monitoring will continue...");
-          } else {
-            console.log("✅ Connection health check passed");
+    this.connectionMonitorInterval = setInterval(
+      async () => {
+        if (this.supabaseEnabled) {
+          try {
+            const healthCheck = await SupabaseDatabase.checkConnectionHealth();
+            if (!healthCheck.healthy) {
+              console.warn(
+                "⚠️ Connection health check failed:",
+                healthCheck.message,
+              );
+              console.log("🔄 Connection monitoring will continue...");
+            } else {
+              console.log("✅ Connection health check passed");
+            }
+          } catch (error) {
+            console.warn("⚠️ Connection health check error:", error);
           }
-        } catch (error) {
-          console.warn("⚠️ Connection health check error:", error);
         }
-      }
-    }, 2 * 60 * 1000); // 2 minutes
+      },
+      2 * 60 * 1000,
+    ); // 2 minutes
   }
 
   static async initialize(): Promise<boolean> {
@@ -110,8 +116,8 @@ export class HybridStorage {
       } catch (error) {
         // Check if it's a network connectivity issue
         if (error instanceof Error) {
-          const errorMessage = error.message?.toLowerCase() || '';
-          const errorName = error.name || '';
+          const errorMessage = error.message?.toLowerCase() || "";
+          const errorName = error.name || "";
 
           if (
             errorMessage.includes("failed to fetch") ||
@@ -122,13 +128,20 @@ export class HybridStorage {
             errorName === "AbortError" ||
             errorName === "TypeError"
           ) {
-            console.log("🌐 Network connectivity issue detected during journal entry save - skipping sync to preserve data");
-            console.log("📱 Entry saved locally and will sync when connection is restored");
+            console.log(
+              "🌐 Network connectivity issue detected during journal entry save - skipping sync to preserve data",
+            );
+            console.log(
+              "📱 Entry saved locally and will sync when connection is restored",
+            );
             return; // Don't throw error for network issues
           }
         }
 
-        console.warn("⚠️ Failed to sync entry to Supabase (non-network error):", error);
+        console.warn(
+          "⚠️ Failed to sync entry to Supabase (non-network error):",
+          error,
+        );
         // Still don't throw - we have the data saved locally
       }
     }
@@ -191,8 +204,8 @@ export class HybridStorage {
       } catch (error) {
         // Check if it's a network connectivity issue
         if (error instanceof Error) {
-          const errorMessage = error.message?.toLowerCase() || '';
-          const errorName = error.name || '';
+          const errorMessage = error.message?.toLowerCase() || "";
+          const errorName = error.name || "";
 
           if (
             errorMessage.includes("failed to fetch") ||
@@ -203,13 +216,20 @@ export class HybridStorage {
             errorName === "AbortError" ||
             errorName === "TypeError"
           ) {
-            console.log("🌐 Network connectivity issue detected during map pin save - skipping sync");
-            console.log("📍 Pin saved locally and will sync when connection is restored");
+            console.log(
+              "🌐 Network connectivity issue detected during map pin save - skipping sync",
+            );
+            console.log(
+              "📍 Pin saved locally and will sync when connection is restored",
+            );
             return;
           }
         }
 
-        console.warn("⚠️ Failed to sync pin to cloud (non-network error):", error);
+        console.warn(
+          "⚠️ Failed to sync pin to cloud (non-network error):",
+          error,
+        );
       }
     }
   }

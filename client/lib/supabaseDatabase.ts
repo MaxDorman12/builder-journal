@@ -6,8 +6,8 @@ export class SupabaseDatabase {
   // Network error detection utility
   private static isNetworkError(error: any): boolean {
     if (error instanceof Error) {
-      const errorMessage = error.message?.toLowerCase() || '';
-      const errorName = error.name || '';
+      const errorMessage = error.message?.toLowerCase() || "";
+      const errorName = error.name || "";
 
       return (
         errorMessage.includes("failed to fetch") ||
@@ -31,7 +31,7 @@ export class SupabaseDatabase {
   private static async retryOperation<T>(
     operation: () => Promise<T>,
     maxRetries: number = 2,
-    delayMs: number = 1000
+    delayMs: number = 1000,
   ): Promise<T> {
     let lastError: any;
 
@@ -43,8 +43,10 @@ export class SupabaseDatabase {
 
         // If it's a network error and we have retries left, wait and retry
         if (this.isNetworkError(error) && attempt < maxRetries) {
-          console.log(`🔄 Network error detected, retrying in ${delayMs}ms (attempt ${attempt + 1}/${maxRetries + 1})`);
-          await new Promise(resolve => setTimeout(resolve, delayMs));
+          console.log(
+            `🔄 Network error detected, retrying in ${delayMs}ms (attempt ${attempt + 1}/${maxRetries + 1})`,
+          );
+          await new Promise((resolve) => setTimeout(resolve, delayMs));
           delayMs *= 2; // Exponential backoff
           continue;
         }
@@ -58,12 +60,15 @@ export class SupabaseDatabase {
   }
 
   // Connection health check
-  static async checkConnectionHealth(): Promise<{ healthy: boolean; message: string }> {
+  static async checkConnectionHealth(): Promise<{
+    healthy: boolean;
+    message: string;
+  }> {
     try {
       // Simple query to test connection
       const { data, error } = await supabase
-        .from('journal_entries')
-        .select('id')
+        .from("journal_entries")
+        .select("id")
         .limit(1)
         .abortSignal(AbortSignal.timeout(5000)); // 5 second timeout
 
@@ -71,12 +76,12 @@ export class SupabaseDatabase {
         if (this.isNetworkError(error)) {
           return {
             healthy: false,
-            message: "Network connectivity issue - check internet connection"
+            message: "Network connectivity issue - check internet connection",
           };
         }
         return {
           healthy: false,
-          message: `Database error: ${error.message}`
+          message: `Database error: ${error.message}`,
         };
       }
 
@@ -85,12 +90,12 @@ export class SupabaseDatabase {
       if (this.isNetworkError(error)) {
         return {
           healthy: false,
-          message: "Network timeout or connectivity issue"
+          message: "Network timeout or connectivity issue",
         };
       }
       return {
         healthy: false,
-        message: `Connection test failed: ${error instanceof Error ? error.message : String(error)}`
+        message: `Connection test failed: ${error instanceof Error ? error.message : String(error)}`,
       };
     }
   }

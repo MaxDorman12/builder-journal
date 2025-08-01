@@ -145,9 +145,7 @@ export function Layout({ children }: LayoutProps) {
             <p className="text-sm">
               Made with ❤️ for the Dorman Family Adventures
             </p>
-            <p className="text-xs mt-2">
-              ❤️❤️❤️❤️❤️
-            </p>
+            <p className="text-xs mt-2">❤️❤️❤️❤️❤️</p>
           </div>
         </div>
       </footer>
