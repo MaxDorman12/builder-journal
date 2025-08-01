@@ -128,14 +128,14 @@ export class SupabaseDatabase {
       });
 
       if (error) {
-        console.error("❌ Failed to save map pin:", error);
-        throw error;
+        console.error("❌ Failed to save map pin:", error.message || error);
+        throw new Error(`Failed to save map pin: ${error.message || error}`);
       }
 
       console.log("✅ Map pin saved to Supabase Database");
     } catch (error) {
-      console.error("❌ Failed to save map pin:", error);
-      throw error;
+      console.error("❌ Failed to save map pin:", error.message || error);
+      throw new Error(`Failed to save map pin: ${error.message || error}`);
     }
   }
 
@@ -441,7 +441,7 @@ export class SupabaseDatabase {
       .subscribe();
 
     return () => {
-      console.log("🔇 Unsubscribing from wishlist items");
+      console.log("���� Unsubscribing from wishlist items");
       supabase.removeChannel(subscription);
     };
   }
