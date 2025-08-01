@@ -87,8 +87,6 @@ export class SupabaseDatabase {
 
       console.log("✅ Journal entry saved to Supabase Database successfully");
     } catch (error) {
-      console.error("❌ Failed to save journal entry to Supabase:", error);
-
       // Check if it's a network connectivity issue (catch block)
       if (error instanceof Error) {
         if (
@@ -100,21 +98,19 @@ export class SupabaseDatabase {
           error.message?.toLowerCase().includes("timeout") ||
           error.message?.toLowerCase().includes("connection")
         ) {
-          console.error(
-            "🌐 Network connectivity issue during journal entry save (catch):",
-          );
-          console.error("  - Internet connection lost");
-          console.error("  - Supabase service temporarily unavailable");
-          console.error("  - Request timeout (>10 seconds)");
-          console.error("  - CORS or firewall blocking request");
-
           console.log(
-            "⚠️ Skipping journal entry save due to network issue (catch)",
+            "🌐 Network connectivity issue during journal entry save - entry will be queued for sync",
           );
-          return;
+          console.log("  💡 Common causes:");
+          console.log("    - Internet connection temporarily lost");
+          console.log("    - Supabase service temporarily unavailable");
+          console.log("    - Request timeout (>10 seconds)");
+          console.log("    - CORS or firewall blocking request");
+          return; // Don't throw error for network issues
         }
       }
 
+      console.error("❌ Failed to save journal entry to Supabase:", error);
       throw error;
     }
   }
