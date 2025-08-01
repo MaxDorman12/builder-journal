@@ -411,4 +411,41 @@ export class LocalStorage {
     }
     return deviceId;
   }
+
+  // YouTube Video methods
+  static getYouTubeVideo(): YouTubeVideo | null {
+    this.initialize();
+    if (this.localStorageDisabled) return null;
+
+    try {
+      const data = localStorage.getItem(this.getKey("youtube_video"));
+      return data ? JSON.parse(data) : null;
+    } catch (error) {
+      console.error("Failed to parse YouTube video data:", error);
+      return null;
+    }
+  }
+
+  static saveYouTubeVideo(video: YouTubeVideo): void {
+    this.initialize();
+    if (this.localStorageDisabled) return;
+
+    try {
+      localStorage.setItem(this.getKey("youtube_video"), JSON.stringify(video));
+    } catch (error) {
+      console.error("❌ localStorage quota exceeded when saving YouTube video");
+      this.handleQuotaExceeded("youtube_video", video);
+    }
+  }
+
+  static deleteYouTubeVideo(): void {
+    this.initialize();
+    if (this.localStorageDisabled) return;
+
+    try {
+      localStorage.removeItem(this.getKey("youtube_video"));
+    } catch (error) {
+      console.error("�� Failed to delete YouTube video from localStorage");
+    }
+  }
 }
