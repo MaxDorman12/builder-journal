@@ -69,7 +69,9 @@ export default function Index() {
 
       // If localStorage is disabled, force direct Firebase access
       if (StorageHealth.isDisabled()) {
-        console.log("📵 localStorage disabled - forcing direct Firebase access");
+        console.log(
+          "📵 localStorage disabled - forcing direct Firebase access",
+        );
         try {
           const directEntries = await CloudStorage.getJournalEntries();
           const directCharlie = await CloudStorage.getCharlieData();
@@ -77,7 +79,7 @@ export default function Index() {
 
           console.log("📱 Direct Firebase load successful:", {
             entriesCount: directEntries.length,
-            charlieHasImage: !!directCharlie.image
+            charlieHasImage: !!directCharlie.image,
           });
 
           setEntries(directEntries);
@@ -119,7 +121,7 @@ export default function Index() {
           console.log("📱 Setting UI state with Firebase data:", {
             entriesCount: freshEntries.length,
             pinsCount: freshPins.length,
-            charlieHasImage: !!freshCharlieData.image
+            charlieHasImage: !!freshCharlieData.image,
           });
 
           setCharlieData(freshCharlieData);
@@ -146,7 +148,7 @@ export default function Index() {
 
             console.log("🚨 Emergency data loaded:", {
               entriesCount: emergencyEntries.length,
-              charlieHasImage: !!emergencyCharlie.image
+              charlieHasImage: !!emergencyCharlie.image,
             });
 
             setEntries(emergencyEntries);
@@ -350,7 +352,9 @@ export default function Index() {
     setIsCharlieDialogOpen(true);
   };
 
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
       // Check file size (now allow larger files since we're using Supabase)
@@ -370,7 +374,7 @@ export default function Index() {
       console.log("🔄 Uploading Charlie's photo...", {
         name: file.name,
         size: file.size,
-        type: file.type
+        type: file.type,
       });
 
       try {
@@ -384,7 +388,10 @@ export default function Index() {
           image: uploadedUrl,
         });
       } catch (error) {
-        console.warn("⚠️ Supabase upload failed, using compression fallback:", error);
+        console.warn(
+          "⚠️ Supabase upload failed, using compression fallback:",
+          error,
+        );
 
         // Fallback to compressed base64 if Supabase fails
         const canvas = document.createElement("canvas");
@@ -697,15 +704,19 @@ export default function Index() {
                     onClick={async () => {
                       try {
                         console.log("🔄 Manual refresh from Firebase...");
-                        const freshEntries = await CloudStorage.getJournalEntries();
-                        const freshCharlie = await CloudStorage.getCharlieData();
+                        const freshEntries =
+                          await CloudStorage.getJournalEntries();
+                        const freshCharlie =
+                          await CloudStorage.getCharlieData();
                         const freshPins = await CloudStorage.getMapPins();
 
                         setEntries(freshEntries);
                         setCharlieData(freshCharlie);
                         setPins(freshPins);
 
-                        alert(`✅ Refreshed from cloud!\n${freshEntries.length} journal entries loaded`);
+                        alert(
+                          `✅ Refreshed from cloud!\n${freshEntries.length} journal entries loaded`,
+                        );
                       } catch (error) {
                         alert(`❌ Refresh failed: ${error}`);
                       }
@@ -932,8 +943,8 @@ export default function Index() {
                   className="w-full"
                 />
                 <p className="text-xs text-muted-foreground">
-                  Upload directly from your phone or computer (max 10MB,
-                  stored in cloud via Supabase)
+                  Upload directly from your phone or computer (max 10MB, stored
+                  in cloud via Supabase)
                 </p>
               </div>
 
