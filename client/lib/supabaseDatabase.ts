@@ -65,10 +65,17 @@ export class SupabaseDatabase {
     console.log("📖 Fetching journal entries from Supabase Database...");
 
     try {
+      // Add timeout and retry logic for network issues
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
       const { data, error } = await supabase
         .from("journal_entries")
         .select("*")
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .abortSignal(controller.signal);
+
+      clearTimeout(timeoutId);
 
       if (error) {
         console.error(
