@@ -150,13 +150,25 @@ export class HybridStorage {
   }
 
   static async deleteMapPin(id: string): Promise<void> {
+    console.log("🗑️ DELETE MAP PIN: Starting delete process for pin:", id);
+    console.log("🔍 DELETE MAP PIN: Supabase enabled status:", this.supabaseEnabled);
+
+    // Delete from local storage first
     LocalStorage.deleteMapPin(id);
+    console.log("✅ DELETE MAP PIN: Removed from localStorage");
+
     if (this.supabaseEnabled) {
       try {
+        console.log("🗑️ DELETE MAP PIN: Removing from Supabase...");
         await SupabaseDatabase.deleteMapPin(id);
+        console.log("✅ DELETE MAP PIN: Successfully removed from Supabase");
+        console.log("🔔 DELETE MAP PIN: This should trigger real-time sync on other devices");
       } catch (error) {
-        console.warn("Failed to delete pin from cloud:", error);
+        console.error("❌ DELETE MAP PIN: Failed to delete from Supabase:", error);
       }
+    } else {
+      console.log("⚠️ DELETE MAP PIN: Supabase sync disabled - pin only deleted locally");
+      console.log("💡 DELETE MAP PIN: To enable Supabase sync, check connection and call HybridStorage.initialize()");
     }
   }
 
