@@ -250,10 +250,9 @@ export class SupabaseDatabase {
         }
       }
 
-      // For other errors, throw to propagate to HybridStorage
-      throw new Error(
-        `Failed to get journal entries: ${error.message || error}`,
-      );
+      // For any other errors, return empty array to prevent app crashes
+      console.error("⚠️ Unknown error in journal entries catch block, returning empty array to prevent app crash");
+      return [];
     }
   }
 
@@ -393,7 +392,7 @@ export class SupabaseDatabase {
   }
 
   static async deleteMapPin(id: string): Promise<void> {
-    console.log("🗑️ Deleting map pin from Supabase:", id);
+    console.log("🗑��� Deleting map pin from Supabase:", id);
 
     try {
       const { error } = await supabase.from("map_pins").delete().eq("id", id);
