@@ -197,7 +197,9 @@ export class HybridStorage {
       // Subscribe to journal entry changes
       const entriesListener = SupabaseDatabase.subscribeToJournalEntries(
         (supabaseEntries) => {
-          console.log(`🔄 Real-time update: ${supabaseEntries.length} journal entries from Supabase`);
+          console.log(
+            `🔄 Real-time update: ${supabaseEntries.length} journal entries from Supabase`,
+          );
 
           // Replace all local entries with fresh Supabase data
           // This ensures we have the latest data including updates and deletions
@@ -213,7 +215,9 @@ export class HybridStorage {
       // Subscribe to map pin changes
       const pinsListener = SupabaseDatabase.subscribeToMapPins(
         (supabasePins) => {
-          console.log(`🔄 Real-time update: ${supabasePins.length} map pins from Supabase`);
+          console.log(
+            `🔄 Real-time update: ${supabasePins.length} map pins from Supabase`,
+          );
 
           // Replace all local pins with fresh Supabase data
           supabasePins.forEach((pin) => {
@@ -227,7 +231,9 @@ export class HybridStorage {
       // Subscribe to wishlist changes
       const wishlistListener = SupabaseDatabase.subscribeToWishlistItems(
         (supabaseItems) => {
-          console.log(`🔄 Real-time update: ${supabaseItems.length} wishlist items from Supabase`);
+          console.log(
+            `🔄 Real-time update: ${supabaseItems.length} wishlist items from Supabase`,
+          );
 
           // Replace all local items with fresh Supabase data
           supabaseItems.forEach((item) => {

@@ -44,7 +44,9 @@ export default function Journal() {
 
     // Listen for real-time updates from HybridStorage
     const unsubscribe = HybridStorage.onUpdate(() => {
-      console.log("🔄 Real-time update received, refreshing journal entries...");
+      console.log(
+        "🔄 Real-time update received, refreshing journal entries...",
+      );
       loadEntries();
     });
 
