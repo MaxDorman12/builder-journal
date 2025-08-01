@@ -93,7 +93,7 @@ export function EditEntryForm({ entry, onEntryUpdated }: EditEntryFormProps) {
 
       // FORCE SAVE TO FIREBASE FIRST
       try {
-        await CloudStorage.saveJournalEntry(updatedEntry);
+        await SupabaseDatabase.saveJournalEntry(updatedEntry);
         LocalStorage.saveJournalEntry(updatedEntry); // Backup to local
         console.log("✅ Entry update saved to Firebase");
       } catch (error) {
