@@ -44,13 +44,28 @@ export default function Journal() {
   }, []);
 
   const loadEntries = () => {
-    const allEntries = HybridStorage.getJournalEntries();
-    setEntries(
-      allEntries.sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      ),
-    );
+    console.log('📖 Journal page loading entries...');
+
+    try {
+      const allEntries = HybridStorage.getJournalEntries();
+      console.log('📖 Entries loaded from HybridStorage:', {
+        count: allEntries.length,
+        entries: allEntries.map(e => ({ id: e.id, title: e.title, createdAt: e.createdAt }))
+      });
+
+      setEntries(
+        allEntries.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        ),
+      );
+
+      if (allEntries.length === 0) {
+        console.warn('⚠️ No entries found - this explains why journal shows "0 adventures"');
+      }
+    } catch (error) {
+      console.error('❌ Error loading entries:', error);
+    }
   };
 
   const filteredEntries = entries.filter((entry) => {
