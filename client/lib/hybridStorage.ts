@@ -148,8 +148,8 @@ export class HybridStorage {
     return LocalStorage.getCharlieData();
   }
 
-  // Sync local data to cloud
-  private static async syncLocalToCloud(): Promise<void> {
+  // Sync local data to Supabase
+  private static async syncLocalToSupabase(): Promise<void> {
     try {
       const entries = LocalStorage.getJournalEntries();
       const pins = LocalStorage.getMapPins();
