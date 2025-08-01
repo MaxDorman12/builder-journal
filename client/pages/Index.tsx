@@ -239,7 +239,7 @@ export default function Index() {
       }
     };
 
-    initializeStorage();
+    checkStorageStatus();
     loadFreshData();
 
     // Initialize Supabase Storage - DISABLED due to RLS policy restrictions
