@@ -274,7 +274,7 @@ export function JournalEntryCard({
                 className="flex items-center space-x-1 text-muted-foreground hover:text-blue-500 transition-colors"
               >
                 <MessageCircle className="h-4 w-4" />
-                <span>{entry.comments.length}</span>
+                <span>{entry.comments?.length || 0}</span>
               </button>
             </div>
 
