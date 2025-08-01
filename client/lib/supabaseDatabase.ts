@@ -1076,9 +1076,16 @@ export class SupabaseDatabase {
             const pins = await this.getMapPins();
             callback(pins);
           } catch (error) {
-            console.error("❌ Error in map pins subscription callback:", error);
+            // Better error logging for subscription callbacks
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            const errorName = error instanceof Error ? error.name : typeof error;
+            console.log("⚠️ Error in map pins subscription callback:", {
+              message: errorMessage,
+              name: errorName,
+              error: error instanceof Error ? error : String(error)
+            });
             console.log(
-              "⚠️ Continuing with empty pins to prevent subscription crash...",
+              "🔄 Continuing with empty pins to prevent subscription crash...",
             );
             callback([]);
           }
