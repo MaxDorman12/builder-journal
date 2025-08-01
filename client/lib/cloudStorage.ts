@@ -147,6 +147,11 @@ export class CloudStorage {
             `Complete save failure - entry too large even without media`,
           );
         }
+      } else if (error.message?.includes('Failed to fetch') ||
+                 error.message?.includes('network') ||
+                 error.code === 'unavailable') {
+        console.warn("🌐 Network connectivity issue - journal entry not saved to cloud");
+        throw new Error(`Network connectivity issue. Entry not saved to cloud. Please try again when connection is restored.`);
       } else {
         throw error;
       }
