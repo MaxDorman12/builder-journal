@@ -932,8 +932,8 @@ export default function Index() {
                   className="w-full"
                 />
                 <p className="text-xs text-muted-foreground">
-                  Upload directly from your phone or computer (max 2MB,
-                  auto-compressed)
+                  Upload directly from your phone or computer (max 10MB,
+                  stored in cloud via Supabase)
                 </p>
               </div>
 
