@@ -72,6 +72,14 @@ export class SupabaseStorage {
 
       if (error) {
         console.error('❌ Supabase upload error:', error)
+        console.error('🔍 Detailed error info:', {
+          message: error.message,
+          name: error.name,
+          bucketName: this.BUCKET_NAME,
+          fileName: fileName,
+          projectUrl: 'https://vhdsguusgnhfpbicsewv.supabase.co'
+        });
+
         if (error.message?.includes('Failed to fetch') ||
             error.message?.includes('mime type') ||
             error.message?.includes('row-level security policy')) {
@@ -80,8 +88,9 @@ export class SupabaseStorage {
           if (error.message?.includes('mime type')) {
             console.error('🚨 MIME type restriction:', file.type)
           } else if (error.message?.includes('row-level security policy')) {
-            console.error('🚨 RLS POLICY BLOCKING UPLOAD!')
-            console.error('Quick fix: Go to Supabase > Storage > journal-media > Settings > Turn OFF Row Level Security')
+            console.error('🚨 RLS POLICY STILL BLOCKING UPLOAD!')
+            console.error('❗ The policy you created might not be working correctly')
+            console.error('❗ Check: Storage > Policies > "Allow public storage uploads" is ENABLED')
           }
 
           SupabaseSetup.displaySetupInstructions()
