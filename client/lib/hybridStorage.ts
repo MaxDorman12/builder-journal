@@ -201,13 +201,25 @@ export class HybridStorage {
   }
 
   static async deleteWishlistItem(id: string): Promise<void> {
+    console.log("🗑️ DELETE WISHLIST: Starting delete process for item:", id);
+    console.log("🔍 DELETE WISHLIST: Supabase enabled status:", this.supabaseEnabled);
+
+    // Delete from local storage first
     LocalStorage.deleteWishlistItem(id);
+    console.log("✅ DELETE WISHLIST: Removed from localStorage");
+
     if (this.supabaseEnabled) {
       try {
+        console.log("🗑️ DELETE WISHLIST: Removing from Supabase...");
         await SupabaseDatabase.deleteWishlistItem(id);
+        console.log("✅ DELETE WISHLIST: Successfully removed from Supabase");
+        console.log("🔔 DELETE WISHLIST: This should trigger real-time sync on other devices");
       } catch (error) {
-        console.warn("Failed to delete wishlist item from cloud:", error);
+        console.error("❌ DELETE WISHLIST: Failed to delete from Supabase:", error);
       }
+    } else {
+      console.log("⚠️ DELETE WISHLIST: Supabase sync disabled - item only deleted locally");
+      console.log("💡 DELETE WISHLIST: To enable Supabase sync, check connection and call HybridStorage.initialize()");
     }
   }
 
