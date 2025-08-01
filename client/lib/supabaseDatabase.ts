@@ -243,7 +243,9 @@ export class SupabaseDatabase {
           error.message?.includes("fetch") ||
           error.message?.includes("network")
         ) {
-          console.error("🌐 Network connectivity issue during map pin save (catch)");
+          console.error(
+            "🌐 Network connectivity issue during map pin save (catch)",
+          );
           console.log("⚠️ Skipping map pin save due to network issue (catch)");
           return;
         }
@@ -343,7 +345,9 @@ export class SupabaseDatabase {
           error.message?.includes("fetch") ||
           error.code === "PGRST301"
         ) {
-          console.error("🌐 Network connectivity issue during map pin deletion");
+          console.error(
+            "🌐 Network connectivity issue during map pin deletion",
+          );
           console.log("⚠️ Skipping map pin deletion due to network issue");
           return;
         }
@@ -364,8 +368,12 @@ export class SupabaseDatabase {
           error.message?.includes("fetch") ||
           error.message?.includes("network")
         ) {
-          console.error("🌐 Network connectivity issue during map pin deletion (catch)");
-          console.log("⚠️ Skipping map pin deletion due to network issue (catch)");
+          console.error(
+            "🌐 Network connectivity issue during map pin deletion (catch)",
+          );
+          console.log(
+            "⚠️ Skipping map pin deletion due to network issue (catch)",
+          );
           return;
         }
       }
