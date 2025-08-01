@@ -1,6 +1,6 @@
 // Supabase Database service - replaces Firebase CloudStorage
 import { supabase } from "./supabase";
-import { JournalEntry, MapPin, WishlistItem } from "@shared/api";
+import { JournalEntry, MapPin, WishlistItem, YouTubeVideo } from "@shared/api";
 
 export class SupabaseDatabase {
   // Network error detection utility
