@@ -241,12 +241,12 @@ export function JournalEntryCard({
                 🏃 Busy
               </Badge>
             )}
-            {entry.greatFor.slice(0, 2).map((activity, index) => (
+            {entry.greatFor?.slice(0, 2).map((activity, index) => (
               <Badge key={index} variant="secondary" className="text-xs">
                 {activity}
               </Badge>
             ))}
-            {entry.greatFor.length > 2 && (
+            {entry.greatFor && entry.greatFor.length > 2 && (
               <Badge variant="secondary" className="text-xs">
                 +{entry.greatFor.length - 2} more
               </Badge>
