@@ -283,16 +283,55 @@ export class SupabaseDatabase {
     console.log("🗑️ Deleting map pin from Supabase:", id);
 
     try {
-      const { error } = await supabase.from("map_pins").delete().eq("id", id);
+      // Add timeout for network issues
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+      const { error } = await supabase
+        .from("map_pins")
+        .delete()
+        .eq("id", id)
+        .abortSignal(controller.signal);
+
+      clearTimeout(timeoutId);
 
       if (error) {
         console.error("❌ Failed to delete map pin:", error);
+
+        // Check if it's a network connectivity issue
+        if (
+          error.message?.includes("Failed to fetch") ||
+          error.message?.includes("NetworkError") ||
+          error.message?.includes("fetch") ||
+          error.code === "PGRST301"
+        ) {
+          console.error("🌐 Network connectivity issue during map pin deletion");
+          console.log("⚠️ Skipping map pin deletion due to network issue");
+          return;
+        }
+
         throw error;
       }
 
       console.log("✅ Map pin deleted from Supabase");
     } catch (error) {
       console.error("❌ Failed to delete map pin:", error);
+
+      // Check if it's a network connectivity issue (catch block)
+      if (error instanceof Error) {
+        if (
+          error.message?.includes("Failed to fetch") ||
+          error.name === "AbortError" ||
+          error.message?.includes("NetworkError") ||
+          error.message?.includes("fetch") ||
+          error.message?.includes("network")
+        ) {
+          console.error("🌐 Network connectivity issue during map pin deletion (catch)");
+          console.log("⚠️ Skipping map pin deletion due to network issue (catch)");
+          return;
+        }
+      }
+
       throw error;
     }
   }
