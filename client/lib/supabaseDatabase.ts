@@ -208,12 +208,14 @@ export class SupabaseDatabase {
 
       const pins: MapPin[] = (data || []).map((row) => ({
         id: row.id,
+        lat: row.latitude,
+        lng: row.longitude,
         title: row.title,
         description: row.description,
-        latitude: row.latitude,
-        longitude: row.longitude,
-        type: row.type,
-        createdAt: row.created_at,
+        moodRating: row.mood_rating || 5,
+        journalEntryId: row.journal_entry_id,
+        visitDate: row.created_at,
+        images: row.images ? JSON.parse(row.images) : [],
       }));
 
       console.log(`✅ Loaded ${pins.length} map pins from Supabase`);
