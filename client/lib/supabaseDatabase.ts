@@ -302,14 +302,23 @@ export class SupabaseDatabase {
     console.log("📝 Saving wishlist item to Supabase Database:", item.title);
 
     try {
-      const { error } = await supabase.from("wishlist_items").upsert({
-        id: item.id,
-        title: item.title,
-        description: item.description,
-        priority: item.priority,
-        completed: item.completed,
-        created_at: item.createdAt || new Date().toISOString(),
-      });
+      // Add timeout for network issues
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+      const { error } = await supabase
+        .from("wishlist_items")
+        .upsert({
+          id: item.id,
+          title: item.title,
+          description: item.description,
+          priority: item.priority,
+          completed: item.completed,
+          created_at: item.createdAt || new Date().toISOString(),
+        })
+        .abortSignal(controller.signal);
+
+      clearTimeout(timeoutId);
 
       if (error) {
         console.error(
