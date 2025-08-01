@@ -9,24 +9,26 @@ export class HybridStorage {
 
   static async initialize(): Promise<boolean> {
     try {
-      this.cloudEnabled = await CloudStorage.enableCloudSync();
-      if (this.cloudEnabled) {
-        console.log("🔄 Initializing cloud sync...");
-        await this.syncLocalToCloud();
+      const connectionTest = await SupabaseDatabase.testConnection();
+      this.supabaseEnabled = connectionTest.success;
+
+      if (this.supabaseEnabled) {
+        console.log("🔄 Initializing Supabase sync...");
+        await this.syncLocalToSupabase();
         this.setupRealtimeListeners();
         console.log(
-          "🎉 Auto-sync ready! Changes will sync across all devices.",
+          "🎉 Supabase auto-sync ready! Changes will sync across all devices.",
         );
       } else {
-        console.log("📱 Using local storage only - Firebase not configured");
+        console.log("📱 Using local storage only - Supabase not available:", connectionTest.message);
       }
-      return this.cloudEnabled;
+      return this.supabaseEnabled;
     } catch (error) {
       console.warn(
-        "⚠️ Cloud sync initialization failed, using local storage only:",
+        "⚠️ Supabase sync initialization failed, using local storage only:",
         error,
       );
-      this.cloudEnabled = false;
+      this.supabaseEnabled = false;
       return false;
     }
   }
