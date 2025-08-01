@@ -722,7 +722,7 @@ export class SupabaseDatabase {
           console.error("  - CORS or firewall blocking request");
 
           console.log(
-            "⚠️ CONFIRMED: Skipping wishlist item save due to network issue (catch block) - RETURNING WITHOUT THROWING",
+            "⚠�� CONFIRMED: Skipping wishlist item save due to network issue (catch block) - RETURNING WITHOUT THROWING",
           );
           return; // DO NOT THROW - just return
         }
@@ -1035,12 +1035,16 @@ export class SupabaseDatabase {
             );
             callback(entries);
           } catch (error) {
-            console.error(
-              "❌ Error in real-time subscription callback:",
-              error,
-            );
+            // Better error logging for subscription callbacks
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            const errorName = error instanceof Error ? error.name : typeof error;
+            console.log("⚠️ Error in journal entries subscription callback:", {
+              message: errorMessage,
+              name: errorName,
+              error: error instanceof Error ? error : String(error)
+            });
             console.log(
-              "⚠️ Continuing with empty entries to prevent subscription crash...",
+              "🔄 Continuing with empty entries to prevent subscription crash...",
             );
             callback([]); // Call with empty array to prevent breaking the UI
           }
