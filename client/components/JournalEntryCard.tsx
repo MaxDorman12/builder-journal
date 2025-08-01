@@ -404,15 +404,15 @@ export function JournalEntryCard({
                       </Button>
 
                       <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-2 py-1 rounded text-sm">
-                        {currentImageIndex + 1} / {entry.images.length}
+                        {currentImageIndex + 1} / {entry.images?.length || 0}
                       </div>
                     </>
                   )}
                 </div>
 
-                {entry.images.length > 1 && (
+                {entry.images && entry.images.length > 1 && (
                   <div className="flex space-x-2 overflow-x-auto">
-                    {entry.images.map((image, index) => (
+                    {entry.images?.map((image, index) => (
                       <button
                         key={index}
                         onClick={() => setCurrentImageIndex(index)}
