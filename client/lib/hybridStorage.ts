@@ -9,6 +9,7 @@ import "./realtimeTest";
 export class HybridStorage {
   private static supabaseEnabled = false;
   private static listeners: (() => void)[] = [];
+  private static periodicSyncInterval: NodeJS.Timeout | null = null;
 
   static async initialize(): Promise<boolean> {
     try {
