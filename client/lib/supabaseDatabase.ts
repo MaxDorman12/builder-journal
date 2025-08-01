@@ -77,6 +77,29 @@ export class SupabaseDatabase {
       console.log("✅ Journal entry saved to Supabase Database successfully");
     } catch (error) {
       console.error("❌ Failed to save journal entry to Supabase:", error);
+
+      // Check if it's a network connectivity issue (catch block)
+      if (error instanceof Error) {
+        if (
+          error.message?.includes("Failed to fetch") ||
+          error.name === "AbortError" ||
+          error.message?.includes("NetworkError") ||
+          error.message?.includes("fetch") ||
+          error.message?.includes("network") ||
+          error.message?.toLowerCase().includes("timeout") ||
+          error.message?.toLowerCase().includes("connection")
+        ) {
+          console.error("🌐 Network connectivity issue during journal entry save (catch):");
+          console.error("  - Internet connection lost");
+          console.error("  - Supabase service temporarily unavailable");
+          console.error("  - Request timeout (>10 seconds)");
+          console.error("  - CORS or firewall blocking request");
+
+          console.log("⚠️ Skipping journal entry save due to network issue (catch)");
+          return;
+        }
+      }
+
       throw error;
     }
   }
@@ -533,7 +556,7 @@ export class SupabaseDatabase {
           "🌐 Network connectivity issue (string error) during wishlist save",
         );
         console.log(
-          "⚠️ Skipping wishlist item save due to network issue (string error)",
+          "���️ Skipping wishlist item save due to network issue (string error)",
         );
         return; // DO NOT THROW - just return
       }
