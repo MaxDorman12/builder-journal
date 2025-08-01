@@ -227,13 +227,11 @@ export class HybridStorage {
       // Subscribe to wishlist changes
       const wishlistListener = SupabaseDatabase.subscribeToWishlistItems(
         (supabaseItems) => {
-          const localItems = LocalStorage.getWishlistItems();
-          const localIds = new Set(localItems.map((i) => i.id));
+          console.log(`🔄 Real-time update: ${supabaseItems.length} wishlist items from Supabase`);
 
+          // Replace all local items with fresh Supabase data
           supabaseItems.forEach((item) => {
-            if (!localIds.has(item.id)) {
-              LocalStorage.saveWishlistItem(item);
-            }
+            LocalStorage.saveWishlistItem(item);
           });
 
           this.notifyListeners();
