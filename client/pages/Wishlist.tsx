@@ -67,7 +67,9 @@ export default function Wishlist() {
 
       // Listen for real-time updates from HybridStorage
       const unsubscribe = HybridStorage.onUpdate(() => {
-        console.log("🔄 Real-time update received, refreshing wishlist items...");
+        console.log(
+          "🔄 Real-time update received, refreshing wishlist items...",
+        );
         loadWishlistItems();
       });
 
