@@ -448,6 +448,17 @@ export class SupabaseDatabase {
 
       if (error) {
         console.error("❌ Failed to delete wishlist item:", error);
+
+        // Check if it's a network connectivity issue
+        if (error.message?.includes('Failed to fetch') ||
+            error.message?.includes('NetworkError') ||
+            error.message?.includes('fetch') ||
+            error.code === 'PGRST301') {
+          console.error('🌐 Network connectivity issue during wishlist deletion');
+          console.log('⚠️ Skipping wishlist deletion due to network issue');
+          return;
+        }
+
         throw error;
       }
 
@@ -620,7 +631,7 @@ export class SupabaseDatabase {
       });
 
     // Log subscription details
-    console.log("��� Journal entries subscription created:", subscription);
+    console.log("����� Journal entries subscription created:", subscription);
 
     return () => {
       console.log("🔇 Unsubscribing from journal entries");
