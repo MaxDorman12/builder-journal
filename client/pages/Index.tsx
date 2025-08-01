@@ -37,7 +37,7 @@ import {
   Edit2,
   User,
 } from "lucide-react";
-import { MOOD_RATINGS, JournalEntry, MapPin as MapPinType } from "@shared/api";
+import { MOOD_RATINGS, JournalEntry, MapPin as MapPinType, YouTubeVideo } from "@shared/api";
 
 export default function Index() {
   const { isAuthenticated, isFamilyMember } = useAuth();
@@ -136,7 +136,7 @@ export default function Index() {
           console.log(
             "✅ Auto-sync completed - all data refreshed from Supabase!",
           );
-          console.log("👀 New visitors will see:", {
+          console.log("���� New visitors will see:", {
             charlieHasImage: !!freshCharlieData.image,
             entriesCount: freshEntries.length,
             pinsCount: freshPins.length,
