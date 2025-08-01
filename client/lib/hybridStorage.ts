@@ -574,7 +574,7 @@ export class HybridStorage {
           localItems.forEach((localItem) => {
             if (!supabaseIds.has(localItem.id)) {
               console.log(
-                `🗑️ SYNC: Removing deleted wishlist item: ${localItem.title}`,
+                `🗑�� SYNC: Removing deleted wishlist item: ${localItem.title}`,
               );
               LocalStorage.deleteWishlistItem(localItem.id);
             }
@@ -592,6 +592,25 @@ export class HybridStorage {
           this.notifyListeners();
         },
       );
+
+      // Subscribe to YouTube video changes
+      console.log("🔄 Setting up YouTube video subscription...");
+      const youtubeListener = SupabaseDatabase.subscribeToYouTubeVideo(
+        (video) => {
+          console.log("🔄 Real-time YouTube video update received:", {
+            hasVideo: !!video,
+            title: video?.title || "None",
+            url: video?.url || "None",
+          });
+          if (video) {
+            LocalStorage.saveYouTubeVideo(video);
+          } else {
+            LocalStorage.deleteYouTubeVideo();
+          }
+          this.notifyListeners();
+        },
+      );
+      console.log("✅ YouTube video subscription set up successfully");
 
       // Subscribe to Charlie data changes
       console.log("🔄 Setting up Charlie subscription...");
@@ -611,6 +630,7 @@ export class HybridStorage {
         entriesListener,
         pinsListener,
         wishlistListener,
+        youtubeListener,
         charlieListener,
       );
     } catch (error) {
