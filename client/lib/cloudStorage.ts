@@ -255,6 +255,17 @@ export class CloudStorage {
       }
     } catch (error) {
       console.error("❌ Firebase save error:", error);
+
+      // Check if it's a network connectivity issue
+      if (error.message?.includes('Failed to fetch') ||
+          error.message?.includes('network') ||
+          error.code === 'unavailable') {
+        console.warn("🌐 Network connectivity issue - Charlie data saved locally only");
+        // Don't throw error for network issues - app should continue working offline
+        return;
+      }
+
+      // For other errors, still throw to maintain error handling
       throw error;
     }
   }
