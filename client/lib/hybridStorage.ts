@@ -23,6 +23,10 @@ export class HybridStorage {
 
         await this.syncLocalToSupabase();
         this.setupRealtimeListeners();
+
+        // Start periodic sync as backup (every 30 seconds)
+        this.startPeriodicSync();
+
         console.log(
           "🎉 Supabase auto-sync ready! Changes will sync across all devices.",
         );
