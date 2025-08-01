@@ -443,7 +443,18 @@ export class SupabaseDatabase {
         "postgres_changes",
         { event: "*", schema: "public", table: "journal_entries" },
         async (payload) => {
-          console.log("🔄 Journal entries DB change detected:", payload);
+          console.log("🔄 Journal entries DB change detected:", {
+            eventType: payload.eventType,
+            table: payload.table,
+            schema: payload.schema,
+            new: payload.new,
+            old: payload.old
+          });
+
+          if (payload.eventType === 'DELETE') {
+            console.log("🗑️ DELETE event detected in real-time!");
+          }
+
           console.log("🔄 Fetching latest journal entries...");
           const entries = await this.getJournalEntries();
           console.log(
