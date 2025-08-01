@@ -218,11 +218,25 @@ export class HybridStorage {
             supabaseEntries.map((e) => e.id),
           );
 
-          // Replace all local entries with fresh Supabase data
-          // This ensures we have the latest data including updates and deletions
+          // Get current local entries to compare
+          const localEntries = LocalStorage.getJournalEntries();
+          const supabaseIds = new Set(supabaseEntries.map(e => e.id));
+          const localIds = new Set(localEntries.map(e => e.id));
+
+          // Remove local entries that no longer exist in Supabase (deletions)
+          localEntries.forEach(localEntry => {
+            if (!supabaseIds.has(localEntry.id)) {
+              console.log(`🗑️ Removing deleted entry: ${localEntry.title}`);
+              LocalStorage.deleteJournalEntry(localEntry.id);
+            }
+          });
+
+          // Add/update entries from Supabase
           supabaseEntries.forEach((entry) => {
             LocalStorage.saveJournalEntry(entry);
           });
+
+          console.log(`✅ Sync complete: ${supabaseEntries.length} entries in Supabase, ${localEntries.length} were local`);
 
           // Trigger update event to refresh UI
           console.log("🔔 Notifying listeners of data change...");
