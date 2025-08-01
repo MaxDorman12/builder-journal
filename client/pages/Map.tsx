@@ -183,6 +183,22 @@ export default function Map() {
     });
   };
 
+  const handleDeletePin = async (pinId: string) => {
+    if (!confirm("Are you sure you want to delete this pin?")) {
+      return;
+    }
+
+    try {
+      await HybridStorage.deleteMapPin(pinId);
+      setPins(HybridStorage.getMapPins());
+      setSelectedPin(null); // Close the dialog
+      console.log("✅ Map pin deleted successfully");
+    } catch (error) {
+      console.error("❌ Failed to delete map pin:", error);
+      alert("Failed to delete pin. Please try again.");
+    }
+  };
+
   const getPinPosition = (pin: MapPin, imgWidth: number, imgHeight: number) => {
     // Convert lat/lng back to image coordinates
     const relativeX = (pin.lng + 8.2) / 10;
@@ -447,7 +463,7 @@ export default function Map() {
 
             {/* Instructions */}
             <div className="absolute bottom-4 right-4 bg-white/90 px-3 py-1 rounded-lg shadow-md text-xs text-gray-600">
-              🖱️ Click to add pin • 🔍 Scroll to zoom • ✋ Drag to move • ⌨️
+              🖱️ Click to add pin �� 🔍 Scroll to zoom • ✋ Drag to move • ⌨️
               Arrow keys to navigate
             </div>
           </div>
