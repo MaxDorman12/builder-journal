@@ -437,6 +437,25 @@ export class SupabaseDatabase {
       console.log("✅ Wishlist item deleted from Supabase");
     } catch (error) {
       console.error("❌ Failed to delete wishlist item:", error);
+
+      // Check if it's a network connectivity issue
+      if (error instanceof Error) {
+        if (error.message.includes('Failed to fetch') ||
+            error.name === 'AbortError' ||
+            error.message.includes('NetworkError') ||
+            error.message.includes('fetch')) {
+          console.error('🌐 Network connectivity issue during wishlist deletion');
+          console.error('  - Internet connection lost');
+          console.error('  - Supabase service temporarily unavailable');
+          console.error('  - Request timeout (>10 seconds)');
+          console.error('  - CORS or firewall blocking request');
+
+          // Don't throw error for network issues to allow app to continue
+          console.log('⚠️ Skipping wishlist item deletion due to network issue');
+          return;
+        }
+      }
+
       throw error;
     }
   }
