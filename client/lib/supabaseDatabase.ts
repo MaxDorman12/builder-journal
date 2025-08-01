@@ -477,11 +477,17 @@ export class SupabaseDatabase {
     } catch (error) {
       console.error("❌ Failed to delete wishlist item:", error);
 
-      // Check if it's a network connectivity issue (AbortError from timeout)
-      if (error instanceof Error && error.name === 'AbortError') {
-        console.error('🌐 Network timeout during wishlist deletion (>10 seconds)');
-        console.log('⚠️ Skipping wishlist deletion due to timeout');
-        return;
+      // Check if it's a network connectivity issue
+      if (error instanceof Error) {
+        if (error.message?.includes('Failed to fetch') ||
+            error.name === 'AbortError' ||
+            error.message?.includes('NetworkError') ||
+            error.message?.includes('fetch') ||
+            error.message?.includes('network')) {
+          console.error('🌐 Network connectivity issue during wishlist deletion');
+          console.log('⚠️ Skipping wishlist deletion due to network issue');
+          return;
+        }
       }
 
       throw error;
