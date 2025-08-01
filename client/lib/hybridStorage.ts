@@ -36,6 +36,7 @@ export class HybridStorage {
           "📱 Using local storage only - Supabase not available:",
           connectionTest.message,
         );
+        console.log("🔍 Connection test details:", connectionTest);
 
         // Show setup instructions if tables don't exist
         if (
@@ -88,6 +89,7 @@ export class HybridStorage {
 
   static async deleteJournalEntry(id: string): Promise<void> {
     console.log("🗑️ DELETE: Starting delete process for entry:", id);
+    console.log("🔍 DELETE: Supabase enabled status:", this.supabaseEnabled);
 
     // Delete from local storage first
     LocalStorage.deleteJournalEntry(id);
@@ -107,6 +109,9 @@ export class HybridStorage {
           error,
         );
       }
+    } else {
+      console.log("⚠️ DELETE: Supabase sync disabled - entry only deleted locally");
+      console.log("💡 DELETE: To enable Supabase sync, check connection and call HybridStorage.initialize()");
     }
   }
 
