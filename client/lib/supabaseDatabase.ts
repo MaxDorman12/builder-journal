@@ -888,11 +888,17 @@ export class SupabaseDatabase {
           }
 
           console.log("🔄 Fetching latest journal entries...");
-          const entries = await this.getJournalEntries();
-          console.log(
-            `✅ Fetched ${entries.length} entries, calling callback...`,
-          );
-          callback(entries);
+          try {
+            const entries = await this.getJournalEntries();
+            console.log(
+              `✅ Fetched ${entries.length} entries, calling callback...`,
+            );
+            callback(entries);
+          } catch (error) {
+            console.error("❌ Error in real-time subscription callback:", error);
+            console.log("⚠️ Continuing with empty entries to prevent subscription crash...");
+            callback([]); // Call with empty array to prevent breaking the UI
+          }
         },
       )
       .subscribe((status) => {
