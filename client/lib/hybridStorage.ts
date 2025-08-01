@@ -277,7 +277,7 @@ export class HybridStorage {
     });
   }
 
-  static isCloudEnabled(): boolean {
+  static isSupabaseEnabled(): boolean {
     return this.supabaseEnabled;
   }
 
