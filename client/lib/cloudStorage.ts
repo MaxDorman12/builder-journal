@@ -17,8 +17,21 @@ import { JournalEntry, MapPin, WishlistItem } from "@shared/api";
 export class CloudStorage {
   private static listeners: Unsubscribe[] = [];
 
+  // Check if Firebase is available
+  private static isFirebaseAvailable(): boolean {
+    const dbInstance = getDb();
+    if (!dbInstance) {
+      console.warn("⚠️ Firebase not available - working offline");
+      return false;
+    }
+    return true;
+  }
+
   // Journal Entries
   static async saveJournalEntry(entry: JournalEntry): Promise<void> {
+    if (!this.isFirebaseAvailable()) {
+      throw new Error("Firebase not available - working offline");
+    }
     try {
       const entrySize = JSON.stringify(entry).length;
       const entrySizeMB = entrySize / (1024 * 1024);
