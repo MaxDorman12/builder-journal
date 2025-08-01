@@ -252,7 +252,14 @@ export default function Index() {
     // Load YouTube video data
     loadYoutubeData();
 
+    // Set up real-time listener for data updates
+    const unsubscribe = HybridStorage.onUpdate(() => {
+      console.log("🔄 INDEX: Real-time update received, refreshing YouTube data...");
+      loadYoutubeData();
+    });
+
     return () => {
+      unsubscribe();
       HybridStorage.cleanup();
     };
   }, []);
