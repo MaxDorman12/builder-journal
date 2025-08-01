@@ -143,6 +143,14 @@ export class SupabaseDatabase {
 
       if (error) {
         console.error("❌ Failed to fetch map pins:", error.message || error);
+
+        // Check if it's a missing table error
+        if (error.message?.includes('relation "map_pins" does not exist') ||
+            error.code === '42P01') {
+          console.error("💡 Database tables not created yet. Please run the SQL migration.");
+          return []; // Return empty array for missing tables
+        }
+
         throw new Error(`Failed to fetch map pins: ${error.message || error}`);
       }
 
