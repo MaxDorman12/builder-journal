@@ -261,6 +261,9 @@ export class CloudStorage {
     image: string;
     description: string;
   }): Promise<void> {
+    if (!this.isFirebaseAvailable()) {
+      throw new Error("Firebase not available - data saved locally only");
+    }
     console.log("💾 Saving to Firebase path: family-data/charlie");
     console.log("💾 Data being saved:", {
       hasImage: !!data.image,
