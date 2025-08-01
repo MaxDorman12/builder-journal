@@ -135,7 +135,26 @@ export class SupabaseDatabase {
       return entries;
     } catch (error) {
       console.error("❌ Failed to get journal entries:", error);
-      return [];
+
+      // Check if it's a network connectivity issue
+      if (error instanceof Error) {
+        if (error.message.includes('Failed to fetch') ||
+            error.name === 'AbortError' ||
+            error.message.includes('NetworkError') ||
+            error.message.includes('fetch')) {
+          console.error('🌐 Network connectivity issue detected. Possible causes:');
+          console.error('  - Internet connection lost');
+          console.error('  - Supabase service temporarily unavailable');
+          console.error('  - Request timeout (>10 seconds)');
+          console.error('  - CORS or firewall blocking request');
+
+          // Return empty array for network issues to allow app to continue
+          return [];
+        }
+      }
+
+      // For other errors, throw to propagate to HybridStorage
+      throw new Error(`Failed to get journal entries: ${error.message || error}`);
     }
   }
 
