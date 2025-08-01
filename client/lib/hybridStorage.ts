@@ -221,7 +221,7 @@ export class HybridStorage {
           const localItems = LocalStorage.getWishlistItems();
           const localIds = new Set(localItems.map((i) => i.id));
 
-          cloudItems.forEach((item) => {
+          supabaseItems.forEach((item) => {
             if (!localIds.has(item.id)) {
               LocalStorage.saveWishlistItem(item);
             }
@@ -231,17 +231,17 @@ export class HybridStorage {
         },
       );
 
-      // Listen for Charlie data changes
-      console.log("🔄 Setting up Charlie listener...");
-      const charlieListener = SupabaseDatabase.listenToCharlieData((charlieData) => {
-        console.log("🔥 Firebase Charlie update received:", {
+      // Subscribe to Charlie data changes
+      console.log("🔄 Setting up Charlie subscription...");
+      const charlieListener = SupabaseDatabase.subscribeToCharlieData((charlieData) => {
+        console.log("🔄 Supabase Charlie update received:", {
           hasImage: !!charlieData.image,
           imageLength: charlieData.image?.length || 0,
         });
         LocalStorage.setCharlieData(charlieData);
         this.notifyListeners();
       });
-      console.log("✅ Charlie listener set up successfully");
+      console.log("✅ Charlie subscription set up successfully");
 
       this.listeners.push(
         entriesListener,
