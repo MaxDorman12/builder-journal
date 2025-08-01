@@ -32,6 +32,15 @@ export class CloudStorage {
         sizeMB: entrySizeMB.toFixed(2)
       });
 
+      // Reject entries over 50MB immediately - Firebase will never accept these
+      if (entrySizeMB > 50) {
+        console.error(`🚨 MASSIVE ENTRY REJECTED: ${entrySizeMB.toFixed(2)}MB`);
+        console.error('❗ This indicates Supabase Storage is completely broken');
+        console.error('📸 Images/videos are being stored as base64 instead of Supabase URLs');
+
+        throw new Error(`Entry way too large: ${entrySizeMB.toFixed(2)}MB - Supabase Storage must be fixed`);
+      }
+
       // Check if entry is too large for Firebase (1MB limit)
       if (entrySizeMB > 0.9) { // 900KB threshold to be safe
         console.error(`❌ Entry too large for Firebase: ${entrySizeMB.toFixed(2)}MB - creating lightweight version`);
