@@ -265,7 +265,7 @@ export function FamilyStats({
     {
       icon: BookOpen,
       value: stats.totalEntries,
-      label: "📚 Journal Entries",
+      label: "📖✍️ Journal Entries",
       color: "from-purple-200 to-purple-300",
       textColor: "text-purple-700",
     },
