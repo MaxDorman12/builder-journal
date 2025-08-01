@@ -379,10 +379,37 @@ export class HybridStorage {
           SupabaseDatabase.getCharlieData(),
         ]);
 
-        // Update local storage
+        // Sync journal entries (handle deletions)
+        const localEntries = LocalStorage.getJournalEntries();
+        const entryIds = new Set(entries.map(e => e.id));
+        localEntries.forEach(local => {
+          if (!entryIds.has(local.id)) {
+            LocalStorage.deleteJournalEntry(local.id);
+          }
+        });
         entries.forEach((entry) => LocalStorage.saveJournalEntry(entry));
+
+        // Sync map pins (handle deletions)
+        const localPins = LocalStorage.getMapPins();
+        const pinIds = new Set(pins.map(p => p.id));
+        localPins.forEach(local => {
+          if (!pinIds.has(local.id)) {
+            LocalStorage.deleteMapPin(local.id);
+          }
+        });
         pins.forEach((pin) => LocalStorage.saveMapPin(pin));
+
+        // Sync wishlist (handle deletions)
+        const localWishlist = LocalStorage.getWishlistItems();
+        const wishlistIds = new Set(wishlist.map(i => i.id));
+        localWishlist.forEach(local => {
+          if (!wishlistIds.has(local.id)) {
+            LocalStorage.deleteWishlistItem(local.id);
+          }
+        });
         wishlist.forEach((item) => LocalStorage.saveWishlistItem(item));
+
+        // Update Charlie data
         LocalStorage.setCharlieData(charlie);
 
         // Notify listeners to refresh UI
