@@ -216,8 +216,8 @@ export class SupabaseDatabase {
       });
 
       if (error) {
-        console.error("❌ Failed to save wishlist item:", error);
-        throw error;
+        console.error("❌ Failed to save wishlist item:", error.message || error);
+        throw new Error(`Failed to save wishlist item: ${error.message || error}`);
       }
 
       console.log("✅ Wishlist item saved to Supabase Database");
