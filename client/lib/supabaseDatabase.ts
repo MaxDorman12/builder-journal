@@ -13,7 +13,13 @@ export class SupabaseDatabase {
     });
 
     try {
-      const { error } = await supabase.from("journal_entries").upsert({
+      // Add timeout for network issues
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+      const { error } = await supabase
+        .from("journal_entries")
+        .upsert({
         id: entry.id,
         title: entry.title,
         content: entry.content,
