@@ -766,7 +766,7 @@ export default function Index() {
           <div className="flex flex-wrap gap-3">
             <div className="bg-gradient-to-r from-amber-200 to-yellow-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
               <span className="text-amber-800 font-medium">
-                �� Adventure Buddy
+                ❤️ Adventure Buddy
               </span>
             </div>
             <div className="bg-gradient-to-r from-green-200 to-emerald-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">

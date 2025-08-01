@@ -146,7 +146,7 @@ export function Layout({ children }: LayoutProps) {
               Made with ❤️ for the Dorman Family Adventures
             </p>
             <p className="text-xs mt-2">
-              Private family journal - For family eyes only
+              ❤️❤️❤️❤️❤️
             </p>
           </div>
         </div>
