@@ -283,7 +283,7 @@ export function FamilyStats({
         </span>
       ),
       value: `${stats.averageMood}/5`,
-      label: "⭐🎯 Average Trip Rating",
+      label: "⭐��� Average Trip Rating",
       color: "from-green-200 to-green-300",
       textColor: "text-green-700",
     },
@@ -307,7 +307,7 @@ export function FamilyStats({
     {
       icon: MessageCircle,
       value: stats.totalComments,
-      label: "💬 Comments Shared",
+      label: "💬🗨️ Comments Shared",
       color: "from-indigo-200 to-blue-300",
       textColor: "text-indigo-700",
     },
