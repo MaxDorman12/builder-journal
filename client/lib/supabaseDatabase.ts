@@ -226,7 +226,7 @@ export class SupabaseDatabase {
         throw new Error(`Failed to delete map pin: ${error.message || error}`);
       }
 
-      console.log("✅ Map pin deleted from Supabase Database");
+      console.log("�� Map pin deleted from Supabase Database");
     } catch (error) {
       console.error("❌ Failed to delete map pin:", error.message || error);
       throw new Error(`Failed to delete map pin: ${error.message || error}`);
@@ -351,22 +351,11 @@ export class SupabaseDatabase {
     } catch (error) {
       console.error("❌ Failed to save wishlist item:", error);
 
-      // Check if it's a network connectivity issue
-      if (error instanceof Error) {
-        if (error.message.includes('Failed to fetch') ||
-            error.name === 'AbortError' ||
-            error.message.includes('NetworkError') ||
-            error.message.includes('fetch')) {
-          console.error('🌐 Network connectivity issue during wishlist save:');
-          console.error('  - Internet connection lost');
-          console.error('  - Supabase service temporarily unavailable');
-          console.error('  - Request timeout (>10 seconds)');
-          console.error('  - CORS or firewall blocking request');
-
-          // Don't throw error for network issues during sync to allow app to continue
-          console.log('⚠️ Skipping wishlist item save due to network issue');
-          return;
-        }
+      // Check if it's a network connectivity issue (AbortError from timeout)
+      if (error instanceof Error && error.name === 'AbortError') {
+        console.error('🌐 Network timeout during wishlist save (>10 seconds)');
+        console.log('⚠️ Skipping wishlist item save due to timeout');
+        return;
       }
 
       throw error;
