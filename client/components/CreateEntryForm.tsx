@@ -272,8 +272,9 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
             `❌ Upload failed for "${file.name}"\nError: ${error}\n\nTrying fallback storage...`,
           );
 
-          // For smaller videos, try base64 fallback
-          if (sizeMB < 10) {
+          // Only use base64 fallback for very small files (under 1MB)
+          if (sizeMB < 1) {
+            console.log(`📦 Using base64 fallback for small video: ${sizeMB.toFixed(2)}MB`);
             const reader = new FileReader();
             reader.onload = (event) => {
               if (event.target?.result) {
@@ -281,10 +282,12 @@ export function CreateEntryForm({ onEntryCreated }: CreateEntryFormProps) {
                   ...prev,
                   videos: [...prev.videos, event.target!.result as string],
                 }));
-                alert(`✅ Video stored using fallback method`);
+                alert(`✅ Small video stored locally (${sizeMB.toFixed(2)}MB)`);
               }
             };
             reader.readAsDataURL(file);
+          } else {
+            alert(`❌ Video too large for fallback storage: ${sizeMB.toFixed(1)}MB\n\nSupabase Storage must be working for large files.\n\nPlease check your Supabase bucket setup.`);
           }
         }
       }
