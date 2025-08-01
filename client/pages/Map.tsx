@@ -35,6 +35,7 @@ import {
   ZoomIn,
   ZoomOut,
   RotateCcw,
+  Trash2,
 } from "lucide-react";
 import { MapPin, MOOD_RATINGS, JournalEntry } from "@shared/api";
 
