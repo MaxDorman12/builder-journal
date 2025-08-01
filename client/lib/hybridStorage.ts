@@ -22,6 +22,11 @@ export class HybridStorage {
         );
       } else {
         console.log("📱 Using local storage only - Supabase not available:", connectionTest.message);
+
+        // Show setup instructions if tables don't exist
+        if (connectionTest.message.includes("Database tables not created yet")) {
+          SupabaseSetupInstructions.displayInstructions();
+        }
       }
       return this.supabaseEnabled;
     } catch (error) {
