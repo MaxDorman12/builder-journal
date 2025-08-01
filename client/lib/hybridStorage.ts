@@ -38,12 +38,12 @@ export class HybridStorage {
     // Always save locally first (instant)
     LocalStorage.saveJournalEntry(entry);
 
-    // Then sync to cloud if available
-    if (this.cloudEnabled) {
+    // Then sync to Supabase if available
+    if (this.supabaseEnabled) {
       try {
-        await CloudStorage.saveJournalEntry(entry);
+        await SupabaseDatabase.saveJournalEntry(entry);
       } catch (error) {
-        console.warn("Failed to sync entry to cloud:", error);
+        console.warn("Failed to sync entry to Supabase:", error);
       }
     }
   }
