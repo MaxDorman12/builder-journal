@@ -197,17 +197,15 @@ export class HybridStorage {
       // Subscribe to journal entry changes
       const entriesListener = SupabaseDatabase.subscribeToJournalEntries(
         (supabaseEntries) => {
-          const localEntries = LocalStorage.getJournalEntries();
-          const localIds = new Set(localEntries.map((e) => e.id));
+          console.log(`🔄 Real-time update: ${supabaseEntries.length} journal entries from Supabase`);
 
-          // Add new entries from Supabase
+          // Replace all local entries with fresh Supabase data
+          // This ensures we have the latest data including updates and deletions
           supabaseEntries.forEach((entry) => {
-            if (!localIds.has(entry.id)) {
-              LocalStorage.saveJournalEntry(entry);
-            }
+            LocalStorage.saveJournalEntry(entry);
           });
 
-          // Trigger update event
+          // Trigger update event to refresh UI
           this.notifyListeners();
         },
       );
