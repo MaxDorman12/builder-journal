@@ -299,8 +299,8 @@ export class SupabaseDatabase {
       });
 
       if (error) {
-        console.error("❌ Failed to save Charlie data:", error);
-        throw error;
+        console.error("❌ Failed to save Charlie data:", error.message || error);
+        throw new Error(`Failed to save Charlie data: ${error.message || error}`);
       }
 
       console.log("✅ Charlie data saved to Supabase Database successfully");
