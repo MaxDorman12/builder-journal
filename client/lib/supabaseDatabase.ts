@@ -162,10 +162,10 @@ export class SupabaseDatabase {
         id: pin.id,
         title: pin.title,
         description: pin.description,
-        latitude: pin.latitude,
-        longitude: pin.longitude,
-        type: pin.type,
-        created_at: pin.createdAt || new Date().toISOString(),
+        latitude: pin.lat,
+        longitude: pin.lng,
+        type: pin.type || 'visited',
+        created_at: pin.visitDate || new Date().toISOString(),
       });
 
       if (error) {
@@ -305,7 +305,7 @@ export class SupabaseDatabase {
   }
 
   static async deleteWishlistItem(id: string): Promise<void> {
-    console.log("🗑️ Deleting wishlist item from Supabase:", id);
+    console.log("��️ Deleting wishlist item from Supabase:", id);
 
     try {
       const { error } = await supabase
@@ -468,7 +468,7 @@ export class SupabaseDatabase {
       });
 
     // Log subscription details
-    console.log("📡 Journal entries subscription created:", subscription);
+    console.log("��� Journal entries subscription created:", subscription);
 
     return () => {
       console.log("🔇 Unsubscribing from journal entries");
