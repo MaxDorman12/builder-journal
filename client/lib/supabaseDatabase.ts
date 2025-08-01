@@ -591,8 +591,11 @@ export class SupabaseDatabase {
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "charlie_data" },
-        async () => {
-          console.log("🔄 Charlie data changed, fetching latest...");
+        async (payload) => {
+          console.log("🔄 Charlie data DB change detected:", payload);
+          if (payload.eventType === "DELETE") {
+            console.log("🗑️ CHARLIE DATA DELETE event detected in real-time!");
+          }
           const data = await this.getCharlieData();
           callback(data);
         },
