@@ -934,6 +934,16 @@ export default function Index() {
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
+              <Label htmlFor="youtube-title">Video Title</Label>
+              <Input
+                id="youtube-title"
+                value={tempYoutubeTitle}
+                onChange={(e) => setTempYoutubeTitle(e.target.value)}
+                placeholder="Our Scotland Adventures"
+                className="w-full"
+              />
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="youtube-url">YouTube URL</Label>
               <Input
                 id="youtube-url"
@@ -943,10 +953,19 @@ export default function Index() {
                 className="w-full"
               />
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="youtube-description">Description</Label>
+              <Input
+                id="youtube-description"
+                value={tempYoutubeDescription}
+                onChange={(e) => setTempYoutubeDescription(e.target.value)}
+                placeholder="Watch our latest family adventures in Scotland"
+                className="w-full"
+              />
+            </div>
             <div className="text-sm text-muted-foreground">
               <p>
-                📝 Paste a YouTube video URL to update your latest adventure
-                video.
+                📺 Update your featured YouTube video that will sync across all devices.
               </p>
             </div>
             <div className="flex justify-end space-x-2">
