@@ -121,7 +121,7 @@ export function JournalEntryCard({
           className="aspect-video bg-gradient-to-br from-blue-50 to-purple-50 relative overflow-hidden"
           onClick={() => setIsDetailOpen(true)}
         >
-          {entry.images.length > 0 ? (
+          {entry.images && entry.images.length > 0 ? (
             <>
               <img
                 src={entry.images[0]}
@@ -135,7 +135,7 @@ export function JournalEntryCard({
                 </Badge>
               )}
             </>
-          ) : entry.videos.length > 0 ? (
+          ) : entry.videos && entry.videos.length > 0 ? (
             <>
               <video
                 src={entry.videos[0]}
