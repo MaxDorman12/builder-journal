@@ -37,7 +37,12 @@ import {
   Edit2,
   User,
 } from "lucide-react";
-import { MOOD_RATINGS, JournalEntry, MapPin as MapPinType, YouTubeVideo } from "@shared/api";
+import {
+  MOOD_RATINGS,
+  JournalEntry,
+  MapPin as MapPinType,
+  YouTubeVideo,
+} from "@shared/api";
 
 export default function Index() {
   const { isAuthenticated, isFamilyMember } = useAuth();
@@ -48,7 +53,8 @@ export default function Index() {
   const [isYoutubeDialogOpen, setIsYoutubeDialogOpen] = useState(false);
   const [tempYoutubeUrl, setTempYoutubeUrl] = useState<string>("");
   const [tempYoutubeTitle, setTempYoutubeTitle] = useState<string>("");
-  const [tempYoutubeDescription, setTempYoutubeDescription] = useState<string>("");
+  const [tempYoutubeDescription, setTempYoutubeDescription] =
+    useState<string>("");
   const [showAllStats, setShowAllStats] = useState(false);
   const [charlieData, setCharlieData] = useState({
     image: "",
@@ -254,7 +260,9 @@ export default function Index() {
 
     // Set up real-time listener for data updates
     const unsubscribe = HybridStorage.onUpdate(() => {
-      console.log("🔄 INDEX: Real-time update received, refreshing YouTube data...");
+      console.log(
+        "🔄 INDEX: Real-time update received, refreshing YouTube data...",
+      );
       loadYoutubeData();
     });
 
@@ -301,7 +309,10 @@ export default function Index() {
   const handleYoutubeEdit = () => {
     setTempYoutubeUrl(youtubeUrl);
     setTempYoutubeTitle(youtubeVideo?.title || "Our Scotland Adventures");
-    setTempYoutubeDescription(youtubeVideo?.description || "Watch our latest family adventures in Scotland");
+    setTempYoutubeDescription(
+      youtubeVideo?.description ||
+        "Watch our latest family adventures in Scotland",
+    );
     setIsYoutubeDialogOpen(true);
   };
 
@@ -312,7 +323,9 @@ export default function Index() {
           id: youtubeVideo?.id || "main-video",
           url: tempYoutubeUrl.trim(),
           title: tempYoutubeTitle.trim() || "Our Scotland Adventures",
-          description: tempYoutubeDescription.trim() || "Watch our latest family adventures in Scotland",
+          description:
+            tempYoutubeDescription.trim() ||
+            "Watch our latest family adventures in Scotland",
           updatedBy: currentUser || "Family",
           createdAt: youtubeVideo?.createdAt || new Date().toISOString(),
           updatedAt: new Date().toISOString(),
@@ -972,7 +985,8 @@ export default function Index() {
             </div>
             <div className="text-sm text-muted-foreground">
               <p>
-                📺 Update your featured YouTube video that will sync across all devices.
+                📺 Update your featured YouTube video that will sync across all
+                devices.
               </p>
             </div>
             <div className="flex justify-end space-x-2">

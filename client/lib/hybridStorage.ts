@@ -367,13 +367,20 @@ export class HybridStorage {
             errorName === "AbortError" ||
             errorName === "TypeError"
           ) {
-            console.log("🌐 Network connectivity issue detected during YouTube video save - skipping sync");
-            console.log("📺 Video saved locally and will sync when connection is restored");
+            console.log(
+              "🌐 Network connectivity issue detected during YouTube video save - skipping sync",
+            );
+            console.log(
+              "📺 Video saved locally and will sync when connection is restored",
+            );
             return;
           }
         }
 
-        console.warn("⚠️ Failed to sync YouTube video to Supabase (non-network error):", error);
+        console.warn(
+          "⚠️ Failed to sync YouTube video to Supabase (non-network error):",
+          error,
+        );
       }
     }
 
@@ -391,12 +398,19 @@ export class HybridStorage {
         const cloudVideo = await SupabaseDatabase.getYouTubeVideo();
 
         // If cloud has a newer version, save it locally and return it
-        if (cloudVideo && (!localVideo || new Date(cloudVideo.updatedAt) > new Date(localVideo.updatedAt))) {
+        if (
+          cloudVideo &&
+          (!localVideo ||
+            new Date(cloudVideo.updatedAt) > new Date(localVideo.updatedAt))
+        ) {
           LocalStorage.saveYouTubeVideo(cloudVideo);
           return cloudVideo;
         }
       } catch (error) {
-        console.warn("Failed to fetch YouTube video from cloud, using local version:", error);
+        console.warn(
+          "Failed to fetch YouTube video from cloud, using local version:",
+          error,
+        );
       }
     }
 

@@ -1,4 +1,10 @@
-import { JournalEntry, MapPin, Comment, WishlistItem, YouTubeVideo } from "@shared/api";
+import {
+  JournalEntry,
+  MapPin,
+  Comment,
+  WishlistItem,
+  YouTubeVideo,
+} from "@shared/api";
 
 export class LocalStorage {
   private static localStorageDisabled = false;

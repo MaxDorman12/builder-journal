@@ -320,12 +320,13 @@ export class SupabaseDatabase {
       return entries;
     } catch (error) {
       // Better error logging
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       const errorName = error instanceof Error ? error.name : typeof error;
       console.error("❌ Failed to get journal entries:", {
         message: errorMessage,
         name: errorName,
-        error: error instanceof Error ? error : String(error)
+        error: error instanceof Error ? error : String(error),
       });
 
       // Check if it's a network connectivity issue
@@ -361,7 +362,7 @@ export class SupabaseDatabase {
       // For any other errors, return empty array to prevent app crashes
       console.log(
         "⚠️ Unknown error in journal entries catch block, returning empty array to prevent app crash:",
-        { errorMessage, errorName }
+        { errorMessage, errorName },
       );
       return [];
     }
@@ -796,12 +797,13 @@ export class SupabaseDatabase {
       return items;
     } catch (error) {
       // Better error logging
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       const errorName = error instanceof Error ? error.name : typeof error;
       console.error("❌ Failed to get wishlist items:", {
         message: errorMessage,
         name: errorName,
-        error: error instanceof Error ? error : String(error)
+        error: error instanceof Error ? error : String(error),
       });
 
       // Check if it's a network connectivity issue
@@ -835,7 +837,7 @@ export class SupabaseDatabase {
       // For any other errors, also return empty array to prevent app crashes
       console.log(
         "⚠️ Unknown database error, returning empty wishlist items to prevent app crash:",
-        { errorMessage, errorName }
+        { errorMessage, errorName },
       );
       return [];
     }
@@ -927,7 +929,10 @@ export class SupabaseDatabase {
       clearTimeout(timeoutId);
 
       if (error) {
-        console.error("❌ Supabase Database YouTube save error:", error.message || error);
+        console.error(
+          "❌ Supabase Database YouTube save error:",
+          error.message || error,
+        );
 
         // Check if it's a network connectivity issue
         if (
@@ -938,11 +943,15 @@ export class SupabaseDatabase {
           error.message?.toLowerCase().includes("connection") ||
           error.code === "PGRST301"
         ) {
-          console.log("🌐 Network connectivity issue during YouTube video save - skipping sync");
+          console.log(
+            "🌐 Network connectivity issue during YouTube video save - skipping sync",
+          );
           return;
         }
 
-        throw new Error(`Failed to save YouTube video: ${error.message || error}`);
+        throw new Error(
+          `Failed to save YouTube video: ${error.message || error}`,
+        );
       }
 
       console.log("✅ YouTube video saved to Supabase Database successfully");
@@ -958,7 +967,9 @@ export class SupabaseDatabase {
           error.message?.toLowerCase().includes("timeout") ||
           error.message?.toLowerCase().includes("connection")
         ) {
-          console.log("🌐 Network connectivity issue during YouTube video save - video will be queued for sync");
+          console.log(
+            "🌐 Network connectivity issue during YouTube video save - video will be queued for sync",
+          );
           return; // Don't throw error for network issues
         }
       }
@@ -986,7 +997,10 @@ export class SupabaseDatabase {
       clearTimeout(timeoutId);
 
       if (error) {
-        console.error("❌ Failed to fetch YouTube video:", error.message || error);
+        console.error(
+          "❌ Failed to fetch YouTube video:",
+          error.message || error,
+        );
 
         // Check if it's a network connectivity issue
         if (
@@ -995,7 +1009,9 @@ export class SupabaseDatabase {
           error.message?.includes("fetch") ||
           error.code === "PGRST301"
         ) {
-          console.log("🌐 Network connectivity issue during YouTube video fetch");
+          console.log(
+            "🌐 Network connectivity issue during YouTube video fetch",
+          );
           return null;
         }
 
@@ -1022,12 +1038,13 @@ export class SupabaseDatabase {
       return video;
     } catch (error) {
       // Better error logging
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       const errorName = error instanceof Error ? error.name : typeof error;
       console.error("❌ Failed to get YouTube video:", {
         message: errorMessage,
         name: errorName,
-        error: error instanceof Error ? error : String(error)
+        error: error instanceof Error ? error : String(error),
       });
 
       // Check if it's a network connectivity issue
@@ -1045,13 +1062,18 @@ export class SupabaseDatabase {
           lowerErrorMessage.includes("network") ||
           lowerErrorMessage.includes("aborted")
         ) {
-          console.log("🌐 Network connectivity issue detected during YouTube video fetch. Returning null.");
+          console.log(
+            "🌐 Network connectivity issue detected during YouTube video fetch. Returning null.",
+          );
           return null;
         }
       }
 
       // For any other errors, return null to prevent app crashes
-      console.log("⚠️ Unknown error in YouTube video fetch, returning null to prevent app crash:", { errorMessage, errorName });
+      console.log(
+        "⚠️ Unknown error in YouTube video fetch, returning null to prevent app crash:",
+        { errorMessage, errorName },
+      );
       return null;
     }
   }
@@ -1195,12 +1217,14 @@ export class SupabaseDatabase {
             callback(entries);
           } catch (error) {
             // Better error logging for subscription callbacks
-            const errorMessage = error instanceof Error ? error.message : String(error);
-            const errorName = error instanceof Error ? error.name : typeof error;
+            const errorMessage =
+              error instanceof Error ? error.message : String(error);
+            const errorName =
+              error instanceof Error ? error.name : typeof error;
             console.log("⚠️ Error in journal entries subscription callback:", {
               message: errorMessage,
               name: errorName,
-              error: error instanceof Error ? error : String(error)
+              error: error instanceof Error ? error : String(error),
             });
             console.log(
               "🔄 Continuing with empty entries to prevent subscription crash...",
@@ -1240,12 +1264,14 @@ export class SupabaseDatabase {
             callback(pins);
           } catch (error) {
             // Better error logging for subscription callbacks
-            const errorMessage = error instanceof Error ? error.message : String(error);
-            const errorName = error instanceof Error ? error.name : typeof error;
+            const errorMessage =
+              error instanceof Error ? error.message : String(error);
+            const errorName =
+              error instanceof Error ? error.name : typeof error;
             console.log("⚠️ Error in map pins subscription callback:", {
               message: errorMessage,
               name: errorName,
-              error: error instanceof Error ? error : String(error)
+              error: error instanceof Error ? error : String(error),
             });
             console.log(
               "🔄 Continuing with empty pins to prevent subscription crash...",
@@ -1280,12 +1306,14 @@ export class SupabaseDatabase {
             callback(items);
           } catch (error) {
             // Better error logging for subscription callbacks
-            const errorMessage = error instanceof Error ? error.message : String(error);
-            const errorName = error instanceof Error ? error.name : typeof error;
+            const errorMessage =
+              error instanceof Error ? error.message : String(error);
+            const errorName =
+              error instanceof Error ? error.name : typeof error;
             console.log("⚠️ Error in wishlist subscription callback:", {
               message: errorMessage,
               name: errorName,
-              error: error instanceof Error ? error : String(error)
+              error: error instanceof Error ? error : String(error),
             });
             console.log(
               "🔄 Continuing with empty items to prevent subscription crash...",
@@ -1322,12 +1350,14 @@ export class SupabaseDatabase {
             callback(video);
           } catch (error) {
             // Better error logging for subscription callbacks
-            const errorMessage = error instanceof Error ? error.message : String(error);
-            const errorName = error instanceof Error ? error.name : typeof error;
+            const errorMessage =
+              error instanceof Error ? error.message : String(error);
+            const errorName =
+              error instanceof Error ? error.name : typeof error;
             console.log("⚠️ Error in YouTube video subscription callback:", {
               message: errorMessage,
               name: errorName,
-              error: error instanceof Error ? error : String(error)
+              error: error instanceof Error ? error : String(error),
             });
             console.log(
               "🔄 Continuing with null video to prevent subscription crash...",
