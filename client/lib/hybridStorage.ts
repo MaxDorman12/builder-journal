@@ -220,11 +220,11 @@ export class HybridStorage {
 
           // Get current local entries to compare
           const localEntries = LocalStorage.getJournalEntries();
-          const supabaseIds = new Set(supabaseEntries.map(e => e.id));
-          const localIds = new Set(localEntries.map(e => e.id));
+          const supabaseIds = new Set(supabaseEntries.map((e) => e.id));
+          const localIds = new Set(localEntries.map((e) => e.id));
 
           // Remove local entries that no longer exist in Supabase (deletions)
-          localEntries.forEach(localEntry => {
+          localEntries.forEach((localEntry) => {
             if (!supabaseIds.has(localEntry.id)) {
               console.log(`🗑️ Removing deleted entry: ${localEntry.title}`);
               LocalStorage.deleteJournalEntry(localEntry.id);
@@ -236,7 +236,9 @@ export class HybridStorage {
             LocalStorage.saveJournalEntry(entry);
           });
 
-          console.log(`✅ Sync complete: ${supabaseEntries.length} entries in Supabase, ${localEntries.length} were local`);
+          console.log(
+            `✅ Sync complete: ${supabaseEntries.length} entries in Supabase, ${localEntries.length} were local`,
+          );
 
           // Trigger update event to refresh UI
           console.log("🔔 Notifying listeners of data change...");
@@ -255,10 +257,10 @@ export class HybridStorage {
 
           // Handle deletions and updates
           const localPins = LocalStorage.getMapPins();
-          const supabaseIds = new Set(supabasePins.map(p => p.id));
+          const supabaseIds = new Set(supabasePins.map((p) => p.id));
 
           // Remove deleted pins
-          localPins.forEach(localPin => {
+          localPins.forEach((localPin) => {
             if (!supabaseIds.has(localPin.id)) {
               console.log(`🗑️ Removing deleted pin: ${localPin.title}`);
               LocalStorage.deleteMapPin(localPin.id);
@@ -283,12 +285,14 @@ export class HybridStorage {
 
           // Handle deletions and updates
           const localItems = LocalStorage.getWishlistItems();
-          const supabaseIds = new Set(supabaseItems.map(i => i.id));
+          const supabaseIds = new Set(supabaseItems.map((i) => i.id));
 
           // Remove deleted items
-          localItems.forEach(localItem => {
+          localItems.forEach((localItem) => {
             if (!supabaseIds.has(localItem.id)) {
-              console.log(`🗑️ Removing deleted wishlist item: ${localItem.title}`);
+              console.log(
+                `🗑️ Removing deleted wishlist item: ${localItem.title}`,
+              );
               LocalStorage.deleteWishlistItem(localItem.id);
             }
           });
@@ -381,8 +385,8 @@ export class HybridStorage {
 
         // Sync journal entries (handle deletions)
         const localEntries = LocalStorage.getJournalEntries();
-        const entryIds = new Set(entries.map(e => e.id));
-        localEntries.forEach(local => {
+        const entryIds = new Set(entries.map((e) => e.id));
+        localEntries.forEach((local) => {
           if (!entryIds.has(local.id)) {
             LocalStorage.deleteJournalEntry(local.id);
           }
@@ -391,8 +395,8 @@ export class HybridStorage {
 
         // Sync map pins (handle deletions)
         const localPins = LocalStorage.getMapPins();
-        const pinIds = new Set(pins.map(p => p.id));
-        localPins.forEach(local => {
+        const pinIds = new Set(pins.map((p) => p.id));
+        localPins.forEach((local) => {
           if (!pinIds.has(local.id)) {
             LocalStorage.deleteMapPin(local.id);
           }
@@ -401,8 +405,8 @@ export class HybridStorage {
 
         // Sync wishlist (handle deletions)
         const localWishlist = LocalStorage.getWishlistItems();
-        const wishlistIds = new Set(wishlist.map(i => i.id));
-        localWishlist.forEach(local => {
+        const wishlistIds = new Set(wishlist.map((i) => i.id));
+        localWishlist.forEach((local) => {
           if (!wishlistIds.has(local.id)) {
             LocalStorage.deleteWishlistItem(local.id);
           }
