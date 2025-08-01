@@ -212,6 +212,9 @@ export default function Journal() {
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Edit Journal Entry</DialogTitle>
+              <DialogDescription>
+                Update your adventure details, photos, and memories.
+              </DialogDescription>
             </DialogHeader>
             {editingEntry && (
               <EditEntryForm
