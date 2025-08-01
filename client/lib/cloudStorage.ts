@@ -179,6 +179,10 @@ export class CloudStorage {
   static listenToJournalEntries(
     callback: (entries: JournalEntry[]) => void,
   ): Unsubscribe {
+    if (!this.isFirebaseAvailable()) {
+      console.warn("⚠️ Cannot setup journal entries listener - Firebase unavailable");
+      return () => {}; // Return dummy unsubscribe function
+    }
     const q = query(
       collection(db, "journal-entries"),
       orderBy("createdAt", "desc"),
