@@ -91,7 +91,7 @@ export class HybridStorage {
     // If localStorage is disabled and we get no entries, we need to load from Firebase
     if (localEntries.length === 0 && this.supabaseEnabled) {
       console.warn(
-        "��� localStorage disabled, entries should be loaded from Firebase directly",
+        "⚠️ localStorage disabled, entries should be loaded from Firebase directly",
       );
       console.warn(
         "🔄 Journal page should use direct Firebase loading when localStorage disabled",
@@ -221,7 +221,7 @@ export class HybridStorage {
         );
       } catch (error) {
         console.error(
-          "❌ DELETE WISHLIST: Failed to delete from Supabase:",
+          "�� DELETE WISHLIST: Failed to delete from Supabase:",
           error,
         );
       }
@@ -361,7 +361,7 @@ export class HybridStorage {
       const pinsListener = SupabaseDatabase.subscribeToMapPins(
         (supabasePins) => {
           console.log(
-            `���� Real-time update: ${supabasePins.length} map pins from Supabase`,
+            `🔄 Real-time update: ${supabasePins.length} map pins from Supabase`,
           );
 
           // Handle deletions and updates

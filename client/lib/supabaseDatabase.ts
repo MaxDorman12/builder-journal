@@ -263,7 +263,7 @@ export class SupabaseDatabase {
   }
 
   static async deleteJournalEntry(id: string): Promise<void> {
-    console.log("���️ Deleting journal entry from Supabase:", id);
+    console.log("🗑️ Deleting journal entry from Supabase:", id);
 
     try {
       // Add timeout for network issues
@@ -398,7 +398,7 @@ export class SupabaseDatabase {
   }
 
   static async deleteMapPin(id: string): Promise<void> {
-    console.log("🗑��� Deleting map pin from Supabase:", id);
+    console.log("🗑️ Deleting map pin from Supabase:", id);
 
     try {
       const { error } = await supabase.from("map_pins").delete().eq("id", id);
@@ -408,7 +408,7 @@ export class SupabaseDatabase {
         throw new Error(`Failed to delete map pin: ${error.message || error}`);
       }
 
-      console.log("�� Map pin deleted from Supabase Database");
+      console.log("✅ Map pin deleted from Supabase Database");
     } catch (error) {
       console.error("❌ Failed to delete map pin:", error.message || error);
       throw new Error(`Failed to delete map pin: ${error.message || error}`);
@@ -557,7 +557,7 @@ export class SupabaseDatabase {
         console.log("🐛 DEBUG: Full error object:", error);
         console.log("🐛 DEBUG: Error type:", typeof error);
         console.log("🐛 DEBUG: Error message:", error.message);
-        console.log("���� DEBUG: Error code:", error.code);
+        console.log("🐛 DEBUG: Error code:", error.code);
         console.log("🐛 DEBUG: Error details:", error.details);
 
         // Check if it's a network connectivity issue
@@ -636,7 +636,7 @@ export class SupabaseDatabase {
           "🌐 Network connectivity issue (string error) during wishlist save",
         );
         console.log(
-          "���️ Skipping wishlist item save due to network issue (string error)",
+          "⚠️ Skipping wishlist item save due to network issue (string error)",
         );
         return; // DO NOT THROW - just return
       }
@@ -893,7 +893,7 @@ export class SupabaseDatabase {
     console.log("🔄 Setting up real-time subscription for journal entries...");
 
     const channelName = `journal_entries_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    console.log("��� Creating unique channel:", channelName);
+    console.log("📡 Creating unique channel:", channelName);
 
     const subscription = supabase
       .channel(channelName)
@@ -937,7 +937,7 @@ export class SupabaseDatabase {
       });
 
     // Log subscription details
-    console.log("��� Journal entries subscription created:", subscription);
+    console.log("📡 Journal entries subscription created:", subscription);
 
     return () => {
       console.log("🔇 Unsubscribing from journal entries");

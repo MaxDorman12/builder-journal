@@ -654,7 +654,7 @@ export default function Index() {
                         "🔄 FORCE SYNC START - Device:",
                         navigator.userAgent.substring(0, 50),
                       );
-                      console.log("���� Clearing cache...");
+                      console.log("🧹 Clearing cache...");
 
                       // Clear all local storage
                       localStorage.clear();

@@ -136,7 +136,7 @@ export class SupabaseStorage {
     const storageAvailable = await this.checkStorageAvailability();
 
     if (!storageAvailable) {
-      console.log("⚠�� Supabase Storage unavailable, using base64 fallback");
+      console.log("⚠️ Supabase Storage unavailable, using base64 fallback");
       return this.canvasToBase64(canvas);
     }
 
