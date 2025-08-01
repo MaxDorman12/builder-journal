@@ -370,8 +370,6 @@ export class SupabaseDatabase {
 
       console.log("✅ Map pin saved to Supabase Database");
     } catch (error) {
-      console.error("❌ Failed to save map pin:", error.message || error);
-
       // Check if it's a network connectivity issue (catch block)
       if (error instanceof Error) {
         if (
@@ -381,14 +379,14 @@ export class SupabaseDatabase {
           error.message?.includes("fetch") ||
           error.message?.includes("network")
         ) {
-          console.error(
-            "🌐 Network connectivity issue during map pin save (catch)",
+          console.log(
+            "🌐 Network connectivity issue during map pin save - pin will be queued for sync",
           );
-          console.log("⚠️ Skipping map pin save due to network issue (catch)");
-          return;
+          return; // Don't throw error for network issues
         }
       }
 
+      console.error("❌ Failed to save map pin:", error.message || error);
       throw new Error(`Failed to save map pin: ${error.message || error}`);
     }
   }
