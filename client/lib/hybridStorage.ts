@@ -430,6 +430,7 @@ export class HybridStorage {
       const pins = LocalStorage.getMapPins();
       const wishlist = LocalStorage.getWishlistItems();
       const charlie = LocalStorage.getCharlieData();
+      const youtubeVideo = LocalStorage.getYouTubeVideo();
 
       // Sync all data to Supabase with individual error handling
       for (const entry of entries) {
@@ -466,6 +467,14 @@ export class HybridStorage {
         await SupabaseDatabase.setCharlieData(charlie);
       } catch (error) {
         console.warn("Failed to sync Charlie data to cloud:", error);
+      }
+
+      if (youtubeVideo) {
+        try {
+          await SupabaseDatabase.saveYouTubeVideo(youtubeVideo);
+        } catch (error) {
+          console.warn("Failed to sync YouTube video to cloud:", error);
+        }
       }
 
       console.log("Local data synced to Supabase successfully");
