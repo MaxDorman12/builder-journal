@@ -467,7 +467,16 @@ export class SupabaseDatabase {
       return { success: true, message: "Supabase Database connected successfully" };
     } catch (error) {
       console.error("❌ Supabase connection test error:", error);
-      return { success: false, message: `Connection error: ${error}` };
+
+      // Check if it's a missing table error in the catch block too
+      if (error.message?.includes('relation') && error.message?.includes('does not exist')) {
+        return {
+          success: false,
+          message: "Database tables not created yet. Please run the SQL migration script in Supabase Dashboard > SQL Editor."
+        };
+      }
+
+      return { success: false, message: `Connection error: ${error.message || error}` };
     }
   }
 }
