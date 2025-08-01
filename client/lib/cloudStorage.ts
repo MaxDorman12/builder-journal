@@ -66,7 +66,52 @@ export class CloudStorage {
       }
     } catch (error) {
       console.error("❌ Firebase journal entry save failed:", error);
-      throw error;
+
+      // Check if it's a size/fetch error
+      if (error.toString().includes('Failed to fetch') ||
+          error.toString().includes('payload') ||
+          error.toString().includes('size')) {
+        console.error('🚨 Firebase refusing the document - likely too large even after cleanup');
+        console.error('📊 Original entry size:', entrySize, 'bytes');
+
+        // Try to save a minimal version with just text
+        try {
+          const minimalEntry = {
+            id: entry.id,
+            title: entry.title,
+            content: entry.content,
+            location: entry.location,
+            createdAt: entry.createdAt,
+            moodRating: entry.moodRating,
+            areaType: entry.areaType,
+            images: [], // No images at all
+            videos: [], // No videos at all
+            comments: []
+          };
+
+          const minimalSize = JSON.stringify(minimalEntry).length / (1024 * 1024);
+          console.log(`💡 Trying minimal text-only version: ${minimalSize.toFixed(2)}MB`);
+
+          if (minimalSize < 0.1) { // Under 100KB
+            await setDoc(doc(db, "journal-entries", entry.id), minimalEntry);
+            console.log("✅ Minimal text-only entry saved to Firebase");
+
+            // Alert user about the issue
+            if (typeof window !== 'undefined') {
+              setTimeout(() => {
+                alert(`⚠️ Entry Saved as Text Only\n\nYour photos/videos couldn't be saved due to Supabase Storage issues.\n\nTo fix:\n1. Check Supabase bucket exists\n2. Verify RLS policies are working\n3. Entry saved with title: "${entry.title}"`);
+              }, 1000);
+            }
+          } else {
+            throw new Error(`Even minimal entry too large: ${minimalSize.toFixed(2)}MB`);
+          }
+        } catch (minimalError) {
+          console.error('❌ Even minimal save failed:', minimalError);
+          throw new Error(`Complete save failure - entry too large even without media`);
+        }
+      } else {
+        throw error;
+      }
     }
   }
 
