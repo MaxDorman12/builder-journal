@@ -230,10 +230,17 @@ export class SupabaseDatabase {
     console.log("���️ Deleting journal entry from Supabase:", id);
 
     try {
+      // Add timeout for network issues
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
       const { error } = await supabase
         .from("journal_entries")
         .delete()
-        .eq("id", id);
+        .eq("id", id)
+        .abortSignal(controller.signal);
+
+      clearTimeout(timeoutId);
 
       if (error) {
         console.error("❌ Failed to delete journal entry:", error);
