@@ -215,6 +215,27 @@ export class SupabaseDatabase {
     }
   }
 
+  static async deleteMapPin(id: string): Promise<void> {
+    console.log("🗑️ Deleting map pin from Supabase:", id);
+
+    try {
+      const { error } = await supabase
+        .from("map_pins")
+        .delete()
+        .eq("id", id);
+
+      if (error) {
+        console.error("❌ Failed to delete map pin:", error.message || error);
+        throw new Error(`Failed to delete map pin: ${error.message || error}`);
+      }
+
+      console.log("✅ Map pin deleted from Supabase Database");
+    } catch (error) {
+      console.error("❌ Failed to delete map pin:", error.message || error);
+      throw new Error(`Failed to delete map pin: ${error.message || error}`);
+    }
+  }
+
   static async getMapPins(): Promise<MapPin[]> {
     console.log("🗺️ Fetching map pins from Supabase Database...");
 
