@@ -50,8 +50,8 @@ export class SupabaseDatabase {
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error("❌ Failed to fetch journal entries:", error);
-        throw error;
+        console.error("❌ Failed to fetch journal entries:", error.message || error);
+        throw new Error(`Failed to fetch journal entries: ${error.message || error}`);
       }
 
       const entries: JournalEntry[] = (data || []).map(row => ({
@@ -157,7 +157,7 @@ export class SupabaseDatabase {
   }
 
   static async deleteMapPin(id: string): Promise<void> {
-    console.log("🗑��� Deleting map pin from Supabase:", id);
+    console.log("🗑️ Deleting map pin from Supabase:", id);
     
     try {
       const { error } = await supabase
