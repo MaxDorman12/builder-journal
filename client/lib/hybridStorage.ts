@@ -253,7 +253,19 @@ export class HybridStorage {
             `🔄 Real-time update: ${supabasePins.length} map pins from Supabase`,
           );
 
-          // Replace all local pins with fresh Supabase data
+          // Handle deletions and updates
+          const localPins = LocalStorage.getMapPins();
+          const supabaseIds = new Set(supabasePins.map(p => p.id));
+
+          // Remove deleted pins
+          localPins.forEach(localPin => {
+            if (!supabaseIds.has(localPin.id)) {
+              console.log(`🗑️ Removing deleted pin: ${localPin.title}`);
+              LocalStorage.deleteMapPin(localPin.id);
+            }
+          });
+
+          // Add/update pins from Supabase
           supabasePins.forEach((pin) => {
             LocalStorage.saveMapPin(pin);
           });
