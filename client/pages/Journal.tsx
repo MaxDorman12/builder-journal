@@ -198,6 +198,9 @@ export default function Journal() {
             <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Create New Journal Entry</DialogTitle>
+                <DialogDescription>
+                  Document your Scotland adventure with photos, videos, and memories.
+                </DialogDescription>
               </DialogHeader>
               <CreateEntryForm onEntryCreated={handleEntryCreated} />
             </DialogContent>
