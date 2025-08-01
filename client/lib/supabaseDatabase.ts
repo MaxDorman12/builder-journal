@@ -134,8 +134,8 @@ export class SupabaseDatabase {
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error("❌ Failed to fetch map pins:", error);
-        throw error;
+        console.error("❌ Failed to fetch map pins:", error.message || error);
+        throw new Error(`Failed to fetch map pins: ${error.message || error}`);
       }
 
       const pins: MapPin[] = (data || []).map(row => ({
