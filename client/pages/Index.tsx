@@ -619,7 +619,7 @@ export default function Index() {
             <CardTitle className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <Youtube className="h-5 w-5 text-red-500" />
-                <span>Our Scotland Adventures</span>
+                <span>{youtubeVideo?.title || "Our Scotland Adventures"}</span>
               </div>
               {isFamilyMember && (
                 <Button
