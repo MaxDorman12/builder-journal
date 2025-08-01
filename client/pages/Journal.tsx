@@ -41,6 +41,17 @@ export default function Journal() {
 
   useEffect(() => {
     loadEntries();
+
+    // Listen for real-time updates from HybridStorage
+    const unsubscribe = HybridStorage.onUpdate(() => {
+      console.log("🔄 Real-time update received, refreshing journal entries...");
+      loadEntries();
+    });
+
+    // Cleanup listener on unmount
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   const loadEntries = () => {
