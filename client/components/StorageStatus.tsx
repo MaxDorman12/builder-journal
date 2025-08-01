@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { StorageCleanup } from "@/lib/storageCleanup";
-import { AlertTriangle, CloudOff, HardDrive } from "lucide-react";
+import { HybridStorage } from "@/lib/hybridStorage";
+import { SupabaseDatabase } from "@/lib/supabaseDatabase";
+import { AlertTriangle, CloudOff, HardDrive, Wifi, WifiOff } from "lucide-react";
 
 export function StorageStatus() {
   const [storageDisabled, setStorageDisabled] = useState(false);
@@ -10,6 +12,11 @@ export function StorageStatus() {
     totalSize: 0,
     itemCount: 0,
   });
+  const [networkStatus, setNetworkStatus] = useState<{
+    healthy: boolean;
+    message: string;
+    supabaseEnabled: boolean;
+  }>({ healthy: true, message: "", supabaseEnabled: false });
 
   useEffect(() => {
     // Check if localStorage is working
