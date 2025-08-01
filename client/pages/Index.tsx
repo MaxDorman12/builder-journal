@@ -131,7 +131,7 @@ export default function Index() {
           console.log(
             "✅ Auto-sync completed - all data refreshed from Firebase!",
           );
-          console.log("👀 New visitors will see:", {
+          console.log("�� New visitors will see:", {
             charlieHasImage: !!freshCharlieData.image,
             entriesCount: freshEntries.length,
             pinsCount: freshPins.length,
@@ -320,9 +320,21 @@ export default function Index() {
       LocalStorage.setCharlieData(dataToSave);
       console.log("✅ Local backup updated");
     } catch (error) {
-      console.error("❌ FIREBASE SAVE FAILED:", error);
+      console.error("❌ CHARLIE SAVE FAILED:", error);
       console.error("Error details:", error.message);
-      if (
+
+      if (error.message?.includes("Failed to fetch") ||
+          error.message?.includes("network") ||
+          error.message?.includes("connectivity")) {
+        // Save locally even if cloud sync failed
+        LocalStorage.setCharlieData(dataToSave);
+        setCharlieData(dataToSave);
+        setIsCharlieDialogOpen(false);
+        setTempCharlieData({ image: "", description: "" });
+
+        alert("⚠️ Network Issue\n\nCharlie's photo saved locally but couldn't sync to cloud.\nIt will sync automatically when connection is restored.");
+        return;
+      } else if (
         error.message &&
         (error.message.includes("too large") ||
           error.message.includes("size") ||
