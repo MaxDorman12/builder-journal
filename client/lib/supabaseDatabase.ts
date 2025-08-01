@@ -596,7 +596,7 @@ export class SupabaseDatabase {
   }
 
   // Test connection
-  static async testConnection(): Promise<{
+  static async testConnection(retryCount = 0): Promise<{
     success: boolean;
     message: string;
   }> {
