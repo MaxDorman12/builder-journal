@@ -505,7 +505,7 @@ export function JournalEntryCard({
                 <div>
                   <strong className="text-sm">Great For:</strong>
                   <div className="flex flex-wrap gap-1 mt-1">
-                    {entry.greatFor.map((activity, index) => (
+                    {entry.greatFor?.map((activity, index) => (
                       <Badge key={index} variant="secondary">
                         {activity}
                       </Badge>
