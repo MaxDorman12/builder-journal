@@ -194,12 +194,15 @@ export class HybridStorage {
     console.log("🔄 Setting up Supabase real-time subscriptions...");
 
     try {
+      console.log("🚀 Setting up real-time subscriptions...");
+
       // Subscribe to journal entry changes
       const entriesListener = SupabaseDatabase.subscribeToJournalEntries(
         (supabaseEntries) => {
           console.log(
             `🔄 Real-time update: ${supabaseEntries.length} journal entries from Supabase`,
           );
+          console.log("📝 Entry IDs received:", supabaseEntries.map(e => e.id));
 
           // Replace all local entries with fresh Supabase data
           // This ensures we have the latest data including updates and deletions
@@ -208,9 +211,12 @@ export class HybridStorage {
           });
 
           // Trigger update event to refresh UI
+          console.log("🔔 Notifying listeners of data change...");
           this.notifyListeners();
         },
       );
+
+      console.log("✅ Journal entries subscription set up");
 
       // Subscribe to map pin changes
       const pinsListener = SupabaseDatabase.subscribeToMapPins(
