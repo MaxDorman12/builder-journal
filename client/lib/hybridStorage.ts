@@ -201,12 +201,12 @@ export class HybridStorage {
         },
       );
 
-      // Listen for map pin changes
-      const pinsListener = SupabaseDatabase.listenToMapPins((cloudPins) => {
+      // Subscribe to map pin changes
+      const pinsListener = SupabaseDatabase.subscribeToMapPins((supabasePins) => {
         const localPins = LocalStorage.getMapPins();
         const localIds = new Set(localPins.map((p) => p.id));
 
-        cloudPins.forEach((pin) => {
+        supabasePins.forEach((pin) => {
           if (!localIds.has(pin.id)) {
             LocalStorage.saveMapPin(pin);
           }
@@ -215,9 +215,9 @@ export class HybridStorage {
         this.notifyListeners();
       });
 
-      // Listen for wishlist changes
-      const wishlistListener = SupabaseDatabase.listenToWishlistItems(
-        (cloudItems) => {
+      // Subscribe to wishlist changes
+      const wishlistListener = SupabaseDatabase.subscribeToWishlistItems(
+        (supabaseItems) => {
           const localItems = LocalStorage.getWishlistItems();
           const localIds = new Set(localItems.map((i) => i.id));
 
