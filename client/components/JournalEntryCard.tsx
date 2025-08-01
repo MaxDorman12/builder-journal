@@ -435,14 +435,14 @@ export function JournalEntryCard({
             )}
 
             {/* Videos */}
-            {entry.videos.length > 0 && (
+            {entry.videos && entry.videos.length > 0 && (
               <div className="space-y-4">
                 <h4 className="font-semibold flex items-center space-x-2">
                   <Video className="h-5 w-5" />
                   <span>Videos ({entry.videos.length})</span>
                 </h4>
                 <div className="grid gap-4">
-                  {entry.videos.map((video, index) => (
+                  {entry.videos?.map((video, index) => (
                     <div
                       key={index}
                       className="aspect-video bg-gray-100 rounded-lg flex items-center justify-center"
