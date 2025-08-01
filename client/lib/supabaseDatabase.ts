@@ -145,7 +145,7 @@ export class SupabaseDatabase {
           error.message.includes("fetch")
         ) {
           console.error(
-            "���� Network connectivity issue detected. Possible causes:",
+            "🌐 Network connectivity issue detected. Possible causes:",
           );
           console.error("  - Internet connection lost");
           console.error("  - Supabase service temporarily unavailable");
@@ -349,7 +349,7 @@ export class SupabaseDatabase {
           console.error("  - CORS or firewall blocking request");
 
           // Don't throw error for network issues during sync to allow app to continue
-          console.log("⚠️ Skipping wishlist item save due to network issue");
+          console.log("⚠️ CONFIRMED: Skipping wishlist item save due to network issue - RETURNING WITHOUT THROWING");
           return;
         }
 
