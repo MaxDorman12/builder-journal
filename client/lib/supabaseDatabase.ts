@@ -542,8 +542,11 @@ export class SupabaseDatabase {
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "map_pins" },
-        async () => {
-          console.log("🔄 Map pins changed, fetching latest...");
+        async (payload) => {
+          console.log("🔄 Map pins DB change detected:", payload);
+          if (payload.eventType === "DELETE") {
+            console.log("🗑️ MAP PIN DELETE event detected in real-time!");
+          }
           const pins = await this.getMapPins();
           callback(pins);
         },
