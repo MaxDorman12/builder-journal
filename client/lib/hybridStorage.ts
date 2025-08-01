@@ -11,6 +11,20 @@ export class HybridStorage {
   private static listeners: (() => void)[] = [];
   private static periodicSyncInterval: NodeJS.Timeout | null = null;
 
+  static getSupabaseStatus(): { enabled: boolean; message: string } {
+    return {
+      enabled: this.supabaseEnabled,
+      message: this.supabaseEnabled
+        ? "Supabase is connected and ready"
+        : "Supabase is not connected - deletions only affect local storage"
+    };
+  }
+
+  static async reinitialize(): Promise<boolean> {
+    console.log("🔄 Reinitializing Supabase connection...");
+    return this.initialize();
+  }
+
   static async initialize(): Promise<boolean> {
     try {
       const connectionTest = await SupabaseDatabase.testConnection();
