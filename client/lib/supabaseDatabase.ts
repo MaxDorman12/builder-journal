@@ -164,7 +164,10 @@ export class SupabaseDatabase {
         description: pin.description,
         latitude: pin.lat,
         longitude: pin.lng,
-        type: pin.type || 'visited',
+        type: 'visited', // Default value for now
+        mood_rating: pin.moodRating,
+        journal_entry_id: pin.journalEntryId || null,
+        images: JSON.stringify(pin.images || []),
         created_at: pin.visitDate || new Date().toISOString(),
       });
 
