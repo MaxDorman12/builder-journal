@@ -160,11 +160,17 @@ export class CloudStorage {
             `Complete save failure - entry too large even without media`,
           );
         }
-      } else if (error.message?.includes('Failed to fetch') ||
-                 error.message?.includes('network') ||
-                 error.code === 'unavailable') {
-        console.warn("🌐 Network connectivity issue - journal entry not saved to cloud");
-        throw new Error(`Network connectivity issue. Entry not saved to cloud. Please try again when connection is restored.`);
+      } else if (
+        error.message?.includes("Failed to fetch") ||
+        error.message?.includes("network") ||
+        error.code === "unavailable"
+      ) {
+        console.warn(
+          "🌐 Network connectivity issue - journal entry not saved to cloud",
+        );
+        throw new Error(
+          `Network connectivity issue. Entry not saved to cloud. Please try again when connection is restored.`,
+        );
       } else {
         throw error;
       }
@@ -180,23 +186,29 @@ export class CloudStorage {
     callback: (entries: JournalEntry[]) => void,
   ): Unsubscribe {
     if (!this.isFirebaseAvailable()) {
-      console.warn("⚠️ Cannot setup journal entries listener - Firebase unavailable");
+      console.warn(
+        "⚠️ Cannot setup journal entries listener - Firebase unavailable",
+      );
       return () => {}; // Return dummy unsubscribe function
     }
     const q = query(
       collection(db, "journal-entries"),
       orderBy("createdAt", "desc"),
     );
-    return onSnapshot(q,
+    return onSnapshot(
+      q,
       (snapshot) => {
         const entries = snapshot.docs.map((doc) => doc.data() as JournalEntry);
         callback(entries);
       },
       (error) => {
-        console.warn("⚠️ Journal entries listener error (network issue):", error);
+        console.warn(
+          "⚠️ Journal entries listener error (network issue):",
+          error,
+        );
         // Continue with empty array to prevent crashes
         callback([]);
-      }
+      },
     );
   }
 
@@ -219,7 +231,8 @@ export class CloudStorage {
       console.warn("⚠️ Cannot setup map pins listener - Firebase unavailable");
       return () => {};
     }
-    return onSnapshot(collection(db, "map-pins"),
+    return onSnapshot(
+      collection(db, "map-pins"),
       (snapshot) => {
         const pins = snapshot.docs.map((doc) => doc.data() as MapPin);
         callback(pins);
@@ -227,7 +240,7 @@ export class CloudStorage {
       (error) => {
         console.warn("⚠️ Map pins listener error (network issue):", error);
         callback([]);
-      }
+      },
     );
   }
 
@@ -252,15 +265,19 @@ export class CloudStorage {
       console.warn("⚠️ Cannot setup wishlist listener - Firebase unavailable");
       return () => {};
     }
-    return onSnapshot(collection(db, "wishlist-items"),
+    return onSnapshot(
+      collection(db, "wishlist-items"),
       (snapshot) => {
         const items = snapshot.docs.map((doc) => doc.data() as WishlistItem);
         callback(items);
       },
       (error) => {
-        console.warn("⚠️ Wishlist items listener error (network issue):", error);
+        console.warn(
+          "⚠️ Wishlist items listener error (network issue):",
+          error,
+        );
         callback([]);
-      }
+      },
     );
   }
 
@@ -309,10 +326,14 @@ export class CloudStorage {
       console.error("❌ Firebase save error:", error);
 
       // Check if it's a network connectivity issue
-      if (error.message?.includes('Failed to fetch') ||
-          error.message?.includes('network') ||
-          error.code === 'unavailable') {
-        console.warn("🌐 Network connectivity issue - Charlie data saved locally only");
+      if (
+        error.message?.includes("Failed to fetch") ||
+        error.message?.includes("network") ||
+        error.code === "unavailable"
+      ) {
+        console.warn(
+          "🌐 Network connectivity issue - Charlie data saved locally only",
+        );
         // Don't throw error for network issues - app should continue working offline
         return;
       }
@@ -351,19 +372,28 @@ export class CloudStorage {
     if (!this.isFirebaseAvailable()) {
       console.warn("⚠️ Cannot setup Charlie listener - Firebase unavailable");
       // Call with default data for offline mode
-      setTimeout(() => callback({
-        image: "",
-        description: "Charlie's data is temporarily unavailable due to network issues. The app will work offline until connection is restored."
-      }), 100);
+      setTimeout(
+        () =>
+          callback({
+            image: "",
+            description:
+              "Charlie's data is temporarily unavailable due to network issues. The app will work offline until connection is restored.",
+          }),
+        100,
+      );
       return () => {};
     }
-    return onSnapshot(doc(db, "family-data", "charlie"),
+    return onSnapshot(
+      doc(db, "family-data", "charlie"),
       (snapshot) => {
         console.log("🔥 Charlie Firebase snapshot:", {
           exists: snapshot.exists(),
         });
         if (snapshot.exists()) {
-          const data = snapshot.data() as { image: string; description: string };
+          const data = snapshot.data() as {
+            image: string;
+            description: string;
+          };
           console.log("🔥 Charlie data from Firebase:", {
             hasImage: !!data.image,
             imageLength: data.image?.length || 0,
@@ -384,9 +414,10 @@ export class CloudStorage {
         // Use default data when Firebase is unavailable
         callback({
           image: "",
-          description: "Charlie's data is temporarily unavailable due to network issues. The app will work offline until connection is restored."
+          description:
+            "Charlie's data is temporarily unavailable due to network issues. The app will work offline until connection is restored.",
         });
-      }
+      },
     );
   }
 
@@ -400,10 +431,10 @@ export class CloudStorage {
   static async enableCloudSync(): Promise<boolean> {
     try {
       // First test basic network connectivity
-      await fetch('https://www.google.com/favicon.ico', {
-        mode: 'no-cors',
-        cache: 'no-cache',
-        timeout: 5000
+      await fetch("https://www.google.com/favicon.ico", {
+        mode: "no-cors",
+        cache: "no-cache",
+        timeout: 5000,
       });
 
       // Then test Firebase connection with timeout
@@ -416,8 +447,11 @@ export class CloudStorage {
       await Promise.race([
         testPromise,
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Firebase connection timeout')), 10000)
-        )
+          setTimeout(
+            () => reject(new Error("Firebase connection timeout")),
+            10000,
+          ),
+        ),
       ]);
 
       console.log("✅ Firebase cloud sync enabled successfully");

@@ -323,16 +323,20 @@ export default function Index() {
       console.error("❌ CHARLIE SAVE FAILED:", error);
       console.error("Error details:", error.message);
 
-      if (error.message?.includes("Failed to fetch") ||
-          error.message?.includes("network") ||
-          error.message?.includes("connectivity")) {
+      if (
+        error.message?.includes("Failed to fetch") ||
+        error.message?.includes("network") ||
+        error.message?.includes("connectivity")
+      ) {
         // Save locally even if cloud sync failed
         LocalStorage.setCharlieData(dataToSave);
         setCharlieData(dataToSave);
         setIsCharlieDialogOpen(false);
         setTempCharlieData({ image: "", description: "" });
 
-        alert("⚠️ Network Issue\n\nCharlie's photo saved locally but couldn't sync to cloud.\nIt will sync automatically when connection is restored.");
+        alert(
+          "⚠️ Network Issue\n\nCharlie's photo saved locally but couldn't sync to cloud.\nIt will sync automatically when connection is restored.",
+        );
         return;
       } else if (
         error.message &&

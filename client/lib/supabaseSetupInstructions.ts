@@ -36,7 +36,7 @@ The app will work in offline mode until the database is set up.
     `);
 
     // Also show alert to user if in browser
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       setTimeout(() => {
         alert(`🚨 DATABASE SETUP REQUIRED
 

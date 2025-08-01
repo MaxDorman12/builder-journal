@@ -21,10 +21,15 @@ export class HybridStorage {
           "🎉 Supabase auto-sync ready! Changes will sync across all devices.",
         );
       } else {
-        console.log("📱 Using local storage only - Supabase not available:", connectionTest.message);
+        console.log(
+          "📱 Using local storage only - Supabase not available:",
+          connectionTest.message,
+        );
 
         // Show setup instructions if tables don't exist
-        if (connectionTest.message.includes("Database tables not created yet")) {
+        if (
+          connectionTest.message.includes("Database tables not created yet")
+        ) {
           SupabaseSetupInstructions.displayInstructions();
         }
       }
@@ -208,18 +213,20 @@ export class HybridStorage {
       );
 
       // Subscribe to map pin changes
-      const pinsListener = SupabaseDatabase.subscribeToMapPins((supabasePins) => {
-        const localPins = LocalStorage.getMapPins();
-        const localIds = new Set(localPins.map((p) => p.id));
+      const pinsListener = SupabaseDatabase.subscribeToMapPins(
+        (supabasePins) => {
+          const localPins = LocalStorage.getMapPins();
+          const localIds = new Set(localPins.map((p) => p.id));
 
-        supabasePins.forEach((pin) => {
-          if (!localIds.has(pin.id)) {
-            LocalStorage.saveMapPin(pin);
-          }
-        });
+          supabasePins.forEach((pin) => {
+            if (!localIds.has(pin.id)) {
+              LocalStorage.saveMapPin(pin);
+            }
+          });
 
-        this.notifyListeners();
-      });
+          this.notifyListeners();
+        },
+      );
 
       // Subscribe to wishlist changes
       const wishlistListener = SupabaseDatabase.subscribeToWishlistItems(
@@ -239,14 +246,16 @@ export class HybridStorage {
 
       // Subscribe to Charlie data changes
       console.log("🔄 Setting up Charlie subscription...");
-      const charlieListener = SupabaseDatabase.subscribeToCharlieData((charlieData) => {
-        console.log("🔄 Supabase Charlie update received:", {
-          hasImage: !!charlieData.image,
-          imageLength: charlieData.image?.length || 0,
-        });
-        LocalStorage.setCharlieData(charlieData);
-        this.notifyListeners();
-      });
+      const charlieListener = SupabaseDatabase.subscribeToCharlieData(
+        (charlieData) => {
+          console.log("🔄 Supabase Charlie update received:", {
+            hasImage: !!charlieData.image,
+            imageLength: charlieData.image?.length || 0,
+          });
+          LocalStorage.setCharlieData(charlieData);
+          this.notifyListeners();
+        },
+      );
       console.log("✅ Charlie subscription set up successfully");
 
       this.listeners.push(
@@ -256,7 +265,10 @@ export class HybridStorage {
         charlieListener,
       );
     } catch (error) {
-      console.warn("⚠️ Failed to setup Supabase subscriptions (network issue):", error);
+      console.warn(
+        "⚠️ Failed to setup Supabase subscriptions (network issue):",
+        error,
+      );
       console.log("📱 App will work in offline mode with localStorage only");
 
       // Disable Supabase sync to prevent further connection attempts

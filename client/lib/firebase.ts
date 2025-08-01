@@ -32,9 +32,9 @@ async function initializeFirebaseSafely() {
     console.log("🔄 Initializing Firebase...");
 
     // Test basic network connectivity first
-    await fetch('https://www.google.com/favicon.ico', {
-      mode: 'no-cors',
-      cache: 'no-cache'
+    await fetch("https://www.google.com/favicon.ico", {
+      mode: "no-cors",
+      cache: "no-cache",
     });
 
     // Initialize Firebase
@@ -56,18 +56,20 @@ async function initializeFirebaseSafely() {
       app: null,
       db: null,
       auth: null,
-      storage: null
+      storage: null,
     };
   }
 }
 
 // Initialize on import - but don't crash if it fails
-initializeFirebaseSafely().then(({ app: _app, db: _db, auth: _auth, storage: _storage }) => {
-  app = _app;
-  db = _db;
-  auth = _auth;
-  storage = _storage;
-});
+initializeFirebaseSafely().then(
+  ({ app: _app, db: _db, auth: _auth, storage: _storage }) => {
+    app = _app;
+    db = _db;
+    auth = _auth;
+    storage = _storage;
+  },
+);
 
 // Export safe getters
 export const getDb = () => db;
