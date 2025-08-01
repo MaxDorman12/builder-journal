@@ -281,7 +281,19 @@ export class HybridStorage {
             `🔄 Real-time update: ${supabaseItems.length} wishlist items from Supabase`,
           );
 
-          // Replace all local items with fresh Supabase data
+          // Handle deletions and updates
+          const localItems = LocalStorage.getWishlistItems();
+          const supabaseIds = new Set(supabaseItems.map(i => i.id));
+
+          // Remove deleted items
+          localItems.forEach(localItem => {
+            if (!supabaseIds.has(localItem.id)) {
+              console.log(`🗑️ Removing deleted wishlist item: ${localItem.title}`);
+              LocalStorage.deleteWishlistItem(localItem.id);
+            }
+          });
+
+          // Add/update items from Supabase
           supabaseItems.forEach((item) => {
             LocalStorage.saveWishlistItem(item);
           });
