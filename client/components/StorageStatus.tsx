@@ -32,6 +32,40 @@ export function StorageStatus() {
     // Get storage usage
     const usage = StorageCleanup.getStorageUsage();
     setStorageUsage(usage);
+
+    // Check network/Supabase status
+    const checkNetworkStatus = async () => {
+      const supabaseStatus = HybridStorage.getSupabaseStatus();
+
+      if (supabaseStatus.enabled) {
+        try {
+          const healthCheck = await SupabaseDatabase.checkConnectionHealth();
+          setNetworkStatus({
+            healthy: healthCheck.healthy,
+            message: healthCheck.message,
+            supabaseEnabled: true
+          });
+        } catch (error) {
+          setNetworkStatus({
+            healthy: false,
+            message: "Connection check failed",
+            supabaseEnabled: true
+          });
+        }
+      } else {
+        setNetworkStatus({
+          healthy: false,
+          message: "Supabase not connected",
+          supabaseEnabled: false
+        });
+      }
+    };
+
+    checkNetworkStatus();
+
+    // Check network status every 30 seconds
+    const interval = setInterval(checkNetworkStatus, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   // Don't show anything if storage is working fine
