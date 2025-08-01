@@ -314,7 +314,7 @@ export default function Index() {
           (dataToSave.description?.length || 0),
       });
       await SupabaseDatabase.setCharlieData(dataToSave);
-      console.log("✅ FIREBASE SAVE SUCCESS");
+      console.log("✅ SUPABASE SAVE SUCCESS");
 
       // Update local storage as backup
       LocalStorage.setCharlieData(dataToSave);
