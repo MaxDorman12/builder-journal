@@ -360,10 +360,17 @@ export class SupabaseDatabase {
     console.log("📋 Fetching wishlist items from Supabase Database...");
 
     try {
+      // Add timeout for network issues
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
       const { data, error } = await supabase
         .from("wishlist_items")
         .select("*")
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .abortSignal(controller.signal);
+
+      clearTimeout(timeoutId);
 
       if (error) {
         console.error("❌ Failed to fetch wishlist items:", error);
