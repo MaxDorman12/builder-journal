@@ -65,7 +65,7 @@ export default function Index() {
     // Check hybrid storage status (initialization happens globally in App.tsx)
     const checkStorageStatus = async () => {
       // Wait a moment for global initialization to complete
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
       const status = HybridStorage.getSupabaseStatus();
       setIsCloudSyncEnabled(status.enabled);
 

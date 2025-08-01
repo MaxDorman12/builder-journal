@@ -16,7 +16,7 @@ export class HybridStorage {
       enabled: this.supabaseEnabled,
       message: this.supabaseEnabled
         ? "Supabase is connected and ready"
-        : "Supabase is not connected - deletions only affect local storage"
+        : "Supabase is not connected - deletions only affect local storage",
     };
   }
 
@@ -124,8 +124,12 @@ export class HybridStorage {
         );
       }
     } else {
-      console.log("⚠️ DELETE: Supabase sync disabled - entry only deleted locally");
-      console.log("💡 DELETE: To enable Supabase sync, check connection and call HybridStorage.initialize()");
+      console.log(
+        "⚠️ DELETE: Supabase sync disabled - entry only deleted locally",
+      );
+      console.log(
+        "💡 DELETE: To enable Supabase sync, check connection and call HybridStorage.initialize()",
+      );
     }
   }
 

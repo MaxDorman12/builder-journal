@@ -138,15 +138,19 @@ export class SupabaseDatabase {
 
       // Check if it's a network connectivity issue
       if (error instanceof Error) {
-        if (error.message.includes('Failed to fetch') ||
-            error.name === 'AbortError' ||
-            error.message.includes('NetworkError') ||
-            error.message.includes('fetch')) {
-          console.error('🌐 Network connectivity issue detected. Possible causes:');
-          console.error('  - Internet connection lost');
-          console.error('  - Supabase service temporarily unavailable');
-          console.error('  - Request timeout (>10 seconds)');
-          console.error('  - CORS or firewall blocking request');
+        if (
+          error.message.includes("Failed to fetch") ||
+          error.name === "AbortError" ||
+          error.message.includes("NetworkError") ||
+          error.message.includes("fetch")
+        ) {
+          console.error(
+            "🌐 Network connectivity issue detected. Possible causes:",
+          );
+          console.error("  - Internet connection lost");
+          console.error("  - Supabase service temporarily unavailable");
+          console.error("  - Request timeout (>10 seconds)");
+          console.error("  - CORS or firewall blocking request");
 
           // Return empty array for network issues to allow app to continue
           return [];
@@ -154,7 +158,9 @@ export class SupabaseDatabase {
       }
 
       // For other errors, throw to propagate to HybridStorage
-      throw new Error(`Failed to get journal entries: ${error.message || error}`);
+      throw new Error(
+        `Failed to get journal entries: ${error.message || error}`,
+      );
     }
   }
 
@@ -190,7 +196,7 @@ export class SupabaseDatabase {
         description: pin.description,
         latitude: pin.lat,
         longitude: pin.lng,
-        type: 'visited', // Default value for now
+        type: "visited", // Default value for now
         mood_rating: pin.moodRating,
         journal_entry_id: pin.journalEntryId || null,
         images: JSON.stringify(pin.images || []),
@@ -240,7 +246,7 @@ export class SupabaseDatabase {
         lat: row.latitude,
         lng: row.longitude,
         title: row.title,
-        description: row.description || '',
+        description: row.description || "",
         moodRating: row.mood_rating || 5,
         journalEntryId: row.journal_entry_id || undefined,
         visitDate: row.created_at,
@@ -648,22 +654,26 @@ export class SupabaseDatabase {
       }
 
       // Check for network connectivity issues and retry
-      if (error instanceof Error &&
-          (error.message.includes('Failed to fetch') ||
-           error.name === 'AbortError' ||
-           error.message.includes('NetworkError') ||
-           error.message.includes('fetch'))) {
-
+      if (
+        error instanceof Error &&
+        (error.message.includes("Failed to fetch") ||
+          error.name === "AbortError" ||
+          error.message.includes("NetworkError") ||
+          error.message.includes("fetch"))
+      ) {
         // Retry up to 2 times for network issues
         if (retryCount < 2) {
-          console.log(`🔄 Network error, retrying connection test (${retryCount + 1}/2)...`);
-          await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second
+          console.log(
+            `🔄 Network error, retrying connection test (${retryCount + 1}/2)...`,
+          );
+          await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 second
           return this.testConnection(retryCount + 1);
         }
 
         return {
           success: false,
-          message: "Network connectivity issue - check internet connection and try again",
+          message:
+            "Network connectivity issue - check internet connection and try again",
         };
       }
 
