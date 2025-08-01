@@ -20,36 +20,36 @@ export class SupabaseDatabase {
       const { error } = await supabase
         .from("journal_entries")
         .upsert({
-        id: entry.id,
-        title: entry.title,
-        content: entry.content,
-        images: entry.images || [],
-        videos: entry.videos || [],
-        location_name: entry.locationName,
-        latitude: entry.latitude,
-        longitude: entry.longitude,
-        created_at: entry.createdAt,
-        updated_at: new Date().toISOString(),
-        // Include all additional fields
-        date: entry.date || entry.createdAt,
-        location: entry.location || entry.locationName || "",
-        mood_rating: entry.moodRating || 3,
-        great_for: entry.greatFor || [],
-        is_busy: entry.isBusy || false,
-        area_type: entry.areaType || "town",
-        would_return_reason: entry.wouldReturnReason || "",
-        would_return:
-          entry.wouldReturn !== undefined ? entry.wouldReturn : true,
-        has_free_parking_available: entry.hasFreeParkingAvailable || false,
-        parking_cost: entry.parkingCost || "",
-        is_paid_activity: entry.isPaidActivity || false,
-        activity_cost: entry.activityCost || "",
-        author: entry.author || "Family",
-        likes: entry.likes || 0,
-        comments: entry.comments || [],
-        tags: entry.tags || [],
-      })
-      .abortSignal(controller.signal);
+          id: entry.id,
+          title: entry.title,
+          content: entry.content,
+          images: entry.images || [],
+          videos: entry.videos || [],
+          location_name: entry.locationName,
+          latitude: entry.latitude,
+          longitude: entry.longitude,
+          created_at: entry.createdAt,
+          updated_at: new Date().toISOString(),
+          // Include all additional fields
+          date: entry.date || entry.createdAt,
+          location: entry.location || entry.locationName || "",
+          mood_rating: entry.moodRating || 3,
+          great_for: entry.greatFor || [],
+          is_busy: entry.isBusy || false,
+          area_type: entry.areaType || "town",
+          would_return_reason: entry.wouldReturnReason || "",
+          would_return:
+            entry.wouldReturn !== undefined ? entry.wouldReturn : true,
+          has_free_parking_available: entry.hasFreeParkingAvailable || false,
+          parking_cost: entry.parkingCost || "",
+          is_paid_activity: entry.isPaidActivity || false,
+          activity_cost: entry.activityCost || "",
+          author: entry.author || "Family",
+          likes: entry.likes || 0,
+          comments: entry.comments || [],
+          tags: entry.tags || [],
+        })
+        .abortSignal(controller.signal);
 
       clearTimeout(timeoutId);
 
@@ -182,7 +182,9 @@ export class SupabaseDatabase {
         }
 
         // For any other errors, also return empty array to prevent app crashes
-        console.error("⚠️ Unknown database error, returning empty journal entries to prevent app crash");
+        console.error(
+          "⚠️ Unknown database error, returning empty journal entries to prevent app crash",
+        );
         return [];
       }
 
@@ -222,9 +224,11 @@ export class SupabaseDatabase {
       console.error("❌ Failed to get journal entries:", error);
 
       // Check if it's a network connectivity issue
-      if (error instanceof Error || typeof error === 'string') {
-        const errorMessage = (error instanceof Error ? error.message : String(error)).toLowerCase();
-        const errorName = error instanceof Error ? error.name : '';
+      if (error instanceof Error || typeof error === "string") {
+        const errorMessage = (
+          error instanceof Error ? error.message : String(error)
+        ).toLowerCase();
+        const errorName = error instanceof Error ? error.name : "";
 
         if (
           errorMessage.includes("failed to fetch") ||
@@ -251,7 +255,9 @@ export class SupabaseDatabase {
       }
 
       // For any other errors, return empty array to prevent app crashes
-      console.error("⚠️ Unknown error in journal entries catch block, returning empty array to prevent app crash");
+      console.error(
+        "⚠️ Unknown error in journal entries catch block, returning empty array to prevent app crash",
+      );
       return [];
     }
   }
@@ -915,8 +921,13 @@ export class SupabaseDatabase {
             );
             callback(entries);
           } catch (error) {
-            console.error("❌ Error in real-time subscription callback:", error);
-            console.log("⚠️ Continuing with empty entries to prevent subscription crash...");
+            console.error(
+              "❌ Error in real-time subscription callback:",
+              error,
+            );
+            console.log(
+              "⚠️ Continuing with empty entries to prevent subscription crash...",
+            );
             callback([]); // Call with empty array to prevent breaking the UI
           }
         },
@@ -952,7 +963,9 @@ export class SupabaseDatabase {
             callback(pins);
           } catch (error) {
             console.error("❌ Error in map pins subscription callback:", error);
-            console.log("⚠️ Continuing with empty pins to prevent subscription crash...");
+            console.log(
+              "⚠️ Continuing with empty pins to prevent subscription crash...",
+            );
             callback([]);
           }
         },
@@ -983,7 +996,9 @@ export class SupabaseDatabase {
             callback(items);
           } catch (error) {
             console.error("❌ Error in wishlist subscription callback:", error);
-            console.log("⚠️ Continuing with empty items to prevent subscription crash...");
+            console.log(
+              "⚠️ Continuing with empty items to prevent subscription crash...",
+            );
             callback([]);
           }
         },
@@ -1015,8 +1030,13 @@ export class SupabaseDatabase {
             const data = await this.getCharlieData();
             callback(data);
           } catch (error) {
-            console.error("❌ Error in Charlie data subscription callback:", error);
-            console.log("⚠️ Continuing with default Charlie data to prevent subscription crash...");
+            console.error(
+              "❌ Error in Charlie data subscription callback:",
+              error,
+            );
+            console.log(
+              "⚠️ Continuing with default Charlie data to prevent subscription crash...",
+            );
             callback({ image: "", description: "Charlie data unavailable" });
           }
         },

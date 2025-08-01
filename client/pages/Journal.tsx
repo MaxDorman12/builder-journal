@@ -199,7 +199,8 @@ export default function Journal() {
               <DialogHeader>
                 <DialogTitle>Create New Journal Entry</DialogTitle>
                 <DialogDescription>
-                  Document your Scotland adventure with photos, videos, and memories.
+                  Document your Scotland adventure with photos, videos, and
+                  memories.
                 </DialogDescription>
               </DialogHeader>
               <CreateEntryForm onEntryCreated={handleEntryCreated} />
