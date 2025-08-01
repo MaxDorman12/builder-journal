@@ -348,6 +348,15 @@ export class CloudStorage {
   static listenToCharlieData(
     callback: (data: { image: string; description: string }) => void,
   ): Unsubscribe {
+    if (!this.isFirebaseAvailable()) {
+      console.warn("⚠️ Cannot setup Charlie listener - Firebase unavailable");
+      // Call with default data for offline mode
+      setTimeout(() => callback({
+        image: "",
+        description: "Charlie's data is temporarily unavailable due to network issues. The app will work offline until connection is restored."
+      }), 100);
+      return () => {};
+    }
     return onSnapshot(doc(db, "family-data", "charlie"),
       (snapshot) => {
         console.log("🔥 Charlie Firebase snapshot:", {
