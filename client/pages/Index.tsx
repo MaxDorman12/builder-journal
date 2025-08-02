@@ -94,6 +94,8 @@ export default function Index() {
         entries: entriesData.length,
         pins: pinsData.length,
         hasCharlieImage: !!charlieData.image,
+        charlieDescription: charlieData.description,
+        charlieDescriptionLength: charlieData.description?.length,
         hasYoutube: !!youtubeData,
       });
     } catch (error) {
