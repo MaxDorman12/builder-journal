@@ -258,11 +258,14 @@ export class HybridStorage {
   }
 
   static async deleteMapPin(id: string): Promise<void> {
-    console.log("����️ DELETE MAP PIN: Starting delete process for pin:", id);
+    console.log("🗑️ DELETE MAP PIN: Starting delete process for pin:", id);
     console.log(
       "🔍 DELETE MAP PIN: Supabase enabled status:",
       this.supabaseEnabled,
     );
+
+    // Track this deletion to prevent race conditions
+    this.pendingDeletions.add(id);
 
     // Delete from local storage first
     LocalStorage.deleteMapPin(id);
