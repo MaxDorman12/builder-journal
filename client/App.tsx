@@ -8,6 +8,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Layout } from "@/components/Layout";
+import { NetworkStatus } from "@/components/NetworkStatus";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Journal from "./pages/Journal";
