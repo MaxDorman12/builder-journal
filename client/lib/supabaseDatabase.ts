@@ -951,7 +951,7 @@ export class SupabaseDatabase {
           error.message?.toLowerCase().includes("connection")
         ) {
           console.log(
-            "������ Network connectivity issue during wishlist deletion - delete will be queued for sync",
+            "���� Network connectivity issue during wishlist deletion - delete will be queued for sync",
           );
           return; // Don't throw error for network issues
         }
@@ -1305,9 +1305,13 @@ export class SupabaseDatabase {
       };
     } catch (error) {
       console.error("❌ Failed to get Charlie data:", error);
+      console.log("🐕 Returning default Charlie data due to error");
+
+      // Return the same default data as when no record is found
       return {
         image: "",
-        description: "Charlie's data is temporarily unavailable.",
+        description:
+          "No family adventure is complete without our beloved four-legged companion, Charlie! This loyal and energetic member of the Dorman family brings joy and excitement to every journey we embark on across Scotland.\n\nWhether it's hiking through the Scottish Highlands, exploring sandy beaches along the coast, or discovering dog-friendly trails in the countryside, Charlie is always ready for the next adventure with his tail wagging and spirit high.\n\nHis favorite activities include chasing sticks by the lochs, making friends with other dogs at campsites, and of course, being the star of many of our family photos. Charlie truly makes every adventure more memorable! 🐾",
       };
     }
   }
@@ -1472,7 +1476,7 @@ export class SupabaseDatabase {
         "postgres_changes",
         { event: "*", schema: "public", table: "youtube_videos" },
         async (payload) => {
-          console.log("🔄 YouTube video DB change detected:", payload);
+          console.log("���� YouTube video DB change detected:", payload);
           if (payload.eventType === "DELETE") {
             console.log("🗑️ YOUTUBE DELETE event detected in real-time!");
           }
