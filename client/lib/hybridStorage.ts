@@ -198,7 +198,7 @@ export class HybridStorage {
         }, 2000); // 2 second delay
       } catch (error) {
         console.error(
-          "��� DELETE: Failed to delete entry from Supabase:",
+          "❌ DELETE: Failed to delete entry from Supabase:",
           error,
         );
         // Still remove from pending deletions after some time
@@ -240,7 +240,7 @@ export class HybridStorage {
             errorName === "TypeError"
           ) {
             console.log(
-              "🌐 Network connectivity issue detected during map pin save - skipping sync",
+              "��� Network connectivity issue detected during map pin save - skipping sync",
             );
             console.log(
               "📍 Pin saved locally and will sync when connection is restored",
@@ -651,11 +651,15 @@ export class HybridStorage {
           });
 
           // Add/update pins from Supabase (but skip items pending deletion)
+          console.log("🔍 MAP PINS SYNC: Current pending deletions:", Array.from(this.pendingDeletions));
+          console.log("🔍 MAP PINS SYNC: Supabase pin IDs:", supabasePins.map(p => p.id));
+
           supabasePins.forEach((pin) => {
             if (!this.pendingDeletions.has(pin.id)) {
+              console.log(`📍 Adding/updating pin: ${pin.title} (${pin.id})`);
               LocalStorage.saveMapPin(pin);
             } else {
-              console.log(`🔄 Skipping pin ${pin.title} - pending deletion`);
+              console.log(`🔄 Skipping pin ${pin.title} (${pin.id}) - pending deletion`);
             }
           });
 
