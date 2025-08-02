@@ -12,11 +12,13 @@ export class SupabaseStorage {
 
   static async saveJournalEntry(entry: JournalEntry): Promise<void> {
     await SupabaseDatabase.saveJournalEntry(entry);
+    console.log("🔄 Journal entry saved, notifying listeners...");
     this.notifyListeners();
   }
 
   static async deleteJournalEntry(id: string): Promise<void> {
     await SupabaseDatabase.deleteJournalEntry(id);
+    console.log("🔄 Journal entry deleted, notifying listeners...");
     this.notifyListeners();
   }
 
@@ -27,11 +29,13 @@ export class SupabaseStorage {
 
   static async saveMapPin(pin: MapPin): Promise<void> {
     await SupabaseDatabase.saveMapPin(pin);
+    console.log("🔄 Map pin saved, notifying listeners...");
     this.notifyListeners();
   }
 
   static async deleteMapPin(id: string): Promise<void> {
     await SupabaseDatabase.deleteMapPin(id);
+    console.log("🔄 Map pin deleted, notifying listeners...");
     this.notifyListeners();
   }
 
@@ -42,11 +46,13 @@ export class SupabaseStorage {
 
   static async saveWishlistItem(item: WishlistItem): Promise<void> {
     await SupabaseDatabase.saveWishlistItem(item);
+    console.log("🔄 Wishlist item saved, notifying listeners...");
     this.notifyListeners();
   }
 
   static async deleteWishlistItem(id: string): Promise<void> {
     await SupabaseDatabase.deleteWishlistItem(id);
+    console.log("🔄 Wishlist item deleted, notifying listeners...");
     this.notifyListeners();
   }
 
@@ -57,11 +63,13 @@ export class SupabaseStorage {
 
   static async saveYouTubeVideo(video: YouTubeVideo): Promise<void> {
     await SupabaseDatabase.saveYouTubeVideo(video);
+    console.log("🔄 YouTube video saved, notifying listeners...");
     this.notifyListeners();
   }
 
   static async deleteYouTubeVideo(): Promise<void> {
     await SupabaseDatabase.deleteYouTubeVideo();
+    console.log("🔄 YouTube video deleted, notifying listeners...");
     this.notifyListeners();
   }
 
@@ -72,6 +80,7 @@ export class SupabaseStorage {
 
   static async saveCharlieData(data: { image: string; description: string }): Promise<void> {
     await SupabaseDatabase.saveCharlieData(data);
+    console.log("🔄 Charlie data saved, notifying listeners...");
     this.notifyListeners();
   }
 
@@ -162,8 +171,10 @@ export class SupabaseStorage {
   }
 
   private static notifyListeners(): void {
-    this.listeners.forEach((listener) => {
+    console.log(`🔔 Notifying ${this.listeners.length} real-time listeners...`);
+    this.listeners.forEach((listener, index) => {
       if (typeof listener === "function") {
+        console.log(`🔄 Calling listener ${index + 1}`);
         listener();
       }
     });
