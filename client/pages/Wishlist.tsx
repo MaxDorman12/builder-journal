@@ -179,24 +179,26 @@ export default function Wishlist() {
                     <CardHeader>
                       <CardTitle className="flex items-center justify-between">
                         <span className="flex-1">{item.title}</span>
-                        <div className="flex gap-1">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleMarkCompleted(item.id)}
-                            className="text-green-600 hover:text-green-700"
-                          >
-                            <Check className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleDelete(item.id)}
-                            className="text-red-600 hover:text-red-700"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
+                        {isAuthenticated && (
+                          <div className="flex gap-1">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleMarkCompleted(item.id)}
+                              className="text-green-600 hover:text-green-700"
+                            >
+                              <Check className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleDelete(item.id)}
+                              className="text-red-600 hover:text-red-700"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        )}
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -204,7 +206,7 @@ export default function Wishlist() {
                         <p className="text-gray-700 mb-2">{item.description}</p>
                       )}
                       {item.location && (
-                        <p className="text-sm text-gray-500">📍 {item.location}</p>
+                        <p className="text-sm text-gray-500">�� {item.location}</p>
                       )}
                     </CardContent>
                   </Card>
