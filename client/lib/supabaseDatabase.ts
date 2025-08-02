@@ -791,9 +791,11 @@ export class SupabaseDatabase {
           error.message?.includes("Failed to fetch") ||
           error.message?.includes("NetworkError") ||
           error.message?.includes("fetch") ||
+          error.message?.toLowerCase().includes("timeout") ||
+          error.message?.toLowerCase().includes("connection") ||
           error.code === "PGRST301"
         ) {
-          console.error("🌐 Network connectivity issue during wishlist fetch");
+          console.log("🌐 Network connectivity issue during wishlist fetch - returning empty array");
           console.log("���️ Returning empty wishlist due to network issue");
           return [];
         }
@@ -1225,7 +1227,7 @@ export class SupabaseDatabase {
       }
 
       if (!data) {
-        console.log("📝 No Charlie data found, returning default");
+        console.log("���� No Charlie data found, returning default");
         return {
           image: "",
           description:
