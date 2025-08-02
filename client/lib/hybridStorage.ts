@@ -935,14 +935,30 @@ export class HybridStorage {
       const local = LocalStorage.getMapPins();
       const remote = await SupabaseDatabase.getMapPins();
       console.log("🔍 MAP PIN COMPARISON:");
-      console.log("Local pins:", local.map(p => ({ id: p.id, title: p.title, type: typeof p.id })));
-      console.log("Remote pins:", remote.map(p => ({ id: p.id, title: p.title, type: typeof p.id })));
+      console.log(
+        "Local pins:",
+        local.map((p) => ({ id: p.id, title: p.title, type: typeof p.id })),
+      );
+      console.log(
+        "Remote pins:",
+        remote.map((p) => ({ id: p.id, title: p.title, type: typeof p.id })),
+      );
 
-      const localIds = new Set(local.map(p => p.id));
-      const remoteIds = new Set(remote.map(p => p.id));
+      const localIds = new Set(local.map((p) => p.id));
+      const remoteIds = new Set(remote.map((p) => p.id));
 
-      console.log("📍 Only in local:", local.filter(p => !remoteIds.has(p.id)).map(p => ({ id: p.id, title: p.title })));
-      console.log("☁️ Only in remote:", remote.filter(p => !localIds.has(p.id)).map(p => ({ id: p.id, title: p.title })));
+      console.log(
+        "📍 Only in local:",
+        local
+          .filter((p) => !remoteIds.has(p.id))
+          .map((p) => ({ id: p.id, title: p.title })),
+      );
+      console.log(
+        "☁️ Only in remote:",
+        remote
+          .filter((p) => !localIds.has(p.id))
+          .map((p) => ({ id: p.id, title: p.title })),
+      );
       console.log("🔄 Pending deletions:", Array.from(this.pendingDeletions));
 
       return { local, remote, localIds, remoteIds };
@@ -956,9 +972,11 @@ export class HybridStorage {
 
       // Clear all pending deletions for map pins first
       const local = LocalStorage.getMapPins();
-      local.forEach(pin => {
+      local.forEach((pin) => {
         if (this.pendingDeletions.has(pin.id)) {
-          console.log(`🔄 FORCE SYNC: Clearing pending deletion for ${pin.title} (${pin.id})`);
+          console.log(
+            `🔄 FORCE SYNC: Clearing pending deletion for ${pin.title} (${pin.id})`,
+          );
           this.pendingDeletions.delete(pin.id);
         }
       });
@@ -970,10 +988,12 @@ export class HybridStorage {
       });
 
       // Remove local pins that don't exist in remote
-      const remoteIds = new Set(remote.map(p => p.id));
+      const remoteIds = new Set(remote.map((p) => p.id));
       local.forEach((localPin) => {
         if (!remoteIds.has(localPin.id)) {
-          console.log(`🔄 FORCE SYNC: Removing local pin ${localPin.title} (${localPin.id}) - not in remote`);
+          console.log(
+            `🔄 FORCE SYNC: Removing local pin ${localPin.title} (${localPin.id}) - not in remote`,
+          );
           LocalStorage.deleteMapPin(localPin.id);
         }
       });
