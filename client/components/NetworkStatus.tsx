@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { WiFiOff, Wifi, RefreshCw } from 'lucide-react';
+import { WifiOff, Wifi, RefreshCw } from 'lucide-react';
 import { SupabaseDatabase } from '@/lib/supabaseDatabase';
 
 export function NetworkStatus() {
