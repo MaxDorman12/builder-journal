@@ -821,7 +821,7 @@ export class SupabaseDatabase {
     try {
       // Add timeout for network issues
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
 
       const { error } = await supabase
         .from("wishlist_items")
@@ -863,7 +863,7 @@ export class SupabaseDatabase {
           error.message?.toLowerCase().includes("timeout") ||
           error.message?.toLowerCase().includes("connection")
         ) {
-          console.log("🌐 Network connectivity issue during wishlist deletion - delete will be queued for sync");
+          console.log("���� Network connectivity issue during wishlist deletion - delete will be queued for sync");
           return; // Don't throw error for network issues
         }
       }
