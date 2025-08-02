@@ -351,8 +351,15 @@ export class SupabaseDatabase {
           console.log("  💡 Common causes:");
           console.log("    - Internet connection lost");
           console.log("    - Supabase service temporarily unavailable");
-          console.log("    - Request timeout (>10 seconds)");
+          console.log("    - Request timeout (>15 seconds)");
           console.log("    - CORS or firewall blocking request");
+          console.log("    - Supabase project URL incorrect");
+          console.log("    - Database tables not created yet");
+          console.log("  🔧 Troubleshooting:");
+          console.log("    1. Check internet connection");
+          console.log("    2. Verify Supabase project URL and key");
+          console.log("    3. Run SQL migration in Supabase Dashboard");
+          console.log("    4. Check Settings page for connection test");
 
           // Return empty array for network issues to allow app to continue
           return [];
@@ -714,7 +721,7 @@ export class SupabaseDatabase {
           error.message?.toLowerCase().includes("connection") ||
           error.code === "PGRST301"
         ) {
-          console.error("��� Network connectivity issue during wishlist save:");
+          console.error("🌐 Network connectivity issue during wishlist save:");
           console.error("  - Internet connection lost");
           console.error("  - Supabase service temporarily unavailable");
           console.error("  - Request timeout (>10 seconds)");
