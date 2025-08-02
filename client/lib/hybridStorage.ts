@@ -170,6 +170,9 @@ export class HybridStorage {
     console.log("🗑️ DELETE: Starting delete process for entry:", id);
     console.log("🔍 DELETE: Supabase enabled status:", this.supabaseEnabled);
 
+    // Track this deletion to prevent race conditions
+    this.pendingDeletions.add(id);
+
     // Delete from local storage first
     LocalStorage.deleteJournalEntry(id);
     console.log("✅ DELETE: Removed from localStorage");
@@ -182,11 +185,22 @@ export class HybridStorage {
         console.log(
           "🔔 DELETE: This should trigger real-time sync on other devices",
         );
+
+        // Wait a bit for the deletion to propagate before removing from pending
+        setTimeout(() => {
+          this.pendingDeletions.delete(id);
+          console.log("🔄 DELETE: Removed from pending deletions tracking");
+        }, 2000); // 2 second delay
+
       } catch (error) {
         console.error(
           "❌ DELETE: Failed to delete entry from Supabase:",
           error,
         );
+        // Still remove from pending deletions after some time
+        setTimeout(() => {
+          this.pendingDeletions.delete(id);
+        }, 5000);
       }
     } else {
       console.log(
@@ -195,6 +209,8 @@ export class HybridStorage {
       console.log(
         "💡 DELETE: To enable Supabase sync, check connection and call HybridStorage.initialize()",
       );
+      // Remove from pending deletions immediately if no cloud sync
+      this.pendingDeletions.delete(id);
     }
   }
 
