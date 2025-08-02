@@ -951,7 +951,7 @@ export class SupabaseDatabase {
           error.message?.toLowerCase().includes("connection")
         ) {
           console.log(
-            "���� Network connectivity issue during wishlist deletion - delete will be queued for sync",
+            "������ Network connectivity issue during wishlist deletion - delete will be queued for sync",
           );
           return; // Don't throw error for network issues
         }
@@ -1210,7 +1210,7 @@ export class SupabaseDatabase {
   }
 
   // Charlie Data
-  static async setCharlieData(data: {
+  static async saveCharlieData(data: {
     image: string;
     description: string;
   }): Promise<void> {
