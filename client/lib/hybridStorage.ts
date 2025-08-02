@@ -198,7 +198,7 @@ export class HybridStorage {
         }, 2000); // 2 second delay
       } catch (error) {
         console.error(
-          "❌ DELETE: Failed to delete entry from Supabase:",
+          "��� DELETE: Failed to delete entry from Supabase:",
           error,
         );
         // Still remove from pending deletions after some time
@@ -211,7 +211,7 @@ export class HybridStorage {
         "⚠️ DELETE: Supabase sync disabled - entry only deleted locally",
       );
       console.log(
-        "��� DELETE: To enable Supabase sync, check connection and call HybridStorage.initialize()",
+        "💡 DELETE: To enable Supabase sync, check connection and call HybridStorage.initialize()",
       );
       // Remove from pending deletions immediately if no cloud sync
       this.pendingDeletions.delete(id);
@@ -267,9 +267,11 @@ export class HybridStorage {
       "🔍 DELETE MAP PIN: Supabase enabled status:",
       this.supabaseEnabled,
     );
+    console.log("🔍 DELETE MAP PIN: Current pending deletions:", Array.from(this.pendingDeletions));
 
     // Track this deletion to prevent race conditions
     this.pendingDeletions.add(id);
+    console.log("🔄 DELETE MAP PIN: Added to pending deletions tracking");
 
     // Delete from local storage first
     LocalStorage.deleteMapPin(id);
