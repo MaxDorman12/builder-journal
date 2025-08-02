@@ -45,6 +45,9 @@ export default function Settings() {
       {/* Real-time Sync Test */}
       <SyncTest />
 
+      {/* Supabase Connection Test */}
+      <SupabaseTest />
+
       <div className="grid md:grid-cols-2 gap-6">
         {/* Storage Status */}
         <StorageStatus />
