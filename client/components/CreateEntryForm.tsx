@@ -110,6 +110,8 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
         isPublic,
         hasFreeParkingAvailable,
         parkingCost: hasFreeParkingAvailable ? "" : parkingCost.trim(),
+        isPaidActivity,
+        activityCost: isPaidActivity ? activityCost.trim() : "",
         updatedBy: "user", // You might want to get this from auth context
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
