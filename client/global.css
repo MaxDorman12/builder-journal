@@ -168,6 +168,15 @@
       border-radius: 1rem !important;
     }
   }
+
+  /* Ensure dialogs appear above Leaflet maps */
+  [data-radix-dialog-overlay] {
+    z-index: 9999 !important;
+  }
+
+  [data-radix-dialog-content] {
+    z-index: 10000 !important;
+  }
 }
 
 @keyframes gradient-shift {
