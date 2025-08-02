@@ -62,9 +62,17 @@ export default function Map() {
 
   const handleCreatePin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!title.trim() || !latitude || !longitude) {
       alert("Please fill in all required fields");
+      return;
+    }
+
+    const lat = parseFloat(latitude);
+    const lng = parseFloat(longitude);
+
+    if (isNaN(lat) || isNaN(lng)) {
+      alert("Please enter valid latitude and longitude values");
       return;
     }
 
@@ -73,8 +81,8 @@ export default function Map() {
         id: `pin-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         title: title.trim(),
         description: description.trim(),
-        latitude: parseFloat(latitude),
-        longitude: parseFloat(longitude),
+        latitude: lat,
+        longitude: lng,
         images: [],
         areaType: "highlands",
         updatedBy: "user",
