@@ -391,7 +391,7 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
 
             {/* Images */}
             <div>
-              <Label>Photos ({images.length}/10)</Label>
+              <Label>Photos ({images.length}/25) - Cloud Storage</Label>
               <div className="mt-2">
                 <input
                   ref={fileInputRef}
@@ -406,16 +406,44 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
                   variant="outline"
                   onClick={() => fileInputRef.current?.click()}
                   className="w-full"
-                  disabled={images.length >= 10}
+                  disabled={images.length >= 25 || isUploading}
                 >
                   <Camera className="h-4 w-4 mr-2" />
-                  {images.length >= 10 ? "Photo limit reached" : "Add Photos"}
+                  {isUploading ? "Uploading..." : images.length >= 25 ? "Photo limit reached" : "Add Photos"}
                 </Button>
-                {images.length >= 8 && (
+
+                {/* Upload Progress */}
+                {isUploading && (
+                  <div className="mt-2 p-2 bg-blue-50 rounded text-sm">
+                    <div className="flex justify-between items-center mb-1">
+                      <span>Uploading to cloud storage...</span>
+                      <span>{uploadProgress.current}/{uploadProgress.total}</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        className="bg-blue-600 h-2 rounded-full transition-all"
+                        style={{ width: `${(uploadProgress.current / uploadProgress.total) * 100}%` }}
+                      ></div>
+                    </div>
+                    {uploadProgress.fileName && (
+                      <div className="text-xs text-gray-600 mt-1 truncate">
+                        {uploadProgress.fileName}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Photo limit warning */}
+                {images.length >= 20 && (
                   <p className="text-sm text-amber-600 mt-1">
-                    ⚠️ Approaching photo limit ({images.length}/10). Large numbers of photos may cause upload issues.
+                    ⚠️ Approaching photo limit ({images.length}/25). Consider creating multiple entries for very large photo sets.
                   </p>
                 )}
+
+                {/* Cloud storage info */}
+                <p className="text-xs text-gray-500 mt-1">
+                  📁 Photos stored in cloud • Max 25MB per photo • Syncs across all devices
+                </p>
               </div>
               
               {images.length > 0 && (
