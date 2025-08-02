@@ -34,10 +34,11 @@ export default function Journal() {
   };
 
   useEffect(() => {
-    if (isAuthenticated) {
-      loadEntries();
+    // Load data for all users (guests and authenticated)
+    loadEntries();
 
-      // Listen for real-time updates
+    // Only set up real-time updates for authenticated users
+    if (isAuthenticated) {
       const unsubscribe = SupabaseStorage.onUpdate(() => {
         console.log("🔄 Real-time update received, reloading entries...");
         loadEntries();
