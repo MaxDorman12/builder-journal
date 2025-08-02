@@ -62,6 +62,8 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
   const [isPaidActivity, setIsPaidActivity] = useState(false);
   const [activityCost, setActivityCost] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [showMapPinDialog, setShowMapPinDialog] = useState(false);
+  const [createdEntry, setCreatedEntry] = useState<JournalEntry | null>(null);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
