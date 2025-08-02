@@ -133,6 +133,30 @@ export default function Journal() {
     }
   };
 
+  const handleCreateMapPin = () => {
+    if (createdEntry) {
+      // Navigate to map page with prefilled data
+      navigate('/map', {
+        state: {
+          createPin: true,
+          prefillData: {
+            title: createdEntry.title,
+            description: `Journal entry: ${createdEntry.content.substring(0, 100)}${createdEntry.content.length > 100 ? '...' : ''}`,
+            journalEntryId: createdEntry.id,
+            location: createdEntry.location
+          }
+        }
+      });
+    }
+    setShowMapPinDialog(false);
+    setCreatedEntry(null);
+  };
+
+  const handleSkipMapPin = () => {
+    setShowMapPinDialog(false);
+    setCreatedEntry(null);
+  };
+
   // Calculate stats
   const totalPhotos = entries.reduce(
     (count, entry) => count + (entry.images?.length || 0),
