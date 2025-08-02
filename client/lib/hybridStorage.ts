@@ -12,6 +12,9 @@ export class HybridStorage {
   private static periodicSyncInterval: NodeJS.Timeout | null = null;
   private static connectionMonitorInterval: NodeJS.Timeout | null = null;
 
+  // Track items being deleted to prevent race conditions
+  private static pendingDeletions = new Set<string>();
+
   static getSupabaseStatus(): { enabled: boolean; message: string } {
     return {
       enabled: this.supabaseEnabled,
@@ -239,7 +242,7 @@ export class HybridStorage {
   }
 
   static async deleteMapPin(id: string): Promise<void> {
-    console.log("🗑️ DELETE MAP PIN: Starting delete process for pin:", id);
+    console.log("��️ DELETE MAP PIN: Starting delete process for pin:", id);
     console.log(
       "🔍 DELETE MAP PIN: Supabase enabled status:",
       this.supabaseEnabled,
