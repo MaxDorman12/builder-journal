@@ -14,7 +14,7 @@ interface ConnectionStatus {
 
 export function SupabaseTest() {
   const [status, setStatus] = useState<ConnectionStatus>({ isConnected: false, message: 'Not tested' });
-  const [istesting, setIsTesting] = useState(false);
+  const [isTesting, setIsTesting] = useState(false);
   const [rawError, setRawError] = useState<any>(null);
 
   const testConnection = async () => {
