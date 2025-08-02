@@ -519,7 +519,22 @@ export class SupabaseDatabase {
           return []; // Return empty array for missing tables
         }
 
-        throw new Error(`Failed to fetch map pins: ${error.message || error}`);
+        // Check if it's a network connectivity issue
+        if (
+          error.message?.includes("Failed to fetch") ||
+          error.message?.includes("NetworkError") ||
+          error.message?.includes("fetch") ||
+          error.message?.toLowerCase().includes("timeout") ||
+          error.message?.toLowerCase().includes("connection") ||
+          error.code === "PGRST301"
+        ) {
+          console.log("🌐 Network connectivity issue during map pins fetch - returning empty array");
+          return []; // Return empty array for network issues
+        }
+
+        // For any other errors, also return empty array to prevent app crashes
+        console.log("⚠️ Unknown error in map pins fetch, returning empty array to prevent app crash");
+        return [];
       }
 
       const pins: MapPin[] = (data || []).map((row) => ({
@@ -1032,7 +1047,7 @@ export class SupabaseDatabase {
           lowerErrorMessage.includes("aborted")
         ) {
           console.log(
-            "🌐 Network connectivity issue detected during YouTube video fetch. Returning null.",
+            "��� Network connectivity issue detected during YouTube video fetch. Returning null.",
           );
           return null;
         }
