@@ -15,6 +15,11 @@ export class HybridStorage {
   // Track items being deleted to prevent race conditions
   private static pendingDeletions = new Set<string>();
 
+  // Debug method to check pending deletions
+  static getPendingDeletions(): string[] {
+    return Array.from(this.pendingDeletions);
+  }
+
   static getSupabaseStatus(): { enabled: boolean; message: string } {
     return {
       enabled: this.supabaseEnabled,
@@ -206,7 +211,7 @@ export class HybridStorage {
         "⚠️ DELETE: Supabase sync disabled - entry only deleted locally",
       );
       console.log(
-        "💡 DELETE: To enable Supabase sync, check connection and call HybridStorage.initialize()",
+        "��� DELETE: To enable Supabase sync, check connection and call HybridStorage.initialize()",
       );
       // Remove from pending deletions immediately if no cloud sync
       this.pendingDeletions.delete(id);
