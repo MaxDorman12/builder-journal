@@ -147,17 +147,17 @@ export default function Map() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">
-          <MapPin className="h-8 w-8 text-green-600" />
+          <MapIcon className="h-8 w-8 text-green-600" />
           <div>
             <h1 className="text-3xl font-bold">Family Map</h1>
-            <p className="text-gray-600">
-              Our adventures across Scotland
+            <div className="flex items-center gap-2">
+              <p className="text-gray-600">Our adventures across Scotland</p>
               {pins.length > 0 && (
-                <span className="ml-2 text-sm bg-green-100 text-green-800 px-2 py-1 rounded">
+                <span className="text-sm bg-green-100 text-green-800 px-2 py-1 rounded">
                   {pins.length} places
                 </span>
               )}
-            </p>
+            </div>
           </div>
         </div>
         <Button onClick={() => setIsCreatePinOpen(true)} className="gap-2">
@@ -172,7 +172,31 @@ export default function Map() {
           <p className="text-gray-600">Loading map data...</p>
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="space-y-8">
+          {/* Interactive Scotland Map */}
+          <Card className="overflow-hidden">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                🏴󠁧󠁢󠁳󠁣󠁴󠁿 <span>Scotland Adventure Map</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <ScotlandMap
+                pins={pins}
+                onMapClick={handleMapClick}
+                onPinClick={handlePinClick}
+                className="h-96"
+              />
+            </CardContent>
+          </Card>
+
+          {/* Pin Cards Grid */}
+          <div>
+            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+              <MapPin className="h-6 w-6 text-green-600" />
+              Your Adventure Pins
+            </h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {pins.map((pin) => (
             <Card key={pin.id} className="cursor-pointer hover:shadow-lg transition-shadow">
               <CardHeader>
@@ -233,6 +257,8 @@ export default function Map() {
               </Button>
             </div>
           )}
+            </div>
+          </div>
         </div>
       )}
 
