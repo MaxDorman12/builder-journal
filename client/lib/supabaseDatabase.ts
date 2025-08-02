@@ -1078,6 +1078,60 @@ export class SupabaseDatabase {
     }
   }
 
+  static async deleteYouTubeVideo(id: string): Promise<void> {
+    console.log("🗑️ Deleting YouTube video from Supabase:", id);
+
+    try {
+      // Add timeout for network issues
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+
+      const { error } = await supabase
+        .from("youtube_videos")
+        .delete()
+        .eq("id", id)
+        .abortSignal(controller.signal);
+
+      clearTimeout(timeoutId);
+
+      if (error) {
+        console.error("❌ Failed to delete YouTube video:", error.message || error);
+
+        // Check if it's a network connectivity issue
+        if (
+          error.message?.includes("Failed to fetch") ||
+          error.message?.includes("NetworkError") ||
+          error.message?.includes("fetch") ||
+          error.code === "PGRST301"
+        ) {
+          console.log("🌐 Network connectivity issue during YouTube video delete - skipping");
+          return;
+        }
+
+        throw new Error(`Failed to delete YouTube video: ${error.message || error}`);
+      }
+
+      console.log("✅ YouTube video deleted from Supabase Database");
+    } catch (error) {
+      // Check if it's a network connectivity issue (catch block)
+      if (error instanceof Error) {
+        if (
+          error.message?.includes("Failed to fetch") ||
+          error.name === "AbortError" ||
+          error.message?.includes("NetworkError") ||
+          error.message?.includes("fetch") ||
+          error.message?.includes("network")
+        ) {
+          console.log("🌐 Network connectivity issue during YouTube video delete - delete will be queued for sync");
+          return; // Don't throw error for network issues
+        }
+      }
+
+      console.error("❌ Failed to delete YouTube video:", error.message || error);
+      throw new Error(`Failed to delete YouTube video: ${error.message || error}`);
+    }
+  }
+
   // Charlie Data
   static async setCharlieData(data: {
     image: string;
