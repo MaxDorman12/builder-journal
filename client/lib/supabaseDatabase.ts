@@ -457,11 +457,8 @@ export class SupabaseDatabase {
           description: pin.description,
           latitude: pin.latitude,
           longitude: pin.longitude,
-          area_type: pin.areaType || "highlands",
-          images: JSON.stringify(pin.images || []),
-          updated_by: pin.updatedBy,
+          type: "visited", // Use the 'type' column that exists
           created_at: pin.createdAt,
-          updated_at: pin.updatedAt,
         })
         .abortSignal(controller.signal);
 
