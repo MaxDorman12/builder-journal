@@ -53,6 +53,9 @@ export default function Settings() {
       {/* Comprehensive App Test */}
       <AppTester />
 
+      {/* Manual Testing Guide */}
+      <TestingGuide />
+
       <div className="grid md:grid-cols-2 gap-6">
         {/* Storage Status */}
         <StorageStatus />
