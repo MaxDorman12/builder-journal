@@ -240,7 +240,7 @@ export class HybridStorage {
             errorName === "TypeError"
           ) {
             console.log(
-              "��� Network connectivity issue detected during map pin save - skipping sync",
+              "🌐 Network connectivity issue detected during map pin save - skipping sync",
             );
             console.log(
               "📍 Pin saved locally and will sync when connection is restored",
@@ -313,6 +313,10 @@ export class HybridStorage {
       // Remove from pending deletions immediately if no cloud sync
       this.pendingDeletions.delete(id);
     }
+
+    // Always notify listeners of the change
+    this.notifyListeners();
+    console.log("🔔 DELETE MAP PIN: Notified listeners of deletion");
   }
 
   // Wishlist Items
