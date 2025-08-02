@@ -41,6 +41,9 @@ export class PhotoStorage {
   // Upload a single photo to cloud storage
   static async uploadPhoto(file: File, entryId: string): Promise<string> {
     try {
+      // Check if bucket exists first, try to create if it doesn't
+      await this.ensureBucketExists();
+
       const fileExt = file.name.split('.').pop()?.toLowerCase() || 'jpg';
       const fileName = `${entryId}/${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
 
@@ -68,6 +71,37 @@ export class PhotoStorage {
     } catch (error) {
       console.error("❌ Photo upload failed:", error);
       throw error;
+    }
+  }
+
+  // Ensure bucket exists, create if needed
+  private static async ensureBucketExists(): Promise<void> {
+    try {
+      const { data: buckets, error: listError } = await supabase.storage.listBuckets();
+
+      if (listError) {
+        throw new Error(`Cannot access storage: ${listError.message}`);
+      }
+
+      const bucketExists = buckets?.some(bucket => bucket.name === this.BUCKET_NAME);
+
+      if (!bucketExists) {
+        console.log("📁 Creating storage bucket...");
+        const { error: createError } = await supabase.storage.createBucket(this.BUCKET_NAME, {
+          public: true,
+          fileSizeLimit: 50 * 1024 * 1024, // 50MB
+          allowedMimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/heic']
+        });
+
+        if (createError) {
+          throw new Error(`Cannot create storage bucket: ${createError.message}`);
+        }
+
+        console.log("✅ Storage bucket created successfully");
+      }
+    } catch (error) {
+      console.error("❌ Storage bucket check failed:", error);
+      throw new Error("Cloud storage is not available. This may be due to permissions or configuration issues.");
     }
   }
 
