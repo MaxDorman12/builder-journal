@@ -1,5 +1,4 @@
 import React, { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,49 +12,43 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Upload,
   X,
-  Calendar,
-  MapPin,
   Camera,
-  Video,
-  Plus,
-  Star,
+  Edit2,
 } from "lucide-react";
 import { JournalEntry, AREA_TYPES, MOOD_RATINGS } from "@shared/api";
 import { SupabaseStorage } from "@/lib/supabaseOnly";
 
-interface CreateEntryFormProps {
-  onEntryCreated: (entry: JournalEntry) => void;
+interface EditEntryFormProps {
+  entry: JournalEntry;
+  onEntryUpdated: (entry: JournalEntry) => void;
   onCancel: () => void;
 }
 
-export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormProps) {
-  const navigate = useNavigate();
+export function EditEntryForm({ entry, onEntryUpdated, onCancel }: EditEntryFormProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Form state
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
-  const [location, setLocation] = useState("");
-  const [areaType, setAreaType] = useState<string>("");
-  const [moodRating, setMoodRating] = useState<number>(5);
-  const [weather, setWeather] = useState("");
-  const [temperature, setTemperature] = useState("");
-  const [images, setImages] = useState<string[]>([]);
-  const [videos, setVideos] = useState<string[]>([]);
-  const [isPublic, setIsPublic] = useState(true);
+  // Form state initialized with entry data
+  const [title, setTitle] = useState(entry.title);
+  const [content, setContent] = useState(entry.content);
+  const [date, setDate] = useState(entry.date);
+  const [location, setLocation] = useState(entry.location || "");
+  const [areaType, setAreaType] = useState<string>(entry.areaType || "");
+  const [moodRating, setMoodRating] = useState<number>(entry.moodRating || 5);
+  const [weather, setWeather] = useState(entry.weather || "");
+  const [temperature, setTemperature] = useState(entry.temperature || "");
+  const [images, setImages] = useState<string[]>(entry.images || []);
+  const [videos, setVideos] = useState<string[]>(entry.videos || []);
+  const [isPublic, setIsPublic] = useState(entry.isPublic ?? true);
   const [isSaving, setIsSaving] = useState(false);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
     
     files.forEach((file) => {
-      console.log(`�� Processing image "${file.name}"`);
+      console.log(`📸 Processing image "${file.name}"`);
       
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -89,10 +82,8 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
     setIsSaving(true);
 
     try {
-      const entryId = `entry-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-      
-      const entry: JournalEntry = {
-        id: entryId,
+      const updatedEntry: JournalEntry = {
+        ...entry,
         title: title.trim(),
         content: content.trim(),
         date,
@@ -104,41 +95,23 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
         images,
         videos,
         isPublic,
-        updatedBy: "user", // You might want to get this from auth context
-        createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        likes: 0,
-        isLiked: false,
       };
 
-      console.log("💾 Saving journal entry:", {
-        entryId: entry.id,
-        title: entry.title,
-        imageCount: entry.images.length,
-        totalSize: JSON.stringify(entry).length,
+      console.log("💾 Updating journal entry:", {
+        entryId: updatedEntry.id,
+        title: updatedEntry.title,
+        imageCount: updatedEntry.images.length,
       });
 
-      await SupabaseStorage.saveJournalEntry(entry);
+      await SupabaseStorage.saveJournalEntry(updatedEntry);
       
-      console.log("✅ Journal entry saved successfully");
-      onEntryCreated(entry);
-      
-      // Reset form
-      setTitle("");
-      setContent("");
-      setDate(new Date().toISOString().split("T")[0]);
-      setLocation("");
-      setAreaType("");
-      setMoodRating(5);
-      setWeather("");
-      setTemperature("");
-      setImages([]);
-      setVideos([]);
-      setIsPublic(true);
+      console.log("✅ Entry update saved successfully");
+      onEntryUpdated(updatedEntry);
       
     } catch (error) {
-      console.error("❌ Failed to save journal entry:", error);
-      alert("Failed to save journal entry. Please try again.");
+      console.error("❌ Failed to update journal entry:", error);
+      alert("Failed to update journal entry. Please try again.");
     } finally {
       setIsSaving(false);
     }
@@ -149,8 +122,8 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
       <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Plus className="h-5 w-5" />
-            Create New Journal Entry
+            <Edit2 className="h-5 w-5" />
+            Edit Journal Entry
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -280,7 +253,7 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
                   className="w-full"
                 >
                   <Camera className="h-4 w-4 mr-2" />
-                  Add Photos
+                  Add More Photos
                 </Button>
               </div>
               
@@ -290,7 +263,7 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
                     <div key={index} className="relative">
                       <img
                         src={image}
-                        alt={`Upload ${index + 1}`}
+                        alt={`Photo ${index + 1}`}
                         className="w-full h-24 object-cover rounded"
                       />
                       <Button
@@ -334,7 +307,7 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
                 disabled={isSaving}
                 className="flex-1"
               >
-                {isSaving ? "Saving..." : "Create Entry"}
+                {isSaving ? "Saving..." : "Update Entry"}
               </Button>
             </div>
           </form>
