@@ -94,10 +94,11 @@ export default function Index() {
   };
 
   useEffect(() => {
-    if (isAuthenticated) {
-      loadData();
+    // Load data for all users (guests and authenticated)
+    loadData();
 
-      // Set up real-time listener
+    // Only set up real-time updates for authenticated users
+    if (isAuthenticated) {
       const unsubscribe = SupabaseStorage.onUpdate(() => {
         console.log("🔄 Real-time update received, reloading data...");
         loadData();
@@ -171,25 +172,7 @@ export default function Index() {
     }
   };
 
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl">🏔️ Dorman Family Journal</CardTitle>
-          </CardHeader>
-          <CardContent className="text-center">
-            <p className="text-gray-600 mb-4">
-              Please log in to access the family journal
-            </p>
-            <Link to="/login">
-              <Button>Go to Login</Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+
 
   if (isLoading) {
     return (
@@ -215,6 +198,14 @@ export default function Index() {
           <p className="text-gray-600 text-lg">
             Capturing our adventures across beautiful Scotland! 🏴󠁧󠁢󠁳󠁣󠁴󠁿
           </p>
+          {!isAuthenticated && (
+            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm text-blue-700">
+                👁️ <strong>View-only mode</strong> - You can browse our family adventures.
+                <Link to="/login" className="text-blue-800 hover:underline ml-1">Login</Link> to add content.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Family Stats */}
@@ -298,14 +289,16 @@ export default function Index() {
               <CardTitle className="flex items-center gap-2">
                 <User className="h-5 w-5" />
                 Charlie - Our Adventure Buddy
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleCharlieEdit}
-                  className="ml-auto"
-                >
-                  <Edit2 className="h-4 w-4" />
-                </Button>
+                {isAuthenticated && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleCharlieEdit}
+                    className="ml-auto"
+                  >
+                    <Edit2 className="h-4 w-4" />
+                  </Button>
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -330,14 +323,16 @@ export default function Index() {
               <CardTitle className="flex items-center gap-2">
                 <Youtube className="h-5 w-5 text-red-600" />
                 {youtubeVideo.title}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleYoutubeEdit}
-                  className="ml-auto"
-                >
-                  <Edit2 className="h-4 w-4" />
-                </Button>
+                {isAuthenticated && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleYoutubeEdit}
+                    className="ml-auto"
+                  >
+                    <Edit2 className="h-4 w-4" />
+                  </Button>
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -357,7 +352,7 @@ export default function Index() {
         )}
 
         {/* Add YouTube Video Button */}
-        {!youtubeVideo && (
+        {!youtubeVideo && isAuthenticated && (
           <Card className="mb-8 border-dashed border-2">
             <CardContent className="text-center py-8">
               <Youtube className="h-12 w-12 mx-auto mb-4 text-gray-400" />
