@@ -88,37 +88,42 @@ export class SupabaseStorage {
   static setupSubscriptions(): void {
     console.log("🔄 Setting up Supabase real-time subscriptions...");
 
-    // Subscribe to journal entries
-    SupabaseDatabase.subscribeToJournalEntries(() => {
-      console.log("🔄 Journal entries updated");
-      this.notifyListeners();
-    });
+    try {
+      // Subscribe to journal entries
+      SupabaseDatabase.subscribeToJournalEntries(() => {
+        console.log("🔄 [REAL-TIME] Journal entries updated from another device");
+        this.notifyListeners();
+      });
 
-    // Subscribe to map pins
-    SupabaseDatabase.subscribeToMapPins(() => {
-      console.log("🔄 Map pins updated");
-      this.notifyListeners();
-    });
+      // Subscribe to map pins
+      SupabaseDatabase.subscribeToMapPins(() => {
+        console.log("🔄 [REAL-TIME] Map pins updated from another device");
+        this.notifyListeners();
+      });
 
-    // Subscribe to wishlist items
-    SupabaseDatabase.subscribeToWishlistItems(() => {
-      console.log("🔄 Wishlist items updated");
-      this.notifyListeners();
-    });
+      // Subscribe to wishlist items
+      SupabaseDatabase.subscribeToWishlistItems(() => {
+        console.log("🔄 [REAL-TIME] Wishlist items updated from another device");
+        this.notifyListeners();
+      });
 
-    // Subscribe to YouTube video
-    SupabaseDatabase.subscribeToYouTubeVideo(() => {
-      console.log("🔄 YouTube video updated");
-      this.notifyListeners();
-    });
+      // Subscribe to YouTube video
+      SupabaseDatabase.subscribeToYouTubeVideo(() => {
+        console.log("🔄 [REAL-TIME] YouTube video updated from another device");
+        this.notifyListeners();
+      });
 
-    // Subscribe to Charlie data
-    SupabaseDatabase.subscribeToCharlieData(() => {
-      console.log("🔄 Charlie data updated");
-      this.notifyListeners();
-    });
+      // Subscribe to Charlie data
+      SupabaseDatabase.subscribeToCharlieData(() => {
+        console.log("🔄 [REAL-TIME] Charlie data updated from another device");
+        this.notifyListeners();
+      });
 
-    console.log("✅ All Supabase subscriptions set up");
+      console.log("✅ All Supabase real-time subscriptions set up successfully");
+      console.log("🌍 Cross-device synchronization is now active!");
+    } catch (error) {
+      console.error("❌ Failed to set up real-time subscriptions:", error);
+    }
   }
 
   // Utility methods
