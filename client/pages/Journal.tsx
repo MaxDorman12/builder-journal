@@ -128,7 +128,21 @@ export default function Journal() {
 
   const handleEntryCreated = async (entry: JournalEntry) => {
     try {
-      await SupabaseStorage.saveJournalEntry(entry);
+      // Try Supabase first
+      try {
+        await SupabaseStorage.saveJournalEntry(entry);
+        console.log("✅ Entry saved to Supabase");
+      } catch (supabaseError) {
+        console.warn("⚠️ Supabase save failed, saving locally:", supabaseError);
+
+        // Fallback to local storage
+        const localEntries = JSON.parse(localStorage.getItem('journal_entries') || '[]');
+        localEntries.unshift(entry);
+        localStorage.setItem('journal_entries', JSON.stringify(localEntries));
+        console.log("📱 Entry saved to local storage");
+      }
+
+      // Update UI regardless of where it was saved
       setEntries((prev) => [entry, ...prev]);
       setIsCreateFormOpen(false);
 
