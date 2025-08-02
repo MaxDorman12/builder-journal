@@ -305,7 +305,7 @@ export class HybridStorage {
           console.log(
             "🔄 DELETE MAP PIN: Removed from pending deletions tracking",
           );
-        }, 2000); // 2 second delay
+        }, 1000); // 1 second delay (reduced from 2 seconds)
       } catch (error) {
         console.error(
           "❌ DELETE MAP PIN: Failed to delete from Supabase:",
@@ -608,7 +608,7 @@ export class HybridStorage {
             `🔄 Real-time update: ${supabaseEntries.length} journal entries from Supabase`,
           );
           console.log(
-            "�� Entry IDs received:",
+            "📝 Entry IDs received:",
             supabaseEntries.map((e) => e.id),
           );
 
