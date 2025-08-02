@@ -64,9 +64,9 @@ export function NetworkStatus() {
       <Alert className="border-orange-200 bg-orange-50">
         <div className="flex items-start gap-2">
           {!isOnline ? (
-            <WiFiOff className="h-5 w-5 text-orange-600 mt-0.5" />
+            <WifiOff className="h-5 w-5 text-orange-600 mt-0.5" />
           ) : (
-            <WiFiOff className="h-5 w-5 text-orange-600 mt-0.5" />
+            <WifiOff className="h-5 w-5 text-orange-600 mt-0.5" />
           )}
           <div className="flex-1">
             <AlertDescription className="text-orange-800">
