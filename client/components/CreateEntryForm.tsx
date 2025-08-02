@@ -34,6 +34,7 @@ import {
 } from "lucide-react";
 import { JournalEntry, AREA_TYPES, MOOD_RATINGS } from "@shared/api";
 import { SupabaseStorage } from "@/lib/supabaseOnly";
+import { PhotoStorage } from "@/lib/photoStorage";
 
 interface CreateEntryFormProps {
   onEntryCreated: (entry: JournalEntry) => void;
@@ -98,7 +99,7 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
         const result = e.target?.result as string;
         if (result) {
           setImages((prev) => [...prev, result]);
-          console.log(`��� Image "${file.name}" loaded successfully`);
+          console.log(`✅ Image "${file.name}" loaded successfully`);
         }
       };
       reader.readAsDataURL(file);
