@@ -65,10 +65,34 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
-    
+
+    // Validate photo count limit
+    const maxPhotos = 10; // Reasonable limit for database performance
+    const currentCount = images.length;
+    const totalCount = currentCount + files.length;
+
+    if (totalCount > maxPhotos) {
+      alert(`You can only add up to ${maxPhotos} photos per journal entry. You currently have ${currentCount} photos. Please select ${maxPhotos - currentCount} or fewer photos.`);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+      return;
+    }
+
+    // Validate file sizes
+    const maxFileSize = 5 * 1024 * 1024; // 5MB per image
+    const oversizedFiles = files.filter(file => file.size > maxFileSize);
+    if (oversizedFiles.length > 0) {
+      alert(`The following images are too large (max 5MB each):\n${oversizedFiles.map(f => `${f.name} (${Math.round(f.size / 1024 / 1024)}MB)`).join('\n')}\n\nPlease choose smaller images or compress them first.`);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+      return;
+    }
+
     files.forEach((file) => {
-      console.log(`�� Processing image "${file.name}"`);
-      
+      console.log(`📷 Processing image "${file.name}" (${Math.round(file.size / 1024)}KB)`);
+
       const reader = new FileReader();
       reader.onload = (e) => {
         const result = e.target?.result as string;
