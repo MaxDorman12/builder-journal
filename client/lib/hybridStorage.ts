@@ -279,11 +279,22 @@ export class HybridStorage {
         console.log(
           "🔔 DELETE MAP PIN: This should trigger real-time sync on other devices",
         );
+
+        // Wait a bit for the deletion to propagate before removing from pending
+        setTimeout(() => {
+          this.pendingDeletions.delete(id);
+          console.log("🔄 DELETE MAP PIN: Removed from pending deletions tracking");
+        }, 2000); // 2 second delay
+
       } catch (error) {
         console.error(
           "❌ DELETE MAP PIN: Failed to delete from Supabase:",
           error,
         );
+        // Still remove from pending deletions after some time
+        setTimeout(() => {
+          this.pendingDeletions.delete(id);
+        }, 5000);
       }
     } else {
       console.log(
@@ -292,6 +303,8 @@ export class HybridStorage {
       console.log(
         "💡 DELETE MAP PIN: To enable Supabase sync, check connection and call HybridStorage.initialize()",
       );
+      // Remove from pending deletions immediately if no cloud sync
+      this.pendingDeletions.delete(id);
     }
   }
 
