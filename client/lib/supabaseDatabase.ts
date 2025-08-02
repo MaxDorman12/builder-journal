@@ -374,7 +374,7 @@ export class SupabaseDatabase {
     try {
       // Add timeout for network issues
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
 
       const { error } = await supabase
         .from("journal_entries")
@@ -921,7 +921,7 @@ export class SupabaseDatabase {
           error.code === "PGRST301"
         ) {
           console.log(
-            "🌐 Network connectivity issue during YouTube video save - skipping sync",
+            "�� Network connectivity issue during YouTube video save - skipping sync",
           );
           return;
         }
