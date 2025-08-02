@@ -112,6 +112,10 @@ export default function Journal() {
       await SupabaseStorage.saveJournalEntry(entry);
       setEntries((prev) => [entry, ...prev]);
       setIsCreateFormOpen(false);
+
+      // Show map pin dialog after successful creation
+      setCreatedEntry(entry);
+      setShowMapPinDialog(true);
     } catch (error) {
       console.error("❌ Failed to create entry:", error);
     }
