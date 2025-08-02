@@ -483,11 +483,23 @@ export class HybridStorage {
         console.warn("Failed to sync Charlie data to cloud:", error);
       }
 
+      // Sync YouTube video (if exists locally)
       if (youtubeVideo) {
         try {
           await SupabaseDatabase.saveYouTubeVideo(youtubeVideo);
         } catch (error) {
           console.warn("Failed to sync YouTube video to cloud:", error);
+        }
+      } else {
+        // If no local video exists, check if there's one in cloud that should be deleted
+        try {
+          const cloudVideo = await SupabaseDatabase.getYouTubeVideo();
+          if (cloudVideo) {
+            console.log("📺 No local YouTube video but found cloud video - keeping cloud version");
+            LocalStorage.saveYouTubeVideo(cloudVideo);
+          }
+        } catch (error) {
+          console.warn("Failed to check cloud YouTube video during sync:", error);
         }
       }
 
