@@ -78,6 +78,8 @@ export default function Map() {
     }
 
     try {
+      console.log("🗺️ Creating pin with data:", { title, description, lat, lng });
+
       const pin: MapPinType = {
         id: `pin-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         title: title.trim(),
@@ -91,20 +93,34 @@ export default function Map() {
         updatedAt: new Date().toISOString(),
       };
 
+      console.log("🗺️ Pin object created:", pin);
+
       await SupabaseStorage.saveMapPin(pin);
+      console.log("✅ Pin saved to Supabase successfully");
+
       setPins((prev) => [pin, ...prev]);
       setIsCreatePinOpen(false);
-      
+
       // Reset form
       setTitle("");
       setDescription("");
       setLatitude("");
       setLongitude("");
-      
+
       console.log("✅ Map pin created successfully");
     } catch (error) {
       console.error("❌ Failed to create map pin:", error);
-      alert("Failed to create map pin. Please try again.");
+      console.error("❌ Error details:", error);
+
+      // More specific error message
+      let errorMessage = "Failed to create map pin. ";
+      if (error instanceof Error) {
+        errorMessage += error.message;
+      } else {
+        errorMessage += "Unknown error occurred.";
+      }
+
+      alert(errorMessage + "\n\nPlease check the console for more details and try again.");
     }
   };
 
