@@ -462,9 +462,9 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
                   </p>
                 )}
 
-                {/* Cloud storage info */}
-                <p className="text-xs text-gray-500 mt-1">
-                  📁 Cloud storage (25MB max) • Fallback to local storage if unavailable • Syncs across devices
+                {/* Offline mode info */}
+                <p className="text-xs text-amber-600 mt-1">
+                  ⚠️ Using offline mode due to network issues • 10 photos max, 5MB each • Will sync when connection restored
                 </p>
               </div>
               
