@@ -20,9 +20,9 @@ import { JournalEntry, MOOD_RATINGS, AREA_TYPES } from "@shared/api";
 
 interface JournalEntryCardProps {
   entry: JournalEntry;
-  onLike: (entryId: string) => void;
-  onEdit: (entry: JournalEntry) => void;
-  onDelete: (entryId: string) => void;
+  onLike?: (entryId: string) => void;
+  onEdit?: (entry: JournalEntry) => void;
+  onDelete?: (entryId: string) => void;
 }
 
 export function JournalEntryCard({
