@@ -51,6 +51,8 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
   const [isPublic, setIsPublic] = useState(true);
   const [hasFreeParkingAvailable, setHasFreeParkingAvailable] = useState(false);
   const [parkingCost, setParkingCost] = useState("");
+  const [isPaidActivity, setIsPaidActivity] = useState(false);
+  const [activityCost, setActivityCost] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
