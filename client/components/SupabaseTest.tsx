@@ -160,9 +160,9 @@ export function SupabaseTest() {
 
         {/* Actions */}
         <div className="flex gap-2">
-          <Button onClick={testConnection} disabled={isesting} className="flex-1">
-            {isesting && <RefreshCw className="h-4 w-4 mr-2 animate-spin" />}
-            {isesting ? 'Testing...' : 'Test Again'}
+          <Button onClick={testConnection} disabled={isTesting} className="flex-1">
+            {isTesting && <RefreshCw className="h-4 w-4 mr-2 animate-spin" />}
+            {isTesting ? 'Testing...' : 'Test Again'}
           </Button>
           <Button onClick={checkHealth} variant="outline">
             Health Check
