@@ -43,6 +43,7 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [location, setLocation] = useState("");
   const [areaType, setAreaType] = useState<string>("");
+  const [customAreaType, setCustomAreaType] = useState("");
   const [moodRating, setMoodRating] = useState<number>(5);
   const [weather, setWeather] = useState("");
   const [temperature, setTemperature] = useState("");
