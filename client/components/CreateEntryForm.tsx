@@ -314,6 +314,32 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
               )}
             </div>
 
+            {/* Parking Information */}
+            <div className="space-y-4">
+              <Label className="text-base font-semibold">🚗 Parking Information</Label>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="hasFreeParkingAvailable"
+                  checked={hasFreeParkingAvailable}
+                  onCheckedChange={(checked) => setHasFreeParkingAvailable(checked as boolean)}
+                />
+                <Label htmlFor="hasFreeParkingAvailable">Free parking available</Label>
+              </div>
+
+              {!hasFreeParkingAvailable && (
+                <div>
+                  <Label htmlFor="parkingCost">Parking Cost</Label>
+                  <Input
+                    id="parkingCost"
+                    value={parkingCost}
+                    onChange={(e) => setParkingCost(e.target.value)}
+                    placeholder="e.g., £5 for 2 hours, £2.50/hour"
+                  />
+                </div>
+              )}
+            </div>
+
             {/* Privacy */}
             <div className="flex items-center space-x-2">
               <Checkbox
