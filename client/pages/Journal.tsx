@@ -21,7 +21,7 @@ export default function Journal() {
       setIsLoading(true);
       const allEntries = await SupabaseStorage.getJournalEntries();
       setEntries(allEntries);
-      console.log("📖 Entries loaded from Supabase:", {
+      console.log("��� Entries loaded from Supabase:", {
         count: allEntries.length,
         entries: allEntries,
       });
@@ -160,9 +160,9 @@ export default function Journal() {
             <JournalEntryCard
               key={entry.id}
               entry={entry}
-              onLike={handleLike}
-              onEdit={setEditingEntry}
-              onDelete={handleDelete}
+              onLike={isAuthenticated ? handleLike : undefined}
+              onEdit={isAuthenticated ? setEditingEntry : undefined}
+              onDelete={isAuthenticated ? handleDelete : undefined}
             />
           ))}
         </div>
