@@ -21,38 +21,18 @@ import {
   BookOpen,
   Youtube,
   Camera,
-  Compass,
-  Users,
-  Mountain,
-  Waves,
-  Edit2,
   User,
-  Star,
-  CloudRain,
-  Sun,
-  Trophy,
-  Gift,
-  Sparkles,
+  Edit2,
   Play,
-  Volume2,
-  VolumeX,
+  Plus,
+  Mountain,
+  Star,
 } from "lucide-react";
 import {
   JournalEntry,
   MapPin as MapPinType,
   YouTubeVideo,
 } from "@shared/api";
-
-const scottishPhrases = [
-  "Haste ye back! 🏴󠁧󠁢󠁳󠁣󠁴󠁿",
-  "Bonnie adventures await! ✨",
-  "Slàinte to family memories! 🥃",
-  "Exploring the highlands together! 🏔️",
-  "Making memories in bonnie Scotland! 💙"
-];
-
-const weatherEmojis = ["🌧️", "☀️", "⛅", "🌤️", "❄️"];
-const adventureEmojis = ["🎒", "⛰️", "🏰", "🦌", "🌊", "🚶‍♀️", "📸", "🎯"];
 
 export default function Index() {
   const { isAuthenticated, isFamilyMember } = useAuth();
@@ -78,12 +58,6 @@ export default function Index() {
   const [charlieImage, setCharlieImage] = useState("");
   const [charlieDescription, setCharlieDescription] = useState("");
 
-  // Fun interactive state
-  const [currentPhrase, setCurrentPhrase] = useState(scottishPhrases[0]);
-  const [todayWeather, setTodayWeather] = useState(weatherEmojis[1]);
-  const [soundEnabled, setSoundEnabled] = useState(false);
-  const [adventureCount, setAdventureCount] = useState(0);
-
   const [isLoading, setIsLoading] = useState(true);
 
   // Load all data from Supabase
@@ -103,7 +77,6 @@ export default function Index() {
       setPins(pinsData);
       setCharlieData(charlieData);
       setYoutubeVideo(youtubeData);
-      setAdventureCount(entriesData.length + pinsData.length);
 
       console.log("✅ Data loaded successfully", {
         entries: entriesData.length,
@@ -132,22 +105,6 @@ export default function Index() {
       return unsubscribe;
     }
   }, [isAuthenticated]);
-
-  // Fun rotating phrases and weather
-  useEffect(() => {
-    const phraseInterval = setInterval(() => {
-      setCurrentPhrase(scottishPhrases[Math.floor(Math.random() * scottishPhrases.length)]);
-    }, 5000);
-
-    const weatherInterval = setInterval(() => {
-      setTodayWeather(weatherEmojis[Math.floor(Math.random() * weatherEmojis.length)]);
-    }, 10000);
-
-    return () => {
-      clearInterval(phraseInterval);
-      clearInterval(weatherInterval);
-    };
-  }, []);
 
   // YouTube video handlers
   const handleYoutubeEdit = () => {
@@ -214,22 +171,14 @@ export default function Index() {
   };
 
   const totalPhotos = entries.reduce((count, entry) => count + (entry.images?.length || 0), 0);
-  const averageRating = entries.length > 0 ? 
-    entries.reduce((sum, entry) => sum + (entry.likes || 0), 0) / entries.length : 0;
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-100 via-blue-50 to-green-100 flex items-center justify-center">
-        <Card className="w-full max-w-md bg-white/80 backdrop-blur-sm">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center">
+        <Card className="w-full max-w-md">
           <CardContent className="text-center p-8">
-            <div className="relative mb-4">
-              <div className="animate-spin rounded-full h-12 w-12 border-4 border-purple-200 border-t-purple-600 mx-auto"></div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Mountain className="h-6 w-6 text-purple-600 animate-pulse" />
-              </div>
-            </div>
-            <p className="text-lg font-medium text-purple-800">Loading our Scottish adventures...</p>
-            <p className="text-sm text-purple-600 mt-2">Gathering memories from the highlands 🏔️</p>
+            <Mountain className="h-12 w-12 text-blue-600 mx-auto mb-4 animate-pulse" />
+            <p className="text-lg font-medium">Loading our Scottish adventures...</p>
           </CardContent>
         </Card>
       </div>
@@ -237,494 +186,233 @@ export default function Index() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-100 via-blue-50 to-green-100 overflow-hidden">
-      {/* Floating adventure emojis */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        {adventureEmojis.map((emoji, index) => (
-          <div
-            key={index}
-            className="absolute text-2xl opacity-20 animate-float"
-            style={{
-              left: `${(index * 15) % 100}%`,
-              top: `${(index * 23) % 100}%`,
-              animationDelay: `${index * 0.5}s`,
-              animationDuration: `${4 + (index % 3)}s`,
-            }}
-          >
-            {emoji}
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
+      <div className="container mx-auto px-4 py-8">
+        {/* Clean, Simple Header */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-3 mb-4">
+            <Mountain className="h-12 w-12 text-blue-600" />
+            <h1 className="text-5xl font-bold text-gray-800">
+              🏴󠁧󠁢󠁳󠁣󠁴󠁿 Dorman Family Adventures
+            </h1>
+            <Heart className="h-12 w-12 text-red-500 fill-red-500" />
           </div>
-        ))}
-      </div>
-
-      <div className="container mx-auto px-4 py-8 relative z-10">
-        {/* Magical Header */}
-        <div className="text-center mb-12 relative">
-          <div className="absolute -inset-4 bg-gradient-to-r from-purple-600 via-blue-600 to-green-600 rounded-3xl opacity-20 blur-xl animate-pulse"></div>
-          <div className="relative bg-white/70 backdrop-blur-sm rounded-3xl p-8 border border-white/50 shadow-2xl">
-            <div className="flex items-center justify-center gap-4 mb-4">
-              <div className="relative">
-                <Mountain className="h-16 w-16 text-purple-600 animate-bounce" style={{ animationDuration: '3s' }} />
-                <Sparkles className="absolute -top-2 -right-2 h-6 w-6 text-yellow-500 animate-spin" style={{ animationDuration: '2s' }} />
-              </div>
-              <div className="relative">
-                <h1 className="text-6xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-green-600 bg-clip-text text-transparent">
-                  🏴󠁧󠁢󠁳󠁣󠁴󠁿 Dorman Adventures 🏴󠁧󠁢󠁳󠁣󠁴󠁿
-                </h1>
-                <div className="absolute -inset-2 bg-gradient-to-r from-purple-400 to-blue-400 opacity-30 blur-md rounded-lg"></div>
-              </div>
-              <div className="relative">
-                <Heart className="h-16 w-16 text-red-500 animate-pulse fill-red-500" />
-                <div className="absolute inset-0 animate-ping">
-                  <Heart className="h-16 w-16 text-red-400 opacity-75" />
-                </div>
-              </div>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="flex items-center justify-center gap-6 text-lg">
-                <Badge className="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-4 py-2 text-lg animate-bounce" style={{ animationDelay: '0.5s' }}>
-                  {currentPhrase}
-                </Badge>
-                <Badge className="bg-gradient-to-r from-blue-500 to-green-500 text-white px-4 py-2 text-lg">
-                  Today in Scotland {todayWeather}
-                </Badge>
-              </div>
-              
-              <p className="text-xl text-gray-700 font-medium">
-                Capturing magical moments across the bonnie highlands! ✨
+          <p className="text-xl text-gray-600 mb-6">
+            Capturing memories across beautiful Scotland
+          </p>
+          
+          {!isAuthenticated && (
+            <div className="inline-block p-4 bg-blue-100 border border-blue-200 rounded-lg">
+              <p className="text-blue-800">
+                👁️ <strong>View-only mode</strong> - 
+                <Link to="/login" className="text-blue-600 hover:underline ml-1">
+                  Login
+                </Link> to add content
               </p>
-              
-              <div className="flex items-center justify-center gap-4">
-                <Badge variant="outline" className="border-purple-300 text-purple-700 px-4 py-2">
-                  🎯 {adventureCount} Adventures & Counting!
-                </Badge>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setSoundEnabled(!soundEnabled)}
-                  className="hover:bg-purple-100"
-                >
-                  {soundEnabled ? (
-                    <Volume2 className="h-5 w-5 text-purple-600" />
-                  ) : (
-                    <VolumeX className="h-5 w-5 text-gray-400" />
-                  )}
-                </Button>
-              </div>
-
-              {!isAuthenticated && (
-                <div className="mt-6 p-4 bg-gradient-to-r from-blue-100 to-purple-100 border-2 border-blue-200 rounded-xl">
-                  <p className="text-blue-800 font-medium flex items-center justify-center gap-2">
-                    👁️ <strong>Exploring in View-Only Mode</strong> 
-                    <Sparkles className="h-4 w-4 text-yellow-500" />
-                  </p>
-                  <p className="text-blue-600 mt-2">
-                    Join our Scottish adventure! 
-                    <Link to="/login" className="text-blue-800 hover:underline ml-1 font-medium">
-                      🔐 Family Login
-                    </Link> 
-                    to add your own memories ✨
-                  </p>
-                </div>
-              )}
             </div>
-          </div>
+          )}
         </div>
 
-        {/* Fun Stats Dashboard */}
-        <div className="mb-12">
-          <div className="text-center mb-6">
-            <h2 className="text-3xl font-bold text-purple-800 flex items-center justify-center gap-2">
-              <Trophy className="h-8 w-8 text-yellow-500" />
-              Adventure Stats & Achievements
-              <Trophy className="h-8 w-8 text-yellow-500" />
-            </h2>
-          </div>
+        {/* Quick Stats - Simplified */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+          <Card className="text-center">
+            <CardContent className="p-6">
+              <BookOpen className="h-8 w-8 mx-auto mb-2 text-blue-600" />
+              <p className="text-2xl font-bold">{entries.length}</p>
+              <p className="text-sm text-gray-600">Journal Entries</p>
+            </CardContent>
+          </Card>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <Card className="bg-gradient-to-br from-purple-200 to-purple-400 border-0 hover:scale-105 transition-transform cursor-pointer group">
-              <CardContent className="p-6 text-center">
-                <div className="relative mb-4">
-                  <div className="p-3 bg-white/60 rounded-full inline-block group-hover:animate-bounce">
-                    <BookOpen className="h-8 w-8 text-purple-700" />
-                  </div>
-                  <div className="absolute -top-1 -right-1">
-                    <Badge className="bg-yellow-500 text-yellow-900 text-xs px-2">📖</Badge>
-                  </div>
-                </div>
-                <p className="text-3xl font-bold text-purple-900 mb-1">{entries.length}</p>
-                <p className="text-sm text-purple-700 font-medium">Epic Journeys</p>
-                <div className="flex justify-center mt-2">
-                  {[...Array(Math.min(entries.length, 5))].map((_, i) => (
-                    <Star key={i} className="h-3 w-3 text-yellow-500 fill-yellow-500" />
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-to-br from-green-200 to-green-400 border-0 hover:scale-105 transition-transform cursor-pointer group">
-              <CardContent className="p-6 text-center">
-                <div className="relative mb-4">
-                  <div className="p-3 bg-white/60 rounded-full inline-block group-hover:animate-bounce">
-                    <MapPin className="h-8 w-8 text-green-700" />
-                  </div>
-                  <div className="absolute -top-1 -right-1">
-                    <Badge className="bg-red-500 text-white text-xs px-2">🗺️</Badge>
-                  </div>
-                </div>
-                <p className="text-3xl font-bold text-green-900 mb-1">{pins.length}</p>
-                <p className="text-sm text-green-700 font-medium">Magic Places</p>
-                <div className="mt-2">
-                  <Badge variant="outline" className="text-xs border-green-500 text-green-700">
-                    🏰 Discovered
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-to-br from-blue-200 to-blue-400 border-0 hover:scale-105 transition-transform cursor-pointer group">
-              <CardContent className="p-6 text-center">
-                <div className="relative mb-4">
-                  <div className="p-3 bg-white/60 rounded-full inline-block group-hover:animate-bounce">
-                    <Camera className="h-8 w-8 text-blue-700" />
-                  </div>
-                  <div className="absolute -top-1 -right-1">
-                    <Badge className="bg-pink-500 text-white text-xs px-2">📸</Badge>
-                  </div>
-                </div>
-                <p className="text-3xl font-bold text-blue-900 mb-1">{totalPhotos}</p>
-                <p className="text-sm text-blue-700 font-medium">Magical Moments</p>
-                <div className="mt-2">
-                  <Badge variant="outline" className="text-xs border-blue-500 text-blue-700">
-                    💝 Memories
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-to-br from-yellow-200 to-orange-300 border-0 hover:scale-105 transition-transform cursor-pointer group">
-              <CardContent className="p-6 text-center">
-                <div className="relative mb-4">
-                  <div className="p-3 bg-white/60 rounded-full inline-block group-hover:animate-bounce">
-                    <Heart className="h-8 w-8 text-orange-700 fill-red-500" />
-                  </div>
-                  <div className="absolute -top-1 -right-1">
-                    <Badge className="bg-purple-500 text-white text-xs px-2">💖</Badge>
-                  </div>
-                </div>
-                <p className="text-3xl font-bold text-orange-900 mb-1">{Math.round(averageRating * 10)/10}</p>
-                <p className="text-sm text-orange-700 font-medium">Love Factor</p>
-                <div className="flex justify-center mt-2">
-                  {[...Array(5)].map((_, i) => (
-                    <Heart 
-                      key={i} 
-                      className={`h-3 w-3 ${i < averageRating ? 'text-red-500 fill-red-500' : 'text-gray-300'}`} 
-                    />
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Fun achievement banner */}
-          <Card className="bg-gradient-to-r from-purple-100 via-blue-100 to-green-100 border-2 border-dashed border-purple-300">
-            <CardContent className="p-4">
-              <div className="text-center">
-                <p className="text-lg font-bold text-purple-800 mb-2 flex items-center justify-center gap-2">
-                  🏆 Achievement Unlocked: Scottish Explorer Family! 🏆
-                </p>
-                <div className="flex items-center justify-center gap-6 flex-wrap text-sm text-purple-700">
-                  <span className="flex items-center gap-1">
-                    🏴󠁧󠁢󠁳󠁣󠁴󠁿 Exploring bonnie Scotland together
-                  </span>
-                  <span className="flex items-center gap-1">
-                    📚 {entries.length} epic tales documented
-                  </span>
-                  <span className="flex items-center gap-1">
-                    📍 {pins.length} magical places marked
-                  </span>
-                  <span className="flex items-center gap-1">
-                    📸 {totalPhotos} precious memories captured
-                  </span>
-                </div>
-              </div>
+          <Card className="text-center">
+            <CardContent className="p-6">
+              <MapPin className="h-8 w-8 mx-auto mb-2 text-green-600" />
+              <p className="text-2xl font-bold">{pins.length}</p>
+              <p className="text-sm text-gray-600">Places Visited</p>
+            </CardContent>
+          </Card>
+          
+          <Card className="text-center">
+            <CardContent className="p-6">
+              <Camera className="h-8 w-8 mx-auto mb-2 text-purple-600" />
+              <p className="text-2xl font-bold">{totalPhotos}</p>
+              <p className="text-sm text-gray-600">Photos</p>
+            </CardContent>
+          </Card>
+          
+          <Card className="text-center">
+            <CardContent className="p-6">
+              <Heart className="h-8 w-8 mx-auto mb-2 text-red-600 fill-red-500" />
+              <p className="text-2xl font-bold">
+                {entries.reduce((sum, entry) => sum + (entry.likes || 0), 0)}
+              </p>
+              <p className="text-sm text-gray-600">Total Likes</p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Quick Navigation Adventure Cards */}
+        {/* YouTube Section - Prominent */}
         <div className="mb-12">
-          <h2 className="text-3xl font-bold text-center mb-8 text-purple-800 flex items-center justify-center gap-2">
-            <Compass className="h-8 w-8 text-blue-500 animate-spin" style={{ animationDuration: '8s' }} />
-            Choose Your Adventure!
-            <Gift className="h-8 w-8 text-green-500 animate-bounce" />
+          <h2 className="text-3xl font-bold text-center mb-8 flex items-center justify-center gap-2">
+            <Youtube className="h-8 w-8 text-red-500" />
+            Family Videos
           </h2>
           
+          {youtubeVideo ? (
+            <Card className="max-w-4xl mx-auto">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <Youtube className="h-6 w-6 text-red-500" />
+                  {youtubeVideo.title}
+                </CardTitle>
+                {isAuthenticated && (
+                  <Button variant="ghost" size="sm" onClick={handleYoutubeEdit}>
+                    <Edit2 className="h-4 w-4" />
+                  </Button>
+                )}
+              </CardHeader>
+              <CardContent>
+                <div className="aspect-video rounded-lg overflow-hidden mb-4">
+                  <iframe
+                    src={youtubeVideo.url.replace("watch?v=", "embed/")}
+                    className="w-full h-full"
+                    allowFullScreen
+                    title={youtubeVideo.title}
+                  />
+                </div>
+                {youtubeVideo.description && (
+                  <p className="text-gray-700">{youtubeVideo.description}</p>
+                )}
+              </CardContent>
+            </Card>
+          ) : (
+            <Card className="max-w-2xl mx-auto border-2 border-dashed border-gray-300">
+              <CardContent className="text-center py-12">
+                <Youtube className="h-16 w-16 mx-auto mb-4 text-gray-400" />
+                <h3 className="text-xl font-semibold mb-2">No Family Video Yet</h3>
+                <p className="text-gray-600 mb-6">
+                  Share your Scottish adventures with a special family video
+                </p>
+                {isAuthenticated && (
+                  <Button onClick={handleYoutubeEdit} className="bg-red-500 hover:bg-red-600">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Video
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          )}
+        </div>
+
+        {/* Navigation Cards - Simplified */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold text-center mb-6">Explore Our Adventures</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Link to="/journal">
-              <Card className="hover:scale-110 transition-all duration-300 cursor-pointer bg-gradient-to-br from-blue-100 to-blue-200 border-2 border-blue-300 hover:border-blue-500 hover:shadow-xl group">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
                 <CardContent className="p-6 text-center">
-                  <div className="relative mb-4">
-                    <BookOpen className="h-12 w-12 mx-auto text-blue-600 group-hover:animate-bounce" />
-                    <Badge className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2">
-                      {entries.length}
-                    </Badge>
-                  </div>
-                  <h3 className="font-bold text-lg text-blue-800">📖 Journal</h3>
-                  <p className="text-sm text-blue-600 mt-1">Epic Adventures</p>
-                  <div className="mt-3">
-                    <Badge className="bg-blue-500 text-white text-xs px-3 py-1">
-                      ✨ Latest Stories
-                    </Badge>
-                  </div>
+                  <BookOpen className="h-10 w-10 mx-auto mb-3 text-blue-600" />
+                  <h3 className="font-semibold mb-1">Journal</h3>
+                  <Badge variant="secondary">{entries.length} entries</Badge>
                 </CardContent>
               </Card>
             </Link>
 
             <Link to="/map">
-              <Card className="hover:scale-110 transition-all duration-300 cursor-pointer bg-gradient-to-br from-green-100 to-green-200 border-2 border-green-300 hover:border-green-500 hover:shadow-xl group">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
                 <CardContent className="p-6 text-center">
-                  <div className="relative mb-4">
-                    <MapPin className="h-12 w-12 mx-auto text-green-600 group-hover:animate-bounce" />
-                    <Badge className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2">
-                      {pins.length}
-                    </Badge>
-                  </div>
-                  <h3 className="font-bold text-lg text-green-800">🗺️ Map</h3>
-                  <p className="text-sm text-green-600 mt-1">Scottish Treasures</p>
-                  <div className="mt-3">
-                    <Badge className="bg-green-500 text-white text-xs px-3 py-1">
-                      🏰 Explore Scotland
-                    </Badge>
-                  </div>
+                  <MapPin className="h-10 w-10 mx-auto mb-3 text-green-600" />
+                  <h3 className="font-semibold mb-1">Map</h3>
+                  <Badge variant="secondary">{pins.length} places</Badge>
                 </CardContent>
               </Card>
             </Link>
 
             <Link to="/gallery">
-              <Card className="hover:scale-110 transition-all duration-300 cursor-pointer bg-gradient-to-br from-purple-100 to-purple-200 border-2 border-purple-300 hover:border-purple-500 hover:shadow-xl group">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
                 <CardContent className="p-6 text-center">
-                  <div className="relative mb-4">
-                    <Camera className="h-12 w-12 mx-auto text-purple-600 group-hover:animate-bounce" />
-                    <Badge className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2">
-                      {totalPhotos}
-                    </Badge>
-                  </div>
-                  <h3 className="font-bold text-lg text-purple-800">📸 Gallery</h3>
-                  <p className="text-sm text-purple-600 mt-1">Picture Perfect</p>
-                  <div className="mt-3">
-                    <Badge className="bg-purple-500 text-white text-xs px-3 py-1">
-                      💝 Memory Lane
-                    </Badge>
-                  </div>
+                  <Camera className="h-10 w-10 mx-auto mb-3 text-purple-600" />
+                  <h3 className="font-semibold mb-1">Gallery</h3>
+                  <Badge variant="secondary">{totalPhotos} photos</Badge>
                 </CardContent>
               </Card>
             </Link>
 
             <Link to="/wishlist">
-              <Card className="hover:scale-110 transition-all duration-300 cursor-pointer bg-gradient-to-br from-pink-100 to-red-200 border-2 border-pink-300 hover:border-pink-500 hover:shadow-xl group">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
                 <CardContent className="p-6 text-center">
-                  <div className="relative mb-4">
-                    <Heart className="h-12 w-12 mx-auto text-red-600 group-hover:animate-pulse fill-red-500" />
-                    <Sparkles className="absolute -top-1 -right-1 h-6 w-6 text-yellow-500 animate-spin" />
-                  </div>
-                  <h3 className="font-bold text-lg text-red-800">💖 Wishlist</h3>
-                  <p className="text-sm text-red-600 mt-1">Dreams & Goals</p>
-                  <div className="mt-3">
-                    <Badge className="bg-red-500 text-white text-xs px-3 py-1">
-                      🌟 Future Adventures
-                    </Badge>
-                  </div>
+                  <Star className="h-10 w-10 mx-auto mb-3 text-yellow-600" />
+                  <h3 className="font-semibold mb-1">Wishlist</h3>
+                  <Badge variant="secondary">Dreams</Badge>
                 </CardContent>
               </Card>
             </Link>
           </div>
         </div>
 
-        {/* YouTube Section with Enhanced Design */}
-        {youtubeVideo && (
-          <div className="mb-12">
-            <Card className="bg-gradient-to-br from-red-50 to-red-100 border-2 border-red-200 overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-red-500 to-red-600 text-white">
-                <CardTitle className="flex items-center gap-3 text-2xl">
-                  <Youtube className="h-8 w-8" />
-                  🎬 {youtubeVideo.title}
-                  <Badge className="bg-white text-red-600 ml-auto">FEATURED</Badge>
-                  {isAuthenticated && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={handleYoutubeEdit}
-                      className="text-white hover:bg-white/20"
-                    >
-                      <Edit2 className="h-4 w-4" />
-                    </Button>
-                  )}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="relative">
-                  <div className="aspect-video relative overflow-hidden">
-                    <iframe
-                      src={youtubeVideo.url.replace("watch?v=", "embed/")}
-                      className="w-full h-full"
-                      allowFullScreen
-                      title={youtubeVideo.title}
-                    />
-                    <div className="absolute top-4 left-4">
-                      <Badge className="bg-black/70 text-white backdrop-blur-sm">
-                        <Play className="h-3 w-3 mr-1" />
-                        Family Video
-                      </Badge>
-                    </div>
-                  </div>
-                </div>
-                {youtubeVideo.description && (
-                  <div className="p-6 bg-white">
-                    <p className="text-gray-700 text-lg leading-relaxed">{youtubeVideo.description}</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {/* Add YouTube Video Section for authenticated users */}
-        {!youtubeVideo && isAuthenticated && (
-          <div className="mb-12">
-            <Card className="border-2 border-dashed border-red-300 bg-gradient-to-br from-red-50 to-pink-50 hover:border-red-400 transition-colors cursor-pointer" onClick={handleYoutubeEdit}>
-              <CardContent className="text-center py-12">
-                <Youtube className="h-16 w-16 mx-auto mb-4 text-red-400" />
-                <h3 className="text-2xl font-bold mb-3 text-red-700">🎬 Add Your Adventure Video!</h3>
-                <p className="text-red-600 mb-6 text-lg">
-                  Share a special family video with everyone to relive those magical Scottish moments! ✨
-                </p>
-                <Button onClick={handleYoutubeEdit} className="bg-red-500 hover:bg-red-600 text-white text-lg px-8 py-3">
-                  <Youtube className="h-5 w-5 mr-2" />
-                  🎥 Add Family Video
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
         {/* Main Content Grid */}
-        <div className="grid lg:grid-cols-2 gap-8 mb-12">
-          {/* Recent Adventures with Enhanced Design */}
-          <Card className="bg-gradient-to-br from-blue-50 to-indigo-100 border-2 border-blue-200">
-            <CardHeader className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-t-lg">
-              <CardTitle className="flex items-center gap-3 text-2xl">
-                <BookOpen className="h-7 w-7" />
-                🌟 Latest Adventures
-                <Badge className="bg-white text-blue-600 ml-auto">
-                  {entries.length} Stories
-                </Badge>
+        <div className="grid lg:grid-cols-2 gap-8">
+          {/* Recent Entries */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BookOpen className="h-5 w-5" />
+                Recent Adventures
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-6">
-              {entries.slice(0, 3).map((entry, index) => (
-                <div key={entry.id} className={`relative p-4 rounded-xl mb-4 ${
-                  index % 2 === 0 
-                    ? 'bg-gradient-to-r from-blue-100 to-purple-100 border border-blue-200' 
-                    : 'bg-gradient-to-r from-purple-100 to-pink-100 border border-purple-200'
-                } hover:scale-105 transition-transform cursor-pointer`}>
-                  <div className="absolute top-2 right-2">
-                    <Badge className="bg-yellow-400 text-yellow-900 text-xs">
-                      {index === 0 ? '🔥 Latest' : index === 1 ? '⭐ Popular' : '💎 Classic'}
-                    </Badge>
-                  </div>
-                  <h4 className="font-bold text-lg text-gray-800 mb-2 pr-16">{entry.title}</h4>
-                  <p className="text-gray-700 line-clamp-3 mb-3 text-sm leading-relaxed">
+            <CardContent>
+              {entries.slice(0, 3).map((entry) => (
+                <div key={entry.id} className="border-b border-gray-100 pb-4 mb-4 last:border-b-0">
+                  <h4 className="font-medium mb-1">{entry.title}</h4>
+                  <p className="text-sm text-gray-600 mb-2 line-clamp-2">
                     {entry.content}
                   </p>
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs text-gray-500 font-medium">
-                      📅 {new Date(entry.date).toLocaleDateString()}
-                    </p>
-                    <div className="flex items-center gap-2">
-                      {entry.location && (
-                        <Badge variant="outline" className="text-xs">
-                          📍 {entry.location}
-                        </Badge>
-                      )}
-                      <div className="flex items-center gap-1">
-                        <Heart className="h-3 w-3 text-red-500 fill-red-500" />
-                        <span className="text-xs text-gray-600">{entry.likes || 0}</span>
-                      </div>
+                  <div className="flex items-center justify-between text-xs text-gray-500">
+                    <span>{new Date(entry.date).toLocaleDateString()}</span>
+                    <div className="flex items-center gap-1">
+                      <Heart className="h-3 w-3 text-red-500" />
+                      {entry.likes || 0}
                     </div>
                   </div>
                 </div>
               ))}
               {entries.length === 0 && (
-                <div className="text-center py-12">
-                  <BookOpen className="h-16 w-16 text-blue-300 mx-auto mb-4" />
-                  <h3 className="text-xl font-bold text-blue-600 mb-2">No Adventures Yet!</h3>
-                  <p className="text-blue-500 mb-6">
-                    Start your Scottish journey by creating your first epic tale! 🏔️
-                  </p>
+                <div className="text-center py-8">
+                  <BookOpen className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                  <p className="text-gray-500">No adventures yet!</p>
                   <Link to="/journal">
-                    <Button className="bg-blue-500 hover:bg-blue-600 text-white">
-                      ✨ Start Your Adventure
-                    </Button>
+                    <Button className="mt-4" size="sm">Start Your Journey</Button>
                   </Link>
                 </div>
               )}
             </CardContent>
           </Card>
 
-          {/* Charlie Section with Enhanced Design */}
-          <Card className="bg-gradient-to-br from-amber-50 to-orange-100 border-2 border-amber-200">
-            <CardHeader className="bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-t-lg">
-              <CardTitle className="flex items-center gap-3 text-2xl">
-                <User className="h-7 w-7" />
-                🐕 Charlie - Our Adventure Buddy
-                <Badge className="bg-white text-amber-600 ml-auto">
-                  Family Dog
-                </Badge>
+          {/* Charlie Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <User className="h-5 w-5" />
+                  Charlie - Adventure Buddy
+                </div>
                 {isAuthenticated && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleCharlieEdit}
-                    className="text-white hover:bg-white/20"
-                  >
+                  <Button variant="ghost" size="sm" onClick={handleCharlieEdit}>
                     <Edit2 className="h-4 w-4" />
                   </Button>
                 )}
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-6">
+            <CardContent>
               {charlieData.image && (
-                <div className="relative mb-6">
-                  <img
-                    src={charlieData.image}
-                    alt="Charlie"
-                    className="w-full h-64 object-cover rounded-xl border-4 border-white shadow-lg"
-                  />
-                  <div className="absolute top-4 left-4">
-                    <Badge className="bg-black/60 text-white backdrop-blur-sm">
-                      🐾 Adventure Companion
-                    </Badge>
-                  </div>
-                  <div className="absolute bottom-4 right-4">
-                    <div className="flex gap-1">
-                      {[...Array(5)].map((_, i) => (
-                        <Heart key={i} className="h-4 w-4 text-red-500 fill-red-500" />
-                      ))}
-                    </div>
-                  </div>
-                </div>
+                <img
+                  src={charlieData.image}
+                  alt="Charlie"
+                  className="w-full h-48 object-cover rounded-lg mb-4"
+                />
               )}
-              <div className="bg-white rounded-xl p-4 border border-amber-200">
-                <p className="text-gray-700 whitespace-pre-line leading-relaxed">
-                  {charlieData.description}
-                </p>
-              </div>
-              <div className="mt-4 flex justify-center gap-2">
-                <Badge className="bg-amber-500 text-white">🎾 Ball Expert</Badge>
-                <Badge className="bg-green-500 text-white">🥾 Hiking Pro</Badge>
-                <Badge className="bg-blue-500 text-white">📸 Photo Star</Badge>
-              </div>
+              <p className="text-sm text-gray-700 line-clamp-4">
+                {charlieData.description}
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -733,7 +421,7 @@ export default function Index() {
         <Dialog open={isYoutubeDialogOpen} onOpenChange={setIsYoutubeDialogOpen}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2 text-xl">
+              <DialogTitle className="flex items-center gap-2">
                 <Youtube className="h-6 w-6 text-red-500" />
                 {youtubeVideo ? "Edit" : "Add"} Family Video
               </DialogTitle>
@@ -773,10 +461,7 @@ export default function Index() {
                   Save Video
                 </Button>
                 {youtubeVideo && (
-                  <Button
-                    variant="destructive"
-                    onClick={handleYoutubeDelete}
-                  >
+                  <Button variant="destructive" onClick={handleYoutubeDelete}>
                     Delete
                   </Button>
                 )}
@@ -789,8 +474,8 @@ export default function Index() {
         <Dialog open={isCharlieDialogOpen} onOpenChange={setIsCharlieDialogOpen}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2 text-xl">
-                <User className="h-6 w-6 text-amber-500" />
+              <DialogTitle className="flex items-center gap-2">
+                <User className="h-6 w-6" />
                 Edit Charlie's Information
               </DialogTitle>
             </DialogHeader>
@@ -813,16 +498,13 @@ export default function Index() {
                   rows={8}
                 />
               </div>
-              <Button onClick={handleCharlieSave} className="w-full bg-amber-500 hover:bg-amber-600">
-                <User className="h-4 w-4 mr-2" />
+              <Button onClick={handleCharlieSave} className="w-full">
                 Save Changes
               </Button>
             </div>
           </DialogContent>
         </Dialog>
       </div>
-
-
     </div>
   );
 }
