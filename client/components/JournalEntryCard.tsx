@@ -220,6 +220,9 @@ export function JournalEntryCard({
       {/* Image Dialog */}
       <Dialog open={isImageDialogOpen} onOpenChange={setIsImageDialogOpen}>
         <DialogContent className="max-w-4xl max-h-[90vh] p-0">
+          <DialogHeader className="sr-only">
+            <DialogTitle>Image Gallery - {entry.title}</DialogTitle>
+          </DialogHeader>
           {entry.images && entry.images.length > 0 && (
             <div className="relative">
               <img
