@@ -167,10 +167,12 @@ export class SupabaseStorage {
   // Event listeners
   static onUpdate(callback: () => void): () => void {
     this.listeners.push(callback);
+    console.log(`🔔 Added real-time listener (total: ${this.listeners.length})`);
     return () => {
       const index = this.listeners.indexOf(callback);
       if (index > -1) {
         this.listeners.splice(index, 1);
+        console.log(`📋 Removed real-time listener (remaining: ${this.listeners.length})`);
       }
     };
   }
