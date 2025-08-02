@@ -123,6 +123,7 @@ const App = () => (
               }
             />
           </Routes>
+          <NetworkStatus />
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
