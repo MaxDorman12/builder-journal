@@ -1,490 +1,340 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { LocalStorage } from "@/lib/storage";
-import { HybridStorage } from "@/lib/hybridStorage";
-import { initializeSampleData } from "@/lib/sampleData";
+import { SupabaseStorage } from "@/lib/supabaseOnly";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Plus,
-  Star,
-  Trash2,
-  Check,
-  User,
-  MapPin as MapPinIcon,
-} from "lucide-react";
-import {
-  WishlistItem,
-  WISHLIST_CATEGORIES,
-  WISHLIST_PRIORITIES,
-} from "@shared/api";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Heart, Plus, Check, Trash2 } from "lucide-react";
+import { WishlistItem } from "@shared/api";
 
 export default function Wishlist() {
-  const { isFamilyMember, currentUser } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    location: "",
-    priority: "medium" as "low" | "medium" | "high",
-    category: "adventure" as
-      | "adventure"
-      | "culture"
-      | "food"
-      | "nature"
-      | "city"
-      | "historic",
-    estimatedCost: "",
-    bestTimeToVisit: "",
-    notes: "",
-  });
+  // Form state
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [location, setLocation] = useState("");
+  const [isPublic, setIsPublic] = useState(true);
 
-  useEffect(() => {
+  const loadWishlistItems = async () => {
     try {
-      // Initialize sample data if no data exists
-      initializeSampleData();
-      loadWishlistItems();
-
-      // Listen for real-time updates from HybridStorage
-      const unsubscribe = HybridStorage.onUpdate(() => {
-        console.log(
-          "🔄 Real-time update received, refreshing wishlist items...",
-        );
-        loadWishlistItems();
-      });
-
-      return () => unsubscribe();
-    } catch (error) {
-      console.error("Error loading wishlist:", error);
-    }
-  }, []);
-
-  const loadWishlistItems = () => {
-    try {
-      const items = HybridStorage.getWishlistItems();
+      setIsLoading(true);
+      const items = await SupabaseStorage.getWishlistItems();
       setWishlistItems(items);
+      console.log("🎯 Wishlist items loaded:", items.length);
     } catch (error) {
-      console.error("Error loading wishlist items:", error);
-      setWishlistItems([]);
+      console.error("❌ Failed to load wishlist items:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (
-      window.confirm(
-        "Are you sure you want to remove this item from your wishlist?",
-      )
-    ) {
-      await HybridStorage.deleteWishlistItem(id);
+  useEffect(() => {
+    if (isAuthenticated) {
       loadWishlistItems();
+
+      // Listen for real-time updates
+      const unsubscribe = SupabaseStorage.onUpdate(() => {
+        console.log("🔄 Real-time update received, reloading wishlist...");
+        loadWishlistItems();
+      });
+
+      return unsubscribe;
+    }
+  }, [isAuthenticated]);
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this wishlist item?")) return;
+
+    try {
+      await SupabaseStorage.deleteWishlistItem(id);
+      setWishlistItems((prev) => prev.filter(item => item.id !== id));
+      console.log("✅ Wishlist item deleted successfully");
+    } catch (error) {
+      console.error("❌ Failed to delete wishlist item:", error);
     }
   };
 
   const handleMarkCompleted = async (id: string) => {
-    LocalStorage.markWishlistItemCompleted(id);
-    // Update in cloud if available
-    if (HybridStorage.isCloudEnabled()) {
-      const item = HybridStorage.getWishlistItems().find((i) => i.id === id);
-      if (item) {
-        await HybridStorage.saveWishlistItem(item);
-      }
+    try {
+      await SupabaseStorage.markWishlistItemCompleted(id);
+      // Update local state
+      setWishlistItems((prev) =>
+        prev.map((item) =>
+          item.id === id
+            ? { ...item, isCompleted: true, completedDate: new Date().toISOString() }
+            : item
+        )
+      );
+      console.log("✅ Wishlist item marked as completed");
+    } catch (error) {
+      console.error("❌ Failed to mark item as completed:", error);
     }
-    loadWishlistItems();
   };
 
-  const handleCreateItem = async () => {
-    if (!formData.title.trim() || !formData.location.trim()) return;
+  const handleCreateItem = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-    const item: WishlistItem = {
-      id: Date.now().toString(),
-      title: formData.title.trim(),
-      description: formData.description.trim(),
-      location: formData.location.trim(),
-      priority: formData.priority,
-      category: formData.category,
-      estimatedCost: formData.estimatedCost.trim(),
-      bestTimeToVisit: formData.bestTimeToVisit.trim(),
-      notes: formData.notes.trim(),
-      isCompleted: false,
-      addedBy: currentUser || "Dorman Family",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+    if (!title.trim()) {
+      alert("Please enter a title");
+      return;
+    }
 
-    await HybridStorage.saveWishlistItem(item);
-    loadWishlistItems();
-    setIsCreateDialogOpen(false);
-    resetForm();
+    try {
+      const item: WishlistItem = {
+        id: `wishlist-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        title: title.trim(),
+        description: description.trim(),
+        location: location.trim(),
+        isCompleted: false,
+        isPublic,
+        priority: "medium",
+        updatedBy: "user",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      await SupabaseStorage.saveWishlistItem(item);
+      setWishlistItems((prev) => [item, ...prev]);
+      setIsCreateDialogOpen(false);
+
+      // Reset form
+      setTitle("");
+      setDescription("");
+      setLocation("");
+      setIsPublic(true);
+
+      console.log("✅ Wishlist item created successfully");
+    } catch (error) {
+      console.error("❌ Failed to create wishlist item:", error);
+      alert("Failed to create wishlist item. Please try again.");
+    }
   };
 
-  const resetForm = () => {
-    setFormData({
-      title: "",
-      description: "",
-      location: "",
-      priority: "medium",
-      category: "adventure",
-      estimatedCost: "",
-      bestTimeToVisit: "",
-      notes: "",
-    });
-  };
+  if (!isAuthenticated) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Wishlist</h1>
+          <p className="text-gray-600">Please log in to view the family wishlist.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const pendingItems = wishlistItems.filter(item => !item.isCompleted);
+  const completedItems = wishlistItems.filter(item => item.isCompleted);
 
   return (
-    <div className="space-y-6 p-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">🌟 Scotland Wishlist</h1>
-          <p className="text-muted-foreground">
-            Places we dream of visiting across beautiful Scotland
-          </p>
-        </div>
-
-        {isFamilyMember && (
-          <Dialog
-            open={isCreateDialogOpen}
-            onOpenChange={setIsCreateDialogOpen}
-          >
-            <DialogTrigger asChild>
-              <Button size="lg" className="flex items-center space-x-2">
-                <Plus className="h-5 w-5" />
-                <span>✨ Add Dream Destination</span>
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl">
-              <DialogHeader>
-                <DialogTitle>Add New Dream Destination</DialogTitle>
-                <DialogDescription>
-                  Add a new place to your Scotland adventure wishlist with
-                  details about location, activities, and planning information.
-                </DialogDescription>
-              </DialogHeader>
-              <WishlistForm
-                formData={formData}
-                setFormData={setFormData}
-                onSubmit={handleCreateItem}
-                onCancel={() => {
-                  setIsCreateDialogOpen(false);
-                  resetForm();
-                }}
-              />
-            </DialogContent>
-          </Dialog>
-        )}
-      </div>
-
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="p-4">
-          <div className="flex items-center space-x-3">
-            <Star className="h-6 w-6 text-purple-600" />
-            <div>
-              <p className="text-2xl font-bold">{wishlistItems.length}</p>
-              <p className="text-sm text-muted-foreground">Total Dreams</p>
-            </div>
-          </div>
-        </Card>
-      </div>
-
-      {/* Wishlist Items */}
-      {wishlistItems.length === 0 ? (
-        <Card>
-          <CardContent className="text-center py-12">
-            <Star className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">
-              No Dream Destinations Yet
-            </h3>
-            <p className="text-muted-foreground mb-4">
-              Start building your Scotland adventure wishlist!
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-3">
+          <Heart className="h-8 w-8 text-red-600" />
+          <div>
+            <h1 className="text-3xl font-bold">Family Wishlist</h1>
+            <p className="text-gray-600">
+              Dreams and goals for our Scottish adventures
+              {wishlistItems.length > 0 && (
+                <span className="ml-2 text-sm bg-red-100 text-red-800 px-2 py-1 rounded">
+                  {pendingItems.length} pending, {completedItems.length} completed
+                </span>
+              )}
             </p>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
+        <Button onClick={() => setIsCreateDialogOpen(true)} className="gap-2">
+          <Plus className="h-4 w-4" />
+          Add Dream
+        </Button>
+      </div>
+
+      {isLoading ? (
+        <div className="text-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading wishlist...</p>
+        </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {wishlistItems.map((item) => (
-            <WishlistItemCard
-              key={item.id}
-              item={item}
-              onDelete={isFamilyMember ? handleDelete : undefined}
-              onMarkCompleted={isFamilyMember ? handleMarkCompleted : undefined}
-            />
-          ))}
+        <div className="space-y-8">
+          {/* Pending Items */}
+          {pendingItems.length > 0 && (
+            <div>
+              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                <Heart className="h-5 w-5 text-red-600" />
+                Dreams to Chase ({pendingItems.length})
+              </h2>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {pendingItems.map((item) => (
+                  <Card key={item.id} className="hover:shadow-lg transition-shadow">
+                    <CardHeader>
+                      <CardTitle className="flex items-center justify-between">
+                        <span className="flex-1">{item.title}</span>
+                        <div className="flex gap-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleMarkCompleted(item.id)}
+                            className="text-green-600 hover:text-green-700"
+                          >
+                            <Check className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDelete(item.id)}
+                            className="text-red-600 hover:text-red-700"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {item.description && (
+                        <p className="text-gray-700 mb-2">{item.description}</p>
+                      )}
+                      {item.location && (
+                        <p className="text-sm text-gray-500">📍 {item.location}</p>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Completed Items */}
+          {completedItems.length > 0 && (
+            <div>
+              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                <Check className="h-5 w-5 text-green-600" />
+                Dreams Achieved ({completedItems.length})
+              </h2>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {completedItems.map((item) => (
+                  <Card key={item.id} className="border-green-200 bg-green-50">
+                    <CardHeader>
+                      <CardTitle className="flex items-center justify-between">
+                        <span className="flex-1 line-through text-green-700">{item.title}</span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDelete(item.id)}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {item.description && (
+                        <p className="text-green-700 mb-2">{item.description}</p>
+                      )}
+                      {item.location && (
+                        <p className="text-sm text-green-600">📍 {item.location}</p>
+                      )}
+                      {item.completedDate && (
+                        <p className="text-xs text-green-500 mt-2">
+                          ✅ Completed: {new Date(item.completedDate).toLocaleDateString()}
+                        </p>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Empty State */}
+          {wishlistItems.length === 0 && (
+            <div className="text-center py-12">
+              <Heart className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+              <h2 className="text-xl font-semibold text-gray-600 mb-2">
+                No Dreams Yet
+              </h2>
+              <p className="text-gray-500 mb-6">
+                Start adding places and experiences you'd love to explore in Scotland!
+              </p>
+              <Button onClick={() => setIsCreateDialogOpen(true)} className="gap-2">
+                <Plus className="h-4 w-4" />
+                Add Your First Dream
+              </Button>
+            </div>
+          )}
         </div>
       )}
-    </div>
-  );
-}
 
-// Simple Wishlist Item Card Component
-interface WishlistItemCardProps {
-  item: WishlistItem;
-  onDelete?: (id: string) => void;
-  onMarkCompleted?: (id: string) => void;
-}
-
-function WishlistItemCard({
-  item,
-  onDelete,
-  onMarkCompleted,
-}: WishlistItemCardProps) {
-  const categoryData = WISHLIST_CATEGORIES.find(
-    (c) => c.value === item.category,
-  );
-  const priorityData = WISHLIST_PRIORITIES.find(
-    (p) => p.value === item.priority,
-  );
-
-  return (
-    <Card className={`group relative ${item.isCompleted ? "opacity-75" : ""}`}>
-      <CardContent className="p-4">
-        <div className="flex items-start justify-between mb-2">
-          <h3
-            className={`font-semibold text-lg line-clamp-2 flex-1 ${item.isCompleted ? "line-through text-muted-foreground" : ""}`}
-          >
-            {item.isCompleted && "✅ "}
-            {item.title}
-          </h3>
-
-          {(onDelete || onMarkCompleted) && (
-            <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity ml-2">
-              {!item.isCompleted && onMarkCompleted && (
-                <button
-                  onClick={() => onMarkCompleted(item.id)}
-                  className="p-1 hover:bg-green-100 rounded-full transition-colors"
-                  title="Mark as completed"
-                >
-                  <Check className="h-3 w-3 text-green-600" />
-                </button>
-              )}
-              {onDelete && (
-                <button
-                  onClick={() => onDelete(item.id)}
-                  className="p-1 hover:bg-red-100 rounded-full transition-colors"
-                  title="Delete item"
-                >
-                  <Trash2 className="h-3 w-3 text-red-600" />
-                </button>
-              )}
+      {/* Create Item Dialog */}
+      <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New Dream</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleCreateItem} className="space-y-4">
+            <div>
+              <Label htmlFor="title">Title *</Label>
+              <Input
+                id="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="What do you dream of doing?"
+                required
+              />
             </div>
-          )}
-        </div>
-
-        <div className="flex items-center text-sm text-muted-foreground mb-2">
-          <MapPinIcon className="h-3 w-3 mr-1" />
-          <span>{item.location}</span>
-        </div>
-
-        {item.description && (
-          <p className="text-sm text-muted-foreground line-clamp-3 mb-3">
-            {item.description}
-          </p>
-        )}
-
-        <div className="flex flex-wrap gap-2 mb-3">
-          {categoryData && (
-            <Badge variant="outline" className="text-xs">
-              {categoryData.emoji} {categoryData.label}
-            </Badge>
-          )}
-          {priorityData && (
-            <Badge variant="secondary" className="text-xs">
-              {priorityData.emoji} {priorityData.label}
-            </Badge>
-          )}
-        </div>
-
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <div className="flex items-center space-x-1">
-            <User className="h-3 w-3" />
-            <span>Added by {item.addedBy}</span>
-          </div>
-          <span>{new Date(item.createdAt).toLocaleDateString()}</span>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-// Wishlist Form Component
-interface WishlistFormProps {
-  formData: any;
-  setFormData: (data: any) => void;
-  onSubmit: () => void;
-  onCancel: () => void;
-}
-
-function WishlistForm({
-  formData,
-  setFormData,
-  onSubmit,
-  onCancel,
-}: WishlistFormProps) {
-  return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="title">Dream Destination *</Label>
-          <Input
-            id="title"
-            value={formData.title}
-            onChange={(e) =>
-              setFormData((prev: any) => ({ ...prev, title: e.target.value }))
-            }
-            placeholder="e.g., Isle of Skye"
-            required
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="location">Location *</Label>
-          <Input
-            id="location"
-            value={formData.location}
-            onChange={(e) =>
-              setFormData((prev: any) => ({
-                ...prev,
-                location: e.target.value,
-              }))
-            }
-            placeholder="e.g., Inner Hebrides, Scotland"
-            required
-          />
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="description">Description</Label>
-        <Textarea
-          id="description"
-          value={formData.description}
-          onChange={(e) =>
-            setFormData((prev: any) => ({
-              ...prev,
-              description: e.target.value,
-            }))
-          }
-          placeholder="What makes this place special? What do you want to do there?"
-          rows={3}
-        />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="space-y-2">
-          <Label>Category</Label>
-          <Select
-            value={formData.category}
-            onValueChange={(value) =>
-              setFormData((prev: any) => ({ ...prev, category: value }))
-            }
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {WISHLIST_CATEGORIES.map((category) => (
-                <SelectItem key={category.value} value={category.value}>
-                  {category.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="space-y-2">
-          <Label>Priority</Label>
-          <Select
-            value={formData.priority}
-            onValueChange={(value) =>
-              setFormData((prev: any) => ({ ...prev, priority: value }))
-            }
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {WISHLIST_PRIORITIES.map((priority) => (
-                <SelectItem key={priority.value} value={priority.value}>
-                  {priority.emoji} {priority.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="estimatedCost">Estimated Cost</Label>
-          <Input
-            id="estimatedCost"
-            value={formData.estimatedCost}
-            onChange={(e) =>
-              setFormData((prev: any) => ({
-                ...prev,
-                estimatedCost: e.target.value,
-              }))
-            }
-            placeholder="e.g., £200-300"
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="bestTimeToVisit">Best Time to Visit</Label>
-          <Input
-            id="bestTimeToVisit"
-            value={formData.bestTimeToVisit}
-            onChange={(e) =>
-              setFormData((prev: any) => ({
-                ...prev,
-                bestTimeToVisit: e.target.value,
-              }))
-            }
-            placeholder="e.g., Spring/Summer"
-          />
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="notes">Additional Notes</Label>
-        <Textarea
-          id="notes"
-          value={formData.notes}
-          onChange={(e) =>
-            setFormData((prev: any) => ({ ...prev, notes: e.target.value }))
-          }
-          placeholder="Any special considerations, tips, or reminders..."
-          rows={2}
-        />
-      </div>
-
-      <div className="flex justify-end space-x-2">
-        <Button variant="outline" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button onClick={onSubmit}>Add to Wishlist</Button>
-      </div>
+            <div>
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Why is this special to you?"
+                rows={3}
+              />
+            </div>
+            <div>
+              <Label htmlFor="location">Location</Label>
+              <Input
+                id="location"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="Where in Scotland?"
+              />
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="isPublic"
+                checked={isPublic}
+                onCheckedChange={(checked) => setIsPublic(checked as boolean)}
+              />
+              <Label htmlFor="isPublic">Share with family</Label>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsCreateDialogOpen(false)}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button type="submit" className="flex-1">
+                Add Dream
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
