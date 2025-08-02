@@ -22,17 +22,14 @@ export function SimpleScotlandMap({ pins, onMapClick, onPinClick, className = ''
       setIsLoading(true);
       console.log('🗺️ Attempting to load Leaflet...');
 
-      // Try to load Leaflet with a timeout
-      const loadPromise = Promise.all([
-        import('leaflet'),
-        import('leaflet/dist/leaflet.css')
-      ]);
+      // Try to load Leaflet with a timeout (only JS, not CSS)
+      const loadPromise = import('leaflet');
 
-      const timeoutPromise = new Promise((_, reject) => 
+      const timeoutPromise = new Promise((_, reject) =>
         setTimeout(() => reject(new Error('Import timeout')), 10000)
       );
 
-      const [leafletModule] = await Promise.race([loadPromise, timeoutPromise]) as any;
+      const leafletModule = await Promise.race([loadPromise, timeoutPromise]) as any;
       const L = leafletModule.default || leafletModule;
 
       console.log('✅ Leaflet loaded successfully');
