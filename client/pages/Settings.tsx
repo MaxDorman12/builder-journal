@@ -41,6 +41,9 @@ export default function Settings() {
         </div>
       </div>
 
+      {/* Real-time Sync Test */}
+      <SyncTest />
+
       <div className="grid md:grid-cols-2 gap-6">
         {/* Storage Status */}
         <StorageStatus />
