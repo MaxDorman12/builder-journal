@@ -555,14 +555,15 @@ export class SupabaseDatabase {
 
       const pins: MapPin[] = (data || []).map((row) => ({
         id: row.id,
-        lat: row.latitude,
-        lng: row.longitude,
+        latitude: row.latitude,
+        longitude: row.longitude,
         title: row.title,
         description: row.description || "",
-        moodRating: row.mood_rating || 5,
-        journalEntryId: row.journal_entry_id || undefined,
-        visitDate: row.created_at,
+        areaType: row.area_type || "highlands",
         images: row.images ? JSON.parse(row.images) : [],
+        updatedBy: row.updated_by || "user",
+        createdAt: row.created_at,
+        updatedAt: row.updated_at || row.created_at,
       }));
 
       console.log(`✅ Loaded ${pins.length} map pins from Supabase`);
