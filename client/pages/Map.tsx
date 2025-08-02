@@ -339,7 +339,7 @@ export default function Map() {
 
       {/* Pin Details Dialog */}
       <Dialog open={!!selectedPin} onOpenChange={() => setSelectedPin(null)}>
-        <DialogContent>
+        <DialogContent className="z-[10000]">
           <DialogHeader>
             <DialogTitle>{selectedPin?.title}</DialogTitle>
           </DialogHeader>
