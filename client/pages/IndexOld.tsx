@@ -1,0 +1,1158 @@
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { LocalStorage } from "@/lib/storage";
+import { HybridStorage } from "@/lib/hybridStorage";
+import { SupabaseDatabase } from "@/lib/supabaseDatabase";
+import { SupabaseStorage } from "@/lib/supabaseStorage";
+import { StorageCleanup } from "@/lib/storageCleanup";
+import { StorageStatus } from "@/components/StorageStatus";
+import { StorageHealth } from "@/lib/storageHealth";
+import { initializeSampleData } from "@/lib/sampleData";
+import { FamilyStats } from "@/components/FamilyStats";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Heart,
+  MapPin,
+  Calendar,
+  BookOpen,
+  Youtube,
+  Camera,
+  Compass,
+  Users,
+  Mountain,
+  Waves,
+  Edit2,
+  User,
+} from "lucide-react";
+import {
+  MOOD_RATINGS,
+  JournalEntry,
+  MapPin as MapPinType,
+  YouTubeVideo,
+} from "@shared/api";
+
+export default function Index() {
+  const { isAuthenticated, isFamilyMember } = useAuth();
+  const [entries, setEntries] = useState<JournalEntry[]>([]);
+  const [pins, setPins] = useState<MapPinType[]>([]);
+  const [youtubeVideo, setYoutubeVideo] = useState<YouTubeVideo | null>(null);
+  const [youtubeUrl, setYoutubeUrl] = useState<string>("");
+  const [isYoutubeDialogOpen, setIsYoutubeDialogOpen] = useState(false);
+  const [tempYoutubeUrl, setTempYoutubeUrl] = useState<string>("");
+  const [tempYoutubeTitle, setTempYoutubeTitle] = useState<string>("");
+  const [tempYoutubeDescription, setTempYoutubeDescription] =
+    useState<string>("");
+  const [showAllStats, setShowAllStats] = useState(false);
+  const [charlieData, setCharlieData] = useState({
+    image: "",
+    description: "",
+  });
+  const [isCharlieDialogOpen, setIsCharlieDialogOpen] = useState(false);
+  const [tempCharlieData, setTempCharlieData] = useState({
+    image: "",
+    description: "",
+  });
+  const [isCloudSyncEnabled, setIsCloudSyncEnabled] = useState(false);
+
+  useEffect(() => {
+    // Initialize sample data if no data exists
+    initializeSampleData();
+
+    // Check hybrid storage status (initialization happens globally in App.tsx)
+    const checkStorageStatus = async () => {
+      // Wait a moment for global initialization to complete
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      const status = HybridStorage.getSupabaseStatus();
+      setIsCloudSyncEnabled(status.enabled);
+
+      // If localStorage is disabled, force direct Supabase access
+      if (StorageHealth.isDisabled()) {
+        console.log(
+          "📵 localStorage disabled - forcing direct Supabase access",
+        );
+        try {
+          const directEntries = await SupabaseDatabase.getJournalEntries();
+          const directCharlie = await SupabaseDatabase.getCharlieData();
+          const directPins = await SupabaseDatabase.getMapPins();
+
+          console.log("📱 Direct Supabase load successful:", {
+            entriesCount: directEntries.length,
+            charlieHasImage: !!directCharlie.image,
+          });
+
+          setEntries(directEntries);
+          setCharlieData(directCharlie);
+          setPins(directPins);
+        } catch (error) {
+          console.error("❌ Direct Supabase access failed:", error);
+        }
+      }
+
+      // AUTO-SYNC: Always fetch fresh data from Supabase when page loads (for ALL visitors)
+      if (cloudEnabled) {
+        try {
+          console.log("🔄 Auto-syncing with Supabase on page load...");
+
+          // Fetch ALL fresh data from Supabase
+          const [freshCharlieData, freshEntries, freshPins, freshWishlist] =
+            await Promise.all([
+              SupabaseDatabase.getCharlieData(),
+              SupabaseDatabase.getJournalEntries(),
+              SupabaseDatabase.getMapPins(),
+              SupabaseDatabase.getWishlistItems(),
+            ]);
+
+          console.log("📥 Fresh data received from Supabase:", {
+            charlieHasImage: !!freshCharlieData.image,
+            entriesCount: freshEntries.length,
+            pinsCount: freshPins.length,
+            wishlistCount: freshWishlist.length,
+          });
+
+          // Try to save to localStorage (will fail gracefully if disabled)
+          LocalStorage.setCharlieData(freshCharlieData);
+          freshEntries.forEach((entry) => LocalStorage.saveJournalEntry(entry));
+          freshPins.forEach((pin) => LocalStorage.saveMapPin(pin));
+          freshWishlist.forEach((item) => LocalStorage.saveWishlistItem(item));
+
+          // ALWAYS update UI with fresh Supabase data (even if localStorage fails)
+          console.log("📱 Setting UI state with Supabase data:", {
+            entriesCount: freshEntries.length,
+            pinsCount: freshPins.length,
+            charlieHasImage: !!freshCharlieData.image,
+          });
+
+          setCharlieData(freshCharlieData);
+          setEntries(freshEntries);
+          setPins(freshPins);
+
+          console.log(
+            "✅ Auto-sync completed - all data refreshed from Supabase!",
+          );
+          console.log("���� New visitors will see:", {
+            charlieHasImage: !!freshCharlieData.image,
+            entriesCount: freshEntries.length,
+            pinsCount: freshPins.length,
+          });
+        } catch (error) {
+          console.error("❌ Auto-sync failed:", error);
+
+          // Try direct Supabase load as emergency fallback
+          try {
+            console.log("🚨 Emergency fallback: Direct Supabase load");
+            const emergencyEntries = await SupabaseDatabase.getJournalEntries();
+            const emergencyCharlie = await SupabaseDatabase.getCharlieData();
+            const emergencyPins = await SupabaseDatabase.getMapPins();
+
+            console.log("🚨 Emergency data loaded:", {
+              entriesCount: emergencyEntries.length,
+              charlieHasImage: !!emergencyCharlie.image,
+            });
+
+            setEntries(emergencyEntries);
+            setCharlieData(emergencyCharlie);
+            setPins(emergencyPins);
+          } catch (emergencyError) {
+            console.error("❌ Emergency fallback also failed:", emergencyError);
+            // Final fallback to localStorage (even if disabled)
+            console.log("📱 Using localStorage as final fallback");
+            setEntries(LocalStorage.getJournalEntries());
+            setCharlieData(LocalStorage.getCharlieData());
+            setPins(LocalStorage.getMapPins());
+          }
+        }
+      } else {
+        // Even if cloud sync is disabled, try to load from Supabase for public viewing
+        try {
+          console.log("🌐 Loading public data from Supabase...");
+          const publicCharlieData = await SupabaseDatabase.getCharlieData();
+          const publicEntries = await SupabaseDatabase.getJournalEntries();
+          const publicPins = await SupabaseDatabase.getMapPins();
+
+          setCharlieData(publicCharlieData);
+          setEntries(publicEntries);
+          setPins(publicPins);
+
+          console.log("✅ Public data loaded successfully!");
+        } catch (error) {
+          console.warn("⚠️ Could not load public data, using defaults:", error);
+        }
+      }
+
+      if (cloudEnabled) {
+        console.log(
+          "🔄 Auto-sync enabled! Changes will sync across all devices.",
+        );
+
+        // Setup listener for real-time updates
+        const unsubscribe = HybridStorage.onUpdate(() => {
+          console.log("🔄 Real-time update received");
+          setEntries(HybridStorage.getJournalEntries());
+          setPins(HybridStorage.getMapPins());
+          const newCharlieData = HybridStorage.getCharlieData();
+          console.log("🐕 Real-time Charlie update:", {
+            hasImage: !!newCharlieData.image,
+            imageLength: newCharlieData.image?.length || 0,
+          });
+          setCharlieData(newCharlieData);
+        });
+
+        return () => unsubscribe();
+      }
+    };
+
+    const loadFreshData = async () => {
+      // FORCE FRESH DATA FROM FIREBASE ON EVERY PAGE LOAD
+      console.log("🔄 FORCING fresh data from Supabase...");
+      try {
+        const [freshCharlie, freshEntries, freshPins] = await Promise.all([
+          SupabaseDatabase.getCharlieData(),
+          SupabaseDatabase.getJournalEntries(),
+          SupabaseDatabase.getMapPins(),
+        ]);
+
+        console.log("✅ FRESH DATA LOADED:", {
+          charlieImage: !!freshCharlie.image,
+          entriesCount: freshEntries.length,
+          pinsCount: freshPins.length,
+        });
+
+        // UPDATE UI IMMEDIATELY
+        setCharlieData(freshCharlie);
+        setEntries(freshEntries);
+        setPins(freshPins);
+
+        // Update local storage as backup
+        LocalStorage.setCharlieData(freshCharlie);
+        freshEntries.forEach((entry) => LocalStorage.saveJournalEntry(entry));
+        freshPins.forEach((pin) => LocalStorage.saveMapPin(pin));
+      } catch (error) {
+        console.error("❌ Failed to load fresh data:", error);
+        // Fallback to local data only if Supabase completely fails
+        setEntries(HybridStorage.getJournalEntries());
+        setPins(HybridStorage.getMapPins());
+        setCharlieData(HybridStorage.getCharlieData());
+      }
+    };
+
+    checkStorageStatus();
+    loadFreshData();
+
+    // Initialize Supabase Storage - DISABLED due to RLS policy restrictions
+    // Bucket must be created manually in Supabase dashboard
+    // SupabaseStorage.initializeBucket();
+
+    // Load YouTube video data
+    loadYoutubeData();
+
+    // Set up real-time listener for data updates
+    const unsubscribe = HybridStorage.onUpdate(() => {
+      console.log(
+        "🔄 INDEX: Real-time update received, refreshing YouTube data...",
+      );
+      loadYoutubeData();
+    });
+
+    return () => {
+      unsubscribe();
+      HybridStorage.cleanup();
+    };
+  }, []);
+
+  const recentEntries = entries
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    )
+    .slice(0, 3);
+
+  const totalTrips = pins.length;
+  const averageMood =
+    pins.length > 0
+      ? Math.round(
+          pins.reduce((sum, pin) => sum + pin.moodRating, 0) / pins.length,
+        )
+      : 0;
+
+  const loadYoutubeData = async () => {
+    try {
+      const video = await HybridStorage.getYouTubeVideo();
+      if (video) {
+        setYoutubeVideo(video);
+        setYoutubeUrl(video.url);
+      } else {
+        // Clear video state and set default URL if no video data exists
+        setYoutubeVideo(null);
+        const defaultUrl = "https://www.youtube.com/@AWeeAdventures";
+        setYoutubeUrl(defaultUrl);
+      }
+    } catch (error) {
+      console.error("Failed to load YouTube data:", error);
+      // Clear video state and set default URL on error
+      setYoutubeVideo(null);
+      const defaultUrl = "https://www.youtube.com/@AWeeAdventures";
+      setYoutubeUrl(defaultUrl);
+    }
+  };
+
+  const handleYoutubeEdit = () => {
+    setTempYoutubeUrl(youtubeUrl);
+    setTempYoutubeTitle(youtubeVideo?.title || "Our Scotland Adventures");
+    setTempYoutubeDescription(
+      youtubeVideo?.description ||
+        "Watch our latest family adventures in Scotland",
+    );
+    setIsYoutubeDialogOpen(true);
+  };
+
+  const handleYoutubeSave = async () => {
+    if (tempYoutubeUrl.trim()) {
+      try {
+        const newVideo: YouTubeVideo = {
+          id: youtubeVideo?.id || "main-video",
+          url: tempYoutubeUrl.trim(),
+          title: tempYoutubeTitle.trim() || "Our Scotland Adventures",
+          description:
+            tempYoutubeDescription.trim() ||
+            "Watch our latest family adventures in Scotland",
+          updatedBy: currentUser || "Family",
+          createdAt: youtubeVideo?.createdAt || new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+
+        await HybridStorage.saveYouTubeVideo(newVideo);
+        setYoutubeVideo(newVideo);
+        setYoutubeUrl(newVideo.url);
+        setIsYoutubeDialogOpen(false);
+        setTempYoutubeUrl("");
+        setTempYoutubeTitle("");
+        setTempYoutubeDescription("");
+      } catch (error) {
+        console.error("Failed to save YouTube video:", error);
+        // Still update the URL locally in case of sync issues
+        setYoutubeUrl(tempYoutubeUrl.trim());
+        setIsYoutubeDialogOpen(false);
+        setTempYoutubeUrl("");
+        setTempYoutubeTitle("");
+        setTempYoutubeDescription("");
+      }
+    }
+  };
+
+  const handleYoutubeCancel = () => {
+    setIsYoutubeDialogOpen(false);
+    setTempYoutubeUrl("");
+    setTempYoutubeTitle("");
+    setTempYoutubeDescription("");
+  };
+
+  const handleYoutubeDelete = async () => {
+    try {
+      await HybridStorage.deleteYouTubeVideo();
+      setYoutubeVideo(null);
+      setYoutubeUrl("https://www.youtube.com/@AWeeAdventures");
+      setIsYoutubeDialogOpen(false);
+      setTempYoutubeUrl("");
+      setTempYoutubeTitle("");
+      setTempYoutubeDescription("");
+      console.log("✅ YouTube video deleted successfully");
+    } catch (error) {
+      console.error("Failed to delete YouTube video:", error);
+    }
+  };
+
+  const handleCharlieSave = async () => {
+    console.log("🐕 Charlie save clicked:", {
+      hasNewDescription: !!tempCharlieData.description.trim(),
+      hasNewImage: !!tempCharlieData.image.trim(),
+      currentDescription: charlieData.description?.substring(0, 50) + "...",
+    });
+
+    // Allow saving if there's ANY content (text or image)
+    const dataToSave = {
+      image: tempCharlieData.image.trim() || charlieData.image || "",
+      description:
+        tempCharlieData.description.trim() || charlieData.description || "",
+    };
+
+    // Using simple base64 approach for now
+
+    // FORCE SAVE TO FIREBASE FIRST - no more local storage issues!
+    try {
+      console.log("🔥 SAVING DIRECTLY TO FIREBASE...", {
+        imageSize: dataToSave.image?.length || 0,
+        descriptionSize: dataToSave.description?.length || 0,
+        totalSize:
+          (dataToSave.image?.length || 0) +
+          (dataToSave.description?.length || 0),
+      });
+      await SupabaseDatabase.setCharlieData(dataToSave);
+      console.log("✅ SUPABASE SAVE SUCCESS");
+
+      // Update local storage as backup
+      LocalStorage.setCharlieData(dataToSave);
+      console.log("✅ Local backup updated");
+    } catch (error) {
+      console.error("❌ CHARLIE SAVE FAILED:", error);
+      console.error("Error details:", error.message);
+
+      if (
+        error.message?.includes("Failed to fetch") ||
+        error.message?.includes("network") ||
+        error.message?.includes("connectivity")
+      ) {
+        // Save locally even if cloud sync failed
+        LocalStorage.setCharlieData(dataToSave);
+        setCharlieData(dataToSave);
+        setIsCharlieDialogOpen(false);
+        setTempCharlieData({ image: "", description: "" });
+
+        alert(
+          "⚠️ Network Issue\n\nCharlie's photo saved locally but couldn't sync to cloud.\nIt will sync automatically when connection is restored.",
+        );
+        return;
+      } else if (
+        error.message &&
+        (error.message.includes("too large") ||
+          error.message.includes("size") ||
+          error.message.includes("limit"))
+      ) {
+        alert(
+          "❌ Image too large for Supabase! Try a smaller photo or compress it more.",
+        );
+      } else {
+        alert("❌ Save failed! Error: " + (error.message || "Unknown error"));
+      }
+      return;
+    }
+
+    setCharlieData(dataToSave);
+    setIsCharlieDialogOpen(false);
+    setTempCharlieData({ image: "", description: "" });
+  };
+
+  const handleCharlieCancel = () => {
+    setIsCharlieDialogOpen(false);
+    setTempCharlieData({ image: "", description: "" });
+  };
+
+  const handleCharlieEdit = () => {
+    setTempCharlieData(charlieData);
+    setIsCharlieDialogOpen(true);
+  };
+
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Check file size (now allow larger files since we're using Supabase)
+      if (file.size > 10 * 1024 * 1024) {
+        alert(
+          "Image size must be less than 10MB. Please choose a smaller image.",
+        );
+        return;
+      }
+
+      // Check file type
+      if (!file.type.startsWith("image/")) {
+        alert("Please select an image file");
+        return;
+      }
+
+      console.log("🔄 Uploading Charlie's photo...", {
+        name: file.name,
+        size: file.size,
+        type: file.type,
+      });
+
+      try {
+        // Try uploading to Supabase Storage first
+        const uploadedUrl = await SupabaseStorage.uploadFile(file, "charlie");
+
+        console.log("✅ Charlie photo uploaded to Supabase:", uploadedUrl);
+
+        setTempCharlieData({
+          ...tempCharlieData,
+          image: uploadedUrl,
+        });
+      } catch (error) {
+        console.warn(
+          "⚠️ Supabase upload failed, using compression fallback:",
+          error,
+        );
+
+        // Fallback to compressed base64 if Supabase fails
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        const img = new Image();
+
+        img.onload = async () => {
+          // Calculate new dimensions (max 800px width/height)
+          const maxSize = 800;
+          let { width, height } = img;
+
+          if (width > maxSize || height > maxSize) {
+            if (width > height) {
+              height = (height * maxSize) / width;
+              width = maxSize;
+            } else {
+              width = (width * maxSize) / height;
+              height = maxSize;
+            }
+          }
+
+          // Set canvas size and draw compressed image
+          canvas.width = width;
+          canvas.height = height;
+          ctx?.drawImage(img, 0, 0, width, height);
+
+          // Convert to base64 as fallback
+          const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.7);
+
+          console.log("📸 Image compressed as fallback:", {
+            originalSize: file.size,
+            compressedLength: compressedDataUrl.length,
+            dimensions: `${width}x${height}`,
+          });
+
+          setTempCharlieData({
+            ...tempCharlieData,
+            image: compressedDataUrl,
+          });
+        };
+
+        // Load the file for compression fallback
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          img.src = e.target?.result as string;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  };
+
+  return (
+    <div className="space-y-12">
+      {/* Storage Status Warning */}
+      <StorageStatus />
+
+      {/* Hero Section */}
+      <section className="text-center space-y-6">
+        <div className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-pink-200 to-purple-200 rounded-full shadow-lg bouncy">
+          <Heart className="h-5 w-5 text-purple-600 fill-purple-600" />
+          <span className="text-purple-700 font-medium">
+            🌟 Welcome to our magical adventures! ✨
+          </span>
+        </div>
+
+        <h1 className="text-4xl md:text-6xl font-bold text-foreground leading-tight">
+          The Dorman Family
+          <span className="block text-primary">Scottish Adventures</span>
+        </h1>
+
+        <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          Follow Max, Charlotte, Oscar, Rose, and Lola as they explore the
+          beautiful landscapes of Scotland, creating memories and sharing their
+          amazing journeys together.
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <Link to="/journal">
+            <button className="fun-button flex items-center space-x-2">
+              <BookOpen className="h-5 w-5" />
+              <span>📖 Read Our Journal</span>
+            </button>
+          </Link>
+
+          <Link to="/map">
+            <button className="bg-gradient-to-r from-green-400 to-blue-400 hover:from-green-500 hover:to-blue-500 text-white font-semibold py-3 px-6 rounded-full transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2">
+              <MapPin className="h-5 w-5" />
+              <span>🗺️ Explore Our Map</span>
+            </button>
+          </Link>
+        </div>
+      </section>
+
+      {/* Family Stats Section */}
+      <section>
+        <FamilyStats
+          showAll={showAllStats}
+          onViewAll={() => setShowAllStats(true)}
+          onClose={() => setShowAllStats(false)}
+        />
+      </section>
+
+      {/* About Section */}
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+        <div className="space-y-6">
+          <h2 className="text-3xl font-bold text-foreground">
+            About Our Family
+          </h2>
+          <div className="prose prose-lg max-w-none text-muted-foreground">
+            <p>
+              We're the Dorman family - Max and Charlotte, along with our three
+              wonderful children Oscar, Rose, and Lola. Living in beautiful
+              Scotland, we're passionate about exploring our homeland's
+              incredible landscapes, from the mysterious lochs to the towering
+              Munros.
+            </p>
+            <p>
+              This journal captures our adventures as we discover hidden gems,
+              bustling cities, peaceful villages, and breathtaking natural
+              wonders across Scotland. Each trip brings new memories,
+              challenges, and stories to share.
+            </p>
+            <p>
+              Join us as we document our journeys, rate our experiences, and
+              build a treasure trove of family memories that we'll cherish
+              forever.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <div className="bg-gradient-to-r from-orange-200 to-red-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
+              <Mountain className="h-3 w-3 text-orange-700" />
+              <span className="text-orange-800 font-medium">
+                🏔️ Highland Hikers
+              </span>
+            </div>
+            <div className="bg-gradient-to-r from-blue-200 to-cyan-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
+              <Waves className="h-3 w-3 text-blue-700" />
+              <span className="text-blue-800 font-medium">
+                🌊 Loch Explorers
+              </span>
+            </div>
+            <div className="bg-gradient-to-r from-pink-200 to-purple-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
+              <Camera className="h-3 w-3 text-pink-700" />
+              <span className="text-pink-800 font-medium">
+                📸 Memory Makers
+              </span>
+            </div>
+            <div className="bg-gradient-to-r from-green-200 to-teal-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
+              <Compass className="h-3 w-3 text-green-700" />
+              <span className="text-green-800 font-medium">
+                🧭 Adventure Seekers
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <Card className="family-card">
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Youtube className="h-5 w-5 text-red-500" />
+                <span>{youtubeVideo?.title || "Our Scotland Adventures"}</span>
+              </div>
+              {isFamilyMember && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleYoutubeEdit}
+                  className="h-8 w-8 p-0"
+                  title="Edit YouTube video"
+                >
+                  <Edit2 className="h-4 w-4" />
+                </Button>
+              )}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="aspect-video bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg flex items-center justify-center">
+              <a
+                href={youtubeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex flex-col items-center space-y-2 text-center p-6 hover:scale-105 transition-transform"
+              >
+                <Youtube className="h-12 w-12 text-red-500" />
+                <p className="font-medium">Watch Our Latest Adventure</p>
+                <p className="text-sm text-muted-foreground">
+                  Click to open in YouTube
+                </p>
+              </a>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+
+      {/* Meet Charlie Section */}
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+        <Card className="family-card overflow-hidden">
+          <div className="aspect-[4/3] bg-gradient-to-br from-amber-50 to-orange-50 overflow-hidden relative flex items-center justify-center">
+            {charlieData.image ? (
+              <img
+                src={charlieData.image}
+                alt="Charlie the dog"
+                className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+                onError={(e) => {
+                  e.target.style.display = "none";
+                  e.target.parentElement.innerHTML =
+                    '<div class="text-8xl">🐕</div><p class="text-lg font-medium text-amber-800 mt-4">Charlie</p>';
+                }}
+              />
+            ) : (
+              <>
+                <div className="text-8xl">🐕</div>
+                <p className="text-lg font-medium text-amber-800 mt-4 absolute bottom-4">
+                  Charlie
+                </p>
+              </>
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-amber-900/20 to-transparent"></div>
+          </div>
+        </Card>
+
+        <div className="space-y-6">
+          <h2 className="text-3xl font-bold text-foreground flex items-center gap-3">
+            <span className="text-4xl">🐕</span>
+            Meet Charlie
+            <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+              Sync:{" "}
+              {charlieData.image || charlieData.description.length > 100
+                ? "✅"
+                : "❌"}
+            </span>
+            {isAuthenticated && (
+              <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={async () => {
+                    try {
+                      console.log(
+                        "🔄 FORCE SYNC START - Device:",
+                        navigator.userAgent.substring(0, 50),
+                      );
+                      console.log("🧹 Clearing cache...");
+
+                      // Clear all local storage
+                      localStorage.clear();
+
+                      console.log("🔄 Fetching from Supabase...");
+
+                      // Force fresh fetch from Supabase with timeout
+                      const freshData = await Promise.race([
+                        SupabaseDatabase.getCharlieData(),
+                        new Promise((_, reject) =>
+                          setTimeout(() => reject(new Error("Timeout")), 10000),
+                        ),
+                      ]);
+
+                      console.log("✅ Supabase data received:", {
+                        hasImage: !!freshData.image,
+                        imageLength: freshData.image?.length || 0,
+                      });
+
+                      // Update UI
+                      setCharlieData(freshData);
+
+                      alert(
+                        "✅ FORCE SYNC SUCCESS!\nImage: " +
+                          (freshData.image ? "YES" : "NO") +
+                          "\nLength: " +
+                          (freshData.image?.length || 0),
+                      );
+                    } catch (error) {
+                      console.error("❌ FORCE SYNC FAILED:", error);
+                      alert(
+                        "❌ FORCE SYNC FAILED: " +
+                          error.message +
+                          "\nCheck console for details.",
+                      );
+                    }
+                  }}
+                  className="h-8 w-auto px-2 text-xs bg-red-100"
+                  title="Force Sync"
+                >
+                  🔄 FORCE
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => StorageCleanup.emergencyCleanup()}
+                  className="h-8 w-auto px-2 text-xs bg-yellow-100"
+                  title="Clear large files to free up space"
+                >
+                  🧹 CLEAN
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => StorageCleanup.nuclearReset()}
+                  className="h-8 w-auto px-2 text-xs bg-red-200"
+                  title="Nuclear option: Clear ALL local storage"
+                >
+                  💥 RESET
+                </Button>
+                {StorageHealth.isDisabled() && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={async () => {
+                      try {
+                        console.log("🔄 Manual refresh from Supabase...");
+                        const freshEntries =
+                          await SupabaseDatabase.getJournalEntries();
+                        const freshCharlie =
+                          await SupabaseDatabase.getCharlieData();
+                        const freshPins = await SupabaseDatabase.getMapPins();
+
+                        setEntries(freshEntries);
+                        setCharlieData(freshCharlie);
+                        setPins(freshPins);
+
+                        alert(
+                          `✅ Refreshed from cloud!\n${freshEntries.length} journal entries loaded`,
+                        );
+                      } catch (error) {
+                        alert(`❌ Refresh failed: ${error}`);
+                      }
+                    }}
+                    className="h-8 w-auto px-2 text-xs bg-blue-100"
+                    title="Refresh data from cloud when localStorage is disabled"
+                  >
+                    🔄 REFRESH
+                  </Button>
+                )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleCharlieEdit}
+                  className="h-8 w-8 p-0"
+                  title="Edit Charlie's section"
+                >
+                  <Edit2 className="h-4 w-4" />
+                </Button>
+              </>
+            )}
+          </h2>
+          <div className="prose prose-lg max-w-none text-muted-foreground">
+            {charlieData.description.split("\n").map((paragraph, index) => (
+              <p key={index}>{paragraph}</p>
+            ))}
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <div className="bg-gradient-to-r from-amber-200 to-yellow-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
+              <span className="text-amber-800 font-medium">
+                ❤️ Adventure Buddy
+              </span>
+            </div>
+            <div className="bg-gradient-to-r from-green-200 to-emerald-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
+              <span className="text-green-800 font-medium">
+                🥾 Trail Explorer
+              </span>
+            </div>
+            <div className="bg-gradient-to-r from-blue-200 to-cyan-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
+              <span className="text-blue-800 font-medium">📸 Photo Star</span>
+            </div>
+            <div className="bg-gradient-to-r from-purple-200 to-pink-200 px-4 py-2 rounded-full flex items-center space-x-1 shadow-md">
+              <span className="text-purple-800 font-medium">
+                ❤️ Family Heart
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Recent Entries */}
+      {recentEntries.length > 0 && (
+        <section className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-3xl font-bold text-foreground">
+              Recent Adventures
+            </h2>
+            <Link to="/journal">
+              <Button variant="outline">View All Entries</Button>
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            {recentEntries.map((entry) => {
+              const moodData = MOOD_RATINGS.find(
+                (r) => r.value === entry.moodRating,
+              );
+              return (
+                <Card
+                  key={entry.id}
+                  className="family-card overflow-hidden hover:shadow-lg transition-all duration-200 hover:scale-105"
+                >
+                  <div className="aspect-[4/3] bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center overflow-hidden relative">
+                    {entry.images.length > 0 ? (
+                      <img
+                        src={entry.images[0]}
+                        alt={entry.title}
+                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <Camera className="h-12 w-12 text-muted-foreground" />
+                    )}
+                    {/* Gradient overlay for better text readability */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-200"></div>
+                  </div>
+                  <CardContent className="p-4 flex-1">
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="font-semibold line-clamp-2 flex-1 mr-2">
+                        {entry.title}
+                      </h3>
+                      {moodData && (
+                        <span className="text-xl flex-shrink-0">
+                          {moodData.emoji}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center space-x-1 mb-2">
+                      <MapPin className="h-3 w-3 text-muted-foreground" />
+                      <p className="text-sm text-muted-foreground truncate">
+                        {entry.location}
+                      </p>
+                    </div>
+                    <p className="text-sm text-muted-foreground line-clamp-3 mb-3">
+                      {entry.content}
+                    </p>
+                    <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t border-gray-100">
+                      <div className="flex items-center space-x-1">
+                        <Calendar className="h-3 w-3" />
+                        <span>{new Date(entry.date).toLocaleDateString()}</span>
+                      </div>
+                      <div className="flex items-center space-x-1">
+                        <User className="h-3 w-3" />
+                        <span>{entry.author}</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* CTA Section */}
+      {!isAuthenticated && (
+        <section className="text-center space-y-6 py-12">
+          <Card className="family-card max-w-2xl mx-auto">
+            <CardContent className="p-8">
+              <h2 className="text-2xl font-bold mb-4">Join Our Adventure</h2>
+              <p className="text-muted-foreground mb-6">
+                You're viewing our family journal as a visitor. Dorman family
+                can log in to add new entries, upload photos and videos, and
+                update our adventure map!
+              </p>
+              <Link to="/login">
+                <Button size="lg">Family Member Login</Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </section>
+      )}
+
+      {/* YouTube Edit Dialog */}
+      <Dialog open={isYoutubeDialogOpen} onOpenChange={setIsYoutubeDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Update YouTube Video</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="youtube-title">Video Title</Label>
+              <Input
+                id="youtube-title"
+                value={tempYoutubeTitle}
+                onChange={(e) => setTempYoutubeTitle(e.target.value)}
+                placeholder="Our Scotland Adventures"
+                className="w-full"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="youtube-url">YouTube URL</Label>
+              <Input
+                id="youtube-url"
+                value={tempYoutubeUrl}
+                onChange={(e) => setTempYoutubeUrl(e.target.value)}
+                placeholder="https://www.youtube.com/watch?v=..."
+                className="w-full"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="youtube-description">Description</Label>
+              <Input
+                id="youtube-description"
+                value={tempYoutubeDescription}
+                onChange={(e) => setTempYoutubeDescription(e.target.value)}
+                placeholder="Watch our latest family adventures in Scotland"
+                className="w-full"
+              />
+            </div>
+            <div className="text-sm text-muted-foreground">
+              <p>
+                📺 Update your featured YouTube video that will sync across all
+                devices.
+              </p>
+            </div>
+            <div className="flex justify-between">
+              <div>
+                {youtubeVideo && (
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={handleYoutubeDelete}
+                  >
+                    🗑️ Delete Video
+                  </Button>
+                )}
+              </div>
+              <div className="flex space-x-2">
+                <Button variant="outline" onClick={handleYoutubeCancel}>
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleYoutubeSave}
+                  disabled={!tempYoutubeUrl.trim()}
+                >
+                  Update Video
+                </Button>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Charlie Edit Dialog */}
+      <Dialog open={isCharlieDialogOpen} onOpenChange={setIsCharlieDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Charlie's Section</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-6">
+            <div className="space-y-4">
+              <Label className="text-base font-semibold">Charlie's Photo</Label>
+
+              {/* Image Preview */}
+              {tempCharlieData.image && (
+                <div className="w-full max-w-sm mx-auto">
+                  <div className="aspect-square bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg overflow-hidden">
+                    <img
+                      src={tempCharlieData.image}
+                      alt="Charlie preview"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.style.display = "none";
+                        e.target.parentElement.innerHTML =
+                          '<div class="flex items-center justify-center h-full"><div class="text-6xl">🐕</div></div>';
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* File Upload Option */}
+              <div className="space-y-2">
+                <Label
+                  htmlFor="charlie-file-upload"
+                  className="text-sm font-medium"
+                >
+                  📱 Upload from Device
+                </Label>
+                <Input
+                  id="charlie-file-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="w-full"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Upload directly from your phone or computer (max 10MB, stored
+                  in cloud via Supabase)
+                </p>
+              </div>
+
+              {/* URL Option */}
+              <div className="space-y-2">
+                <Label
+                  htmlFor="charlie-image-url"
+                  className="text-sm font-medium"
+                >
+                  🔗 Or paste image URL
+                </Label>
+                <Input
+                  id="charlie-image-url"
+                  value={
+                    tempCharlieData.image.startsWith("data:")
+                      ? ""
+                      : tempCharlieData.image
+                  }
+                  onChange={(e) =>
+                    setTempCharlieData({
+                      ...tempCharlieData,
+                      image: e.target.value,
+                    })
+                  }
+                  placeholder="https://example.com/charlie-photo.jpg"
+                  className="w-full"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Alternative: paste an image URL from the web
+                </p>
+              </div>
+
+              {/* Clear Image Button */}
+              {tempCharlieData.image && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    setTempCharlieData({ ...tempCharlieData, image: "" })
+                  }
+                  className="w-full"
+                >
+                  🗑️ Remove Photo
+                </Button>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="charlie-description">Description</Label>
+              <Textarea
+                id="charlie-description"
+                value={tempCharlieData.description}
+                onChange={(e) =>
+                  setTempCharlieData({
+                    ...tempCharlieData,
+                    description: e.target.value,
+                  })
+                }
+                placeholder="Tell everyone about Charlie and your adventures together..."
+                className="w-full min-h-[120px]"
+              />
+              <p className="text-sm text-muted-foreground">
+                🐕 Share Charlie's story and his role in your family adventures
+              </p>
+            </div>
+            <div className="flex justify-end space-x-2">
+              <Button variant="outline" onClick={handleCharlieCancel}>
+                Cancel
+              </Button>
+              <Button onClick={handleCharlieSave}>Save Changes</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
