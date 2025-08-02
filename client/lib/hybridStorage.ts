@@ -595,9 +595,13 @@ export class HybridStorage {
             }
           });
 
-          // Add/update entries from Supabase
+          // Add/update entries from Supabase (but skip items pending deletion)
           supabaseEntries.forEach((entry) => {
-            LocalStorage.saveJournalEntry(entry);
+            if (!this.pendingDeletions.has(entry.id)) {
+              LocalStorage.saveJournalEntry(entry);
+            } else {
+              console.log(`🔄 Skipping entry ${entry.title} - pending deletion`);
+            }
           });
 
           console.log(
@@ -631,9 +635,13 @@ export class HybridStorage {
             }
           });
 
-          // Add/update pins from Supabase
+          // Add/update pins from Supabase (but skip items pending deletion)
           supabasePins.forEach((pin) => {
-            LocalStorage.saveMapPin(pin);
+            if (!this.pendingDeletions.has(pin.id)) {
+              LocalStorage.saveMapPin(pin);
+            } else {
+              console.log(`🔄 Skipping pin ${pin.title} - pending deletion`);
+            }
           });
 
           this.notifyListeners();
@@ -670,9 +678,13 @@ export class HybridStorage {
             `📊 SYNC: Local items before: ${localItems.length}, Supabase items: ${supabaseItems.length}`,
           );
 
-          // Add/update items from Supabase
+          // Add/update items from Supabase (but skip items pending deletion)
           supabaseItems.forEach((item) => {
-            LocalStorage.saveWishlistItem(item);
+            if (!this.pendingDeletions.has(item.id)) {
+              LocalStorage.saveWishlistItem(item);
+            } else {
+              console.log(`🔄 Skipping wishlist item ${item.title} - pending deletion`);
+            }
           });
 
           this.notifyListeners();
