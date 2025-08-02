@@ -167,10 +167,18 @@ export default function Map() {
             </div>
           </div>
         </div>
-        <Button onClick={() => setIsCreatePinOpen(true)} className="gap-2">
-          <Plus className="h-4 w-4" />
-          Add Pin
-        </Button>
+        {isAuthenticated && (
+          <Button onClick={() => setIsCreatePinOpen(true)} className="gap-2">
+            <Plus className="h-4 w-4" />
+            Add Pin
+          </Button>
+        )}
+        {!isAuthenticated && (
+          <div className="text-center">
+            <p className="text-sm text-gray-500">View-only mode</p>
+            <p className="text-xs text-gray-400">Login to add pins</p>
+          </div>
+        )}
       </div>
 
       {isLoading ? (
