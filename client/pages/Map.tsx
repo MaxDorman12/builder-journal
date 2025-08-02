@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { SupabaseStorage } from "@/lib/supabaseOnly";
+import { ScotlandMap } from "@/components/ScotlandMap";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,7 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { MapPin, Plus, Edit2, Trash2 } from "lucide-react";
+import { MapPin, Plus, Edit2, Trash2, Map as MapIcon } from "lucide-react";
 import { JournalEntry, MapPin as MapPinType } from "@shared/api";
 
 export default function Map() {
