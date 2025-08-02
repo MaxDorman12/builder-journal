@@ -458,7 +458,7 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
 
                 {/* Cloud storage info */}
                 <p className="text-xs text-gray-500 mt-1">
-                  📁 Photos stored in cloud • Max 25MB per photo • Syncs across all devices
+                  📁 Cloud storage (25MB max) • Fallback to local storage if unavailable • Syncs across devices
                 </p>
               </div>
               
