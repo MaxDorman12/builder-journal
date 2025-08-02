@@ -122,6 +122,16 @@ export default function Map() {
     }
   };
 
+  const handleMapClick = (lat: number, lng: number) => {
+    setLatitude(lat.toFixed(6));
+    setLongitude(lng.toFixed(6));
+    setIsCreatePinOpen(true);
+  };
+
+  const handlePinClick = (pin: MapPinType) => {
+    setSelectedPin(pin);
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="container mx-auto px-4 py-8">
