@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
-import { WifiOff, Wifi, RefreshCw } from 'lucide-react';
-import { SupabaseDatabase } from '@/lib/supabaseDatabase';
+import React, { useState, useEffect } from "react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { WifiOff, Wifi, RefreshCw } from "lucide-react";
+import { SupabaseDatabase } from "@/lib/supabaseDatabase";
 
 export function NetworkStatus() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -15,21 +15,21 @@ export function NetworkStatus() {
       setIsOnline(true);
       checkSupabaseConnection();
     };
-    
+
     const handleOffline = () => {
       setIsOnline(false);
       setIsSupabaseConnected(false);
     };
 
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
 
     // Initial connection check
     checkSupabaseConnection();
 
     return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
     };
   }, []);
 
@@ -44,7 +44,9 @@ export function NetworkStatus() {
       }
     } catch (error) {
       setIsSupabaseConnected(false);
-      setLastError(error instanceof Error ? error.message : 'Connection test failed');
+      setLastError(
+        error instanceof Error ? error.message : "Connection test failed",
+      );
     }
   };
 
@@ -73,18 +75,21 @@ export function NetworkStatus() {
               {!isOnline ? (
                 <div>
                   <strong>No Internet Connection</strong>
-                  <p className="text-sm mt-1">You're currently offline. Some features may not work.</p>
+                  <p className="text-sm mt-1">
+                    You're currently offline. Some features may not work.
+                  </p>
                 </div>
               ) : (
                 <div>
                   <strong>Database Connection Issue</strong>
                   <p className="text-sm mt-1">
-                    {lastError || "Unable to connect to the database. The app will work with cached data."}
+                    {lastError ||
+                      "Unable to connect to the database. The app will work with cached data."}
                   </p>
                 </div>
               )}
             </AlertDescription>
-            
+
             {isOnline && (
               <Button
                 onClick={retryConnection}
@@ -98,7 +103,7 @@ export function NetworkStatus() {
                 ) : (
                   <Wifi className="h-3 w-3 mr-1" />
                 )}
-                {isRetrying ? 'Retrying...' : 'Retry'}
+                {isRetrying ? "Retrying..." : "Retry"}
               </Button>
             )}
           </div>

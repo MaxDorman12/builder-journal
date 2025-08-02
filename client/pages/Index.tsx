@@ -75,15 +75,16 @@ export default function Index() {
       console.log("🔄 Loading data from Supabase...");
 
       // Load data with individual error handling for each service
-      const [entriesData, pinsData, charlieData, youtubeData] = await Promise.allSettled([
-        SupabaseStorage.getJournalEntries(),
-        SupabaseStorage.getMapPins(),
-        SupabaseStorage.getCharlieData(),
-        SupabaseStorage.getYouTubeVideo(),
-      ]);
+      const [entriesData, pinsData, charlieData, youtubeData] =
+        await Promise.allSettled([
+          SupabaseStorage.getJournalEntries(),
+          SupabaseStorage.getMapPins(),
+          SupabaseStorage.getCharlieData(),
+          SupabaseStorage.getYouTubeVideo(),
+        ]);
 
       // Handle entries
-      if (entriesData.status === 'fulfilled') {
+      if (entriesData.status === "fulfilled") {
         setEntries(entriesData.value);
       } else {
         console.warn("⚠️ Failed to load journal entries, using empty array");
@@ -91,7 +92,7 @@ export default function Index() {
       }
 
       // Handle pins
-      if (pinsData.status === 'fulfilled') {
+      if (pinsData.status === "fulfilled") {
         setPins(pinsData.value);
       } else {
         console.warn("⚠️ Failed to load map pins, using empty array");
@@ -99,18 +100,19 @@ export default function Index() {
       }
 
       // Handle Charlie data with fallback
-      if (charlieData.status === 'fulfilled') {
+      if (charlieData.status === "fulfilled") {
         setCharlieData(charlieData.value);
       } else {
         console.warn("⚠️ Failed to load Charlie data, using fallback");
         setCharlieData({
           image: "",
-          description: "No family adventure is complete without our beloved four-legged companion, Charlie! This loyal and energetic member of the Dorman family brings joy and excitement to every journey we embark on across Scotland.\n\nWhether it's hiking through the Scottish Highlands, exploring sandy beaches along the coast, or discovering dog-friendly trails in the countryside, Charlie is always ready for the next adventure with his tail wagging and spirit high.\n\nHis favorite activities include chasing sticks by the lochs, making friends with other dogs at campsites, and of course, being the star of many of our family photos. Charlie truly makes every adventure more memorable! 🐾"
+          description:
+            "No family adventure is complete without our beloved four-legged companion, Charlie! This loyal and energetic member of the Dorman family brings joy and excitement to every journey we embark on across Scotland.\n\nWhether it's hiking through the Scottish Highlands, exploring sandy beaches along the coast, or discovering dog-friendly trails in the countryside, Charlie is always ready for the next adventure with his tail wagging and spirit high.\n\nHis favorite activities include chasing sticks by the lochs, making friends with other dogs at campsites, and of course, being the star of many of our family photos. Charlie truly makes every adventure more memorable! 🐾",
         });
       }
 
       // Handle YouTube data
-      if (youtubeData.status === 'fulfilled') {
+      if (youtubeData.status === "fulfilled") {
         setYoutubeVideo(youtubeData.value);
       } else {
         console.warn("⚠️ Failed to load YouTube data, using null");
@@ -122,7 +124,11 @@ export default function Index() {
       console.error("❌ Failed to load data:", error);
 
       // If this is a network error and we haven't retried, try again
-      if (retryCount < 1 && error instanceof Error && error.message.includes('fetch')) {
+      if (
+        retryCount < 1 &&
+        error instanceof Error &&
+        error.message.includes("fetch")
+      ) {
         console.log("🔄 Retrying data load due to network error...");
         setTimeout(() => loadData(retryCount + 1), 2000);
         return;
@@ -133,7 +139,8 @@ export default function Index() {
       setPins([]);
       setCharlieData({
         image: "",
-        description: "No family adventure is complete without our beloved four-legged companion, Charlie! This loyal and energetic member of the Dorman family brings joy and excitement to every journey we embark on across Scotland.\n\nWhether it's hiking through the Scottish Highlands, exploring sandy beaches along the coast, or discovering dog-friendly trails in the countryside, Charlie is always ready for the next adventure with his tail wagging and spirit high.\n\nHis favorite activities include chasing sticks by the lochs, making friends with other dogs at campsites, and of course, being the star of many of our family photos. Charlie truly makes every adventure more memorable! 🐾"
+        description:
+          "No family adventure is complete without our beloved four-legged companion, Charlie! This loyal and energetic member of the Dorman family brings joy and excitement to every journey we embark on across Scotland.\n\nWhether it's hiking through the Scottish Highlands, exploring sandy beaches along the coast, or discovering dog-friendly trails in the countryside, Charlie is always ready for the next adventure with his tail wagging and spirit high.\n\nHis favorite activities include chasing sticks by the lochs, making friends with other dogs at campsites, and of course, being the star of many of our family photos. Charlie truly makes every adventure more memorable! 🐾",
       });
       setYoutubeVideo(null);
     } finally {

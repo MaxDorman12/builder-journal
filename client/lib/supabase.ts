@@ -13,11 +13,11 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   },
   global: {
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
   },
   db: {
-    schema: 'public',
+    schema: "public",
   },
   realtime: {
     params: {
