@@ -83,6 +83,24 @@ export default function Map() {
     }
   }, [isAuthenticated]);
 
+  // Handle prefill data from journal entry creation
+  useEffect(() => {
+    const state = location.state as any;
+    if (state?.createPin && state?.prefillData) {
+      console.log("📍 Auto-opening pin creation from journal entry:", state.prefillData);
+
+      // Prefill the form with data from journal entry
+      setTitle(state.prefillData.title || "");
+      setDescription(state.prefillData.description || "");
+
+      // Open the create pin dialog
+      setIsCreatePinOpen(true);
+
+      // Clear the location state to prevent re-opening on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
+
   const handleCreatePin = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -136,7 +154,7 @@ export default function Map() {
 
       console.log("✅ Map pin created successfully");
     } catch (error) {
-      console.error("❌ Failed to create map pin:", error);
+      console.error("��� Failed to create map pin:", error);
       console.error("❌ Error details:", error);
 
       // More specific error message
