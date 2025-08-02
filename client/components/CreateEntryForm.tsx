@@ -206,7 +206,7 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
 
             {/* Area Type and Mood */}
             <div className="grid grid-cols-2 gap-4">
-              <div>
+              <div className="space-y-2">
                 <Label htmlFor="areaType">Area Type</Label>
                 <Select value={areaType} onValueChange={setAreaType}>
                   <SelectTrigger>
@@ -220,6 +220,18 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
                     ))}
                   </SelectContent>
                 </Select>
+
+                {areaType === "other" && (
+                  <div>
+                    <Label htmlFor="customAreaType">Custom Area Type</Label>
+                    <Input
+                      id="customAreaType"
+                      value={customAreaType}
+                      onChange={(e) => setCustomAreaType(e.target.value)}
+                      placeholder="e.g., Castle, Museum, Park, etc."
+                    />
+                  </div>
+                )}
               </div>
               <div>
                 <Label htmlFor="mood">Mood Rating</Label>
