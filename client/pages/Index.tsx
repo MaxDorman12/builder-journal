@@ -68,35 +68,74 @@ export default function Index() {
 
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load all data from Supabase
-  const loadData = async () => {
+  // Load all data from Supabase with improved error handling
+  const loadData = async (retryCount = 0) => {
     try {
       setIsLoading(true);
       console.log("🔄 Loading data from Supabase...");
 
-      const [entriesData, pinsData, charlieData, youtubeData] =
-        await Promise.all([
-          SupabaseStorage.getJournalEntries(),
-          SupabaseStorage.getMapPins(),
-          SupabaseStorage.getCharlieData(),
-          SupabaseStorage.getYouTubeVideo(),
-        ]);
+      // Load data with individual error handling for each service
+      const [entriesData, pinsData, charlieData, youtubeData] = await Promise.allSettled([
+        SupabaseStorage.getJournalEntries(),
+        SupabaseStorage.getMapPins(),
+        SupabaseStorage.getCharlieData(),
+        SupabaseStorage.getYouTubeVideo(),
+      ]);
 
-      setEntries(entriesData);
-      setPins(pinsData);
-      setCharlieData(charlieData);
-      setYoutubeVideo(youtubeData);
+      // Handle entries
+      if (entriesData.status === 'fulfilled') {
+        setEntries(entriesData.value);
+      } else {
+        console.warn("⚠️ Failed to load journal entries, using empty array");
+        setEntries([]);
+      }
 
-      console.log("✅ Data loaded successfully", {
-        entries: entriesData.length,
-        pins: pinsData.length,
-        hasCharlieImage: !!charlieData.image,
-        charlieDescription: charlieData.description,
-        charlieDescriptionLength: charlieData.description?.length,
-        hasYoutube: !!youtubeData,
-      });
+      // Handle pins
+      if (pinsData.status === 'fulfilled') {
+        setPins(pinsData.value);
+      } else {
+        console.warn("⚠️ Failed to load map pins, using empty array");
+        setPins([]);
+      }
+
+      // Handle Charlie data with fallback
+      if (charlieData.status === 'fulfilled') {
+        setCharlieData(charlieData.value);
+      } else {
+        console.warn("⚠️ Failed to load Charlie data, using fallback");
+        setCharlieData({
+          image: "",
+          description: "No family adventure is complete without our beloved four-legged companion, Charlie! This loyal and energetic member of the Dorman family brings joy and excitement to every journey we embark on across Scotland.\n\nWhether it's hiking through the Scottish Highlands, exploring sandy beaches along the coast, or discovering dog-friendly trails in the countryside, Charlie is always ready for the next adventure with his tail wagging and spirit high.\n\nHis favorite activities include chasing sticks by the lochs, making friends with other dogs at campsites, and of course, being the star of many of our family photos. Charlie truly makes every adventure more memorable! 🐾"
+        });
+      }
+
+      // Handle YouTube data
+      if (youtubeData.status === 'fulfilled') {
+        setYoutubeVideo(youtubeData.value);
+      } else {
+        console.warn("⚠️ Failed to load YouTube data, using null");
+        setYoutubeVideo(null);
+      }
+
+      console.log("✅ Data loading completed with fallbacks where needed");
     } catch (error) {
       console.error("❌ Failed to load data:", error);
+
+      // If this is a network error and we haven't retried, try again
+      if (retryCount < 1 && error instanceof Error && error.message.includes('fetch')) {
+        console.log("🔄 Retrying data load due to network error...");
+        setTimeout(() => loadData(retryCount + 1), 2000);
+        return;
+      }
+
+      // Set fallback data if everything fails
+      setEntries([]);
+      setPins([]);
+      setCharlieData({
+        image: "",
+        description: "No family adventure is complete without our beloved four-legged companion, Charlie! This loyal and energetic member of the Dorman family brings joy and excitement to every journey we embark on across Scotland.\n\nWhether it's hiking through the Scottish Highlands, exploring sandy beaches along the coast, or discovering dog-friendly trails in the countryside, Charlie is always ready for the next adventure with his tail wagging and spirit high.\n\nHis favorite activities include chasing sticks by the lochs, making friends with other dogs at campsites, and of course, being the star of many of our family photos. Charlie truly makes every adventure more memorable! 🐾"
+      });
+      setYoutubeVideo(null);
     } finally {
       setIsLoading(false);
     }
