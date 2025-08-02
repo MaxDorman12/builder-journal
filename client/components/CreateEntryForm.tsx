@@ -172,6 +172,29 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
     }
   };
 
+  const handleCreateMapPin = () => {
+    if (createdEntry) {
+      // Navigate to map page with prefilled data
+      navigate('/map', {
+        state: {
+          createPin: true,
+          prefillData: {
+            title: createdEntry.title,
+            description: `Journal entry: ${createdEntry.content.substring(0, 100)}${createdEntry.content.length > 100 ? '...' : ''}`,
+            journalEntryId: createdEntry.id,
+            location: createdEntry.location
+          }
+        }
+      });
+    }
+    setShowMapPinDialog(false);
+  };
+
+  const handleSkipMapPin = () => {
+    setShowMapPinDialog(false);
+    setCreatedEntry(null);
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
