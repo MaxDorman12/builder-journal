@@ -32,6 +32,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { JournalEntry } from "@shared/api";
+import { DatabaseTest } from "@/components/DatabaseTest";
 
 export default function Journal() {
   const { isAuthenticated } = useAuth();
