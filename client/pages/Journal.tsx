@@ -35,11 +35,14 @@ import { JournalEntry } from "@shared/api";
 
 export default function Journal() {
   const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [editingEntry, setEditingEntry] = useState<JournalEntry | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedFilter, setSelectedFilter] = useState<string>("all");
+  const [showMapPinDialog, setShowMapPinDialog] = useState(false);
+  const [createdEntry, setCreatedEntry] = useState<JournalEntry | null>(null);
 
   const loadEntries = async () => {
     try {
