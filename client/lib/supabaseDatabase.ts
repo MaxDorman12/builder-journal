@@ -556,11 +556,11 @@ export class SupabaseDatabase {
         longitude: row.longitude,
         title: row.title,
         description: row.description || "",
-        areaType: row.area_type || "highlands",
-        images: row.images ? JSON.parse(row.images) : [],
-        updatedBy: row.updated_by || "user",
+        areaType: row.type || "visited", // Map 'type' column to areaType
+        images: [], // No images column in current schema
+        updatedBy: "user", // Default value since column doesn't exist
         createdAt: row.created_at,
-        updatedAt: row.updated_at || row.created_at,
+        updatedAt: row.created_at, // Use created_at since updated_at doesn't exist
       }));
 
       console.log(`✅ Loaded ${pins.length} map pins from Supabase`);
