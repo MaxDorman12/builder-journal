@@ -1,426 +1,187 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { LocalStorage } from "@/lib/storage";
-import { HybridStorage } from "@/lib/hybridStorage";
+import { SupabaseStorage } from "@/lib/supabaseOnly";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  Search,
-  Plus,
-  Heart,
-  MessageCircle,
-  Calendar,
-  MapPin,
-  Camera,
-  Video,
-  Filter,
-} from "lucide-react";
-import { JournalEntry, MOOD_RATINGS, AREA_TYPES } from "@shared/api";
-import { JournalEntryCard } from "@/components/JournalEntryCard";
 import { CreateEntryForm } from "@/components/CreateEntryForm";
 import { EditEntryForm } from "@/components/EditEntryForm";
+import { JournalEntryCard } from "@/components/JournalEntryCard";
+import { Badge } from "@/components/ui/badge";
+import { BookOpen, Plus } from "lucide-react";
+import { JournalEntry } from "@shared/api";
 
 export default function Journal() {
-  const { isFamilyMember } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [entries, setEntries] = useState<JournalEntry[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterAreaType, setFilterAreaType] = useState<string>("");
-  const [filterMoodRating, setFilterMoodRating] = useState<number | null>(null);
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [editingEntry, setEditingEntry] = useState<JournalEntry | null>(null);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const loadEntries = async () => {
+    try {
+      setIsLoading(true);
+      const allEntries = await SupabaseStorage.getJournalEntries();
+      setEntries(allEntries);
+      console.log("📖 Entries loaded from Supabase:", {
+        count: allEntries.length,
+        entries: allEntries,
+      });
+    } catch (error) {
+      console.error("❌ Failed to load entries:", error);
+      setEntries([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    loadEntries();
-
-    // Listen for real-time updates from HybridStorage
-    const unsubscribe = HybridStorage.onUpdate(() => {
-      console.log(
-        "🔄 Real-time update received, refreshing journal entries...",
-      );
+    if (isAuthenticated) {
       loadEntries();
-    });
 
-    // Cleanup listener on unmount
-    return () => {
-      unsubscribe();
-    };
-  }, []);
-
-  const loadEntries = () => {
-    console.log("📖 Journal page loading entries...");
-
-    try {
-      const allEntries = HybridStorage.getJournalEntries();
-      console.log("📖 Entries loaded from HybridStorage:", {
-        count: allEntries.length,
-        entries: allEntries.map((e) => ({
-          id: e.id,
-          title: e.title,
-          createdAt: e.createdAt,
-        })),
+      // Listen for real-time updates
+      const unsubscribe = SupabaseStorage.onUpdate(() => {
+        console.log("🔄 Real-time update received, reloading entries...");
+        loadEntries();
       });
 
-      setEntries(
-        allEntries.sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-        ),
-      );
-
-      if (allEntries.length === 0) {
-        console.warn(
-          "⚠️ No entries found in HybridStorage - loading directly from Firebase...",
-        );
-
-        // Load directly from Supabase when localStorage is disabled
-        import("@/lib/supabaseDatabase").then(({ SupabaseDatabase }) => {
-          SupabaseDatabase.getJournalEntries()
-            .then((supabaseEntries) => {
-              console.log(
-                `🔄 Loaded ${supabaseEntries.length} entries directly from Supabase!`,
-              );
-              if (supabaseEntries.length > 0) {
-                setEntries(
-                  supabaseEntries.sort(
-                    (a, b) =>
-                      new Date(b.createdAt).getTime() -
-                      new Date(a.createdAt).getTime(),
-                  ),
-                );
-                console.log(
-                  "✅ Journal entries loaded successfully from Firebase",
-                );
-              }
-            })
-            .catch((err) => {
-              console.error("❌ Direct Firebase load failed:", err);
-            });
-        });
-      }
-    } catch (error) {
-      console.error("❌ Error loading entries:", error);
+      return unsubscribe;
     }
-  };
-
-  const filteredEntries = entries.filter((entry) => {
-    const matchesSearch =
-      entry.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      entry.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      entry.location.toLowerCase().includes(searchTerm.toLowerCase());
-
-    const matchesAreaType =
-      !filterAreaType || entry.areaType === filterAreaType;
-    const matchesMoodRating =
-      filterMoodRating === null || entry.moodRating === filterMoodRating;
-
-    return matchesSearch && matchesAreaType && matchesMoodRating;
-  });
-
-  const handleEntryCreated = () => {
-    loadEntries();
-    setIsCreateDialogOpen(false);
-  };
+  }, [isAuthenticated]);
 
   const handleLike = async (entryId: string) => {
-    LocalStorage.toggleLike(entryId);
-    // Update in cloud if available
-    if (HybridStorage.isCloudEnabled()) {
-      const entry = HybridStorage.getJournalEntries().find(
-        (e) => e.id === entryId,
-      );
+    try {
+      // Get current entry, toggle like, and save back
+      const entry = entries.find((e) => e.id === entryId);
       if (entry) {
-        await HybridStorage.saveJournalEntry(entry);
+        const updatedEntry = {
+          ...entry,
+          likes: (entry.likes || 0) + (entry.isLiked ? -1 : 1),
+          isLiked: !entry.isLiked,
+          updatedAt: new Date().toISOString(),
+        };
+        await SupabaseStorage.saveJournalEntry(updatedEntry);
+        // Update local state immediately
+        setEntries((prev) =>
+          prev.map((e) => (e.id === entryId ? updatedEntry : e))
+        );
       }
+    } catch (error) {
+      console.error("❌ Failed to toggle like:", error);
     }
-    loadEntries();
-  };
-
-  const handleComment = (entryId: string) => {
-    loadEntries(); // Reload entries to show new comments
-  };
-
-  const handleEdit = (entry: JournalEntry) => {
-    setEditingEntry(entry);
-    setIsEditDialogOpen(true);
   };
 
   const handleDelete = async (entryId: string) => {
-    await HybridStorage.deleteJournalEntry(entryId);
-    loadEntries();
+    try {
+      await SupabaseStorage.deleteJournalEntry(entryId);
+      setEntries((prev) => prev.filter((e) => e.id !== entryId));
+    } catch (error) {
+      console.error("❌ Failed to delete entry:", error);
+    }
   };
 
-  const handleEntryUpdated = () => {
-    loadEntries();
-    setIsEditDialogOpen(false);
-    setEditingEntry(null);
+  const handleEntryCreated = async (entry: JournalEntry) => {
+    try {
+      await SupabaseStorage.saveJournalEntry(entry);
+      setEntries((prev) => [entry, ...prev]);
+      setIsCreateFormOpen(false);
+    } catch (error) {
+      console.error("❌ Failed to create entry:", error);
+    }
   };
+
+  const handleEntryUpdated = async (updatedEntry: JournalEntry) => {
+    try {
+      await SupabaseStorage.saveJournalEntry(updatedEntry);
+      setEntries((prev) =>
+        prev.map((e) => (e.id === updatedEntry.id ? updatedEntry : e))
+      );
+      setEditingEntry(null);
+    } catch (error) {
+      console.error("❌ Failed to update entry:", error);
+    }
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Journal</h1>
+          <p className="text-gray-600">Please log in to view journal entries.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-4 md:space-y-6">
-      {/* Header */}
-      <div className="flex flex-col gap-4">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-            Family Journal
-          </h1>
-          <p className="text-muted-foreground text-sm md:text-base">
-            {entries.length} adventures documented and counting!
-          </p>
-          {!isFamilyMember && (
-            <p className="text-xs md:text-sm text-blue-600 bg-blue-50 px-3 py-1 rounded-full inline-block mt-2">
-              💭 Visitors can like and comment on our adventures!
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-3">
+          <BookOpen className="h-8 w-8 text-blue-600" />
+          <div>
+            <h1 className="text-3xl font-bold">Family Journal</h1>
+            <p className="text-gray-600">
+              Capturing our Scottish adventures
+              {entries.length > 0 && (
+                <Badge variant="secondary" className="ml-2">
+                  {entries.length} entries
+                </Badge>
+              )}
             </p>
-          )}
-        </div>
-
-        {isFamilyMember && (
-          <Dialog
-            open={isCreateDialogOpen}
-            onOpenChange={setIsCreateDialogOpen}
-          >
-            <DialogTrigger asChild>
-              <Button size="lg" className="flex items-center space-x-2">
-                <Plus className="h-5 w-5" />
-                <span>Add New Entry</span>
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>Create New Journal Entry</DialogTitle>
-                <DialogDescription>
-                  Document your Scotland adventure with photos, videos, and
-                  memories.
-                </DialogDescription>
-              </DialogHeader>
-              <CreateEntryForm onEntryCreated={handleEntryCreated} />
-            </DialogContent>
-          </Dialog>
-        )}
-
-        {/* Edit Entry Dialog */}
-        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Edit Journal Entry</DialogTitle>
-              <DialogDescription>
-                Update your adventure details, photos, and memories.
-              </DialogDescription>
-            </DialogHeader>
-            {editingEntry && (
-              <EditEntryForm
-                entry={editingEntry}
-                onEntryUpdated={handleEntryUpdated}
-              />
-            )}
-          </DialogContent>
-        </Dialog>
-      </div>
-
-      {/* Search and Filters - Mobile optimized */}
-      <Card className="family-card">
-        <CardContent className="p-4 md:p-6">
-          <div className="space-y-4">
-            <div className="w-full">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search entries, locations..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 text-base" // Prevents zoom on iOS
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2 md:flex md:gap-2">
-              <select
-                value={filterAreaType}
-                onChange={(e) => setFilterAreaType(e.target.value)}
-                className="px-3 py-2 border border-input bg-background rounded-md text-sm"
-              >
-                <option value="">All Areas</option>
-                {AREA_TYPES.map((type) => (
-                  <option key={type.value} value={type.value}>
-                    {type.label}
-                  </option>
-                ))}
-              </select>
-
-              <select
-                value={filterMoodRating || ""}
-                onChange={(e) =>
-                  setFilterMoodRating(
-                    e.target.value ? Number(e.target.value) : null,
-                  )
-                }
-                className="px-3 py-2 border border-input bg-background rounded-md text-sm"
-              >
-                <option value="">All Ratings</option>
-                {MOOD_RATINGS.map((rating) => (
-                  <option key={rating.value} value={rating.value}>
-                    {rating.emoji} {rating.label}
-                  </option>
-                ))}
-              </select>
-            </div>
           </div>
-
-          {(searchTerm || filterAreaType || filterMoodRating) && (
-            <div className="flex items-center gap-2 mt-3">
-              <span className="text-sm text-muted-foreground">Filters:</span>
-              {searchTerm && (
-                <Badge variant="secondary">Search: {searchTerm}</Badge>
-              )}
-              {filterAreaType && (
-                <Badge variant="secondary">
-                  {AREA_TYPES.find((t) => t.value === filterAreaType)?.label}
-                </Badge>
-              )}
-              {filterMoodRating && (
-                <Badge variant="secondary">
-                  {
-                    MOOD_RATINGS.find((r) => r.value === filterMoodRating)
-                      ?.emoji
-                  }{" "}
-                  Rating: {filterMoodRating}
-                </Badge>
-              )}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setSearchTerm("");
-                  setFilterAreaType("");
-                  setFilterMoodRating(null);
-                }}
-              >
-                Clear All
-              </Button>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Stats - Mobile optimized */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-        <Card className="family-card">
-          <CardContent className="flex items-center space-x-3 p-4">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <Calendar className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <p className="text-lg font-bold">{filteredEntries.length}</p>
-              <p className="text-xs text-muted-foreground">Entries</p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="family-card">
-          <CardContent className="flex items-center space-x-3 p-4">
-            <div className="p-2 bg-accent/10 rounded-lg">
-              <Camera className="h-5 w-5 text-accent" />
-            </div>
-            <div>
-              <p className="text-lg font-bold">
-                {filteredEntries.reduce(
-                  (sum, entry) => sum + entry.images.length,
-                  0,
-                )}
-              </p>
-              <p className="text-xs text-muted-foreground">Photos</p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="family-card">
-          <CardContent className="flex items-center space-x-3 p-4">
-            <div className="p-2 bg-purple-100 rounded-lg">
-              <Video className="h-5 w-5 text-purple-600" />
-            </div>
-            <div>
-              <p className="text-lg font-bold">
-                {filteredEntries.reduce(
-                  (sum, entry) => sum + entry.videos.length,
-                  0,
-                )}
-              </p>
-              <p className="text-xs text-muted-foreground">Videos</p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="family-card">
-          <CardContent className="flex items-center space-x-3 p-4">
-            <div className="p-2 bg-red-100 rounded-lg">
-              <Heart className="h-5 w-5 text-red-600" />
-            </div>
-            <div>
-              <p className="text-lg font-bold">
-                {filteredEntries.reduce((sum, entry) => sum + entry.likes, 0)}
-              </p>
-              <p className="text-xs text-muted-foreground">Likes</p>
-            </div>
-          </CardContent>
-        </Card>
+        </div>
+        <Button onClick={() => setIsCreateFormOpen(true)} className="gap-2">
+          <Plus className="h-4 w-4" />
+          New Entry
+        </Button>
       </div>
 
-      {/* Entries */}
-      {filteredEntries.length === 0 ? (
-        <Card className="family-card">
-          <CardContent className="text-center py-12">
-            {entries.length === 0 ? (
-              <>
-                <Camera className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">
-                  No Journal Entries Yet
-                </h3>
-                <p className="text-muted-foreground mb-4">
-                  Start documenting your family adventures!
-                </p>
-                {isFamilyMember && (
-                  <Button onClick={() => setIsCreateDialogOpen(true)}>
-                    Create First Entry
-                  </Button>
-                )}
-              </>
-            ) : (
-              <>
-                <Filter className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">
-                  No Entries Match Your Filters
-                </h3>
-                <p className="text-muted-foreground">
-                  Try adjusting your search terms or filters
-                </p>
-              </>
-            )}
-          </CardContent>
-        </Card>
+      {isLoading ? (
+        <div className="text-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading journal entries...</p>
+        </div>
+      ) : entries.length === 0 ? (
+        <div className="text-center py-12">
+          <BookOpen className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-gray-600 mb-2">
+            No Journal Entries Yet
+          </h2>
+          <p className="text-gray-500 mb-6">
+            Start documenting your family adventures in Scotland!
+          </p>
+          <Button onClick={() => setIsCreateFormOpen(true)} className="gap-2">
+            <Plus className="h-4 w-4" />
+            Create Your First Entry
+          </Button>
+        </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-          {filteredEntries.map((entry) => (
+        <div className="space-y-6">
+          {entries.map((entry) => (
             <JournalEntryCard
               key={entry.id}
               entry={entry}
               onLike={handleLike}
-              onComment={handleComment}
-              onEdit={isFamilyMember ? handleEdit : undefined}
-              onDelete={isFamilyMember ? handleDelete : undefined}
-              isFamilyMember={isFamilyMember}
+              onEdit={setEditingEntry}
+              onDelete={handleDelete}
             />
           ))}
         </div>
+      )}
+
+      {/* Create Entry Form */}
+      {isCreateFormOpen && (
+        <CreateEntryForm
+          onEntryCreated={handleEntryCreated}
+          onCancel={() => setIsCreateFormOpen(false)}
+        />
+      )}
+
+      {/* Edit Entry Form */}
+      {editingEntry && (
+        <EditEntryForm
+          entry={editingEntry}
+          onEntryUpdated={handleEntryUpdated}
+          onCancel={() => setEditingEntry(null)}
+        />
       )}
     </div>
   );
