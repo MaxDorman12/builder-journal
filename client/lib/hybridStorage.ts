@@ -280,7 +280,10 @@ export class HybridStorage {
       "🔍 DELETE MAP PIN: Supabase enabled status:",
       this.supabaseEnabled,
     );
-    console.log("🔍 DELETE MAP PIN: Current pending deletions:", Array.from(this.pendingDeletions));
+    console.log(
+      "🔍 DELETE MAP PIN: Current pending deletions:",
+      Array.from(this.pendingDeletions),
+    );
 
     // Track this deletion to prevent race conditions
     this.pendingDeletions.add(id);
@@ -314,7 +317,9 @@ export class HybridStorage {
         // Still remove from pending deletions after some time
         setTimeout(() => {
           this.pendingDeletions.delete(id);
-          console.log("🔄 DELETE MAP PIN: Removed from pending deletions tracking (after error)");
+          console.log(
+            "🔄 DELETE MAP PIN: Removed from pending deletions tracking (after error)",
+          );
         }, 3000); // 3 seconds (reduced from 5 seconds)
       }
     } else {
@@ -669,15 +674,23 @@ export class HybridStorage {
           });
 
           // Add/update pins from Supabase (but skip items pending deletion)
-          console.log("🔍 MAP PINS SYNC: Current pending deletions:", Array.from(this.pendingDeletions));
-          console.log("🔍 MAP PINS SYNC: Supabase pin IDs:", supabasePins.map(p => p.id));
+          console.log(
+            "🔍 MAP PINS SYNC: Current pending deletions:",
+            Array.from(this.pendingDeletions),
+          );
+          console.log(
+            "🔍 MAP PINS SYNC: Supabase pin IDs:",
+            supabasePins.map((p) => p.id),
+          );
 
           supabasePins.forEach((pin) => {
             if (!this.pendingDeletions.has(pin.id)) {
               console.log(`📍 Adding/updating pin: ${pin.title} (${pin.id})`);
               LocalStorage.saveMapPin(pin);
             } else {
-              console.log(`🔄 Skipping pin ${pin.title} (${pin.id}) - pending deletion`);
+              console.log(
+                `🔄 Skipping pin ${pin.title} (${pin.id}) - pending deletion`,
+              );
             }
           });
 
@@ -859,7 +872,10 @@ export class HybridStorage {
         const localWishlist = LocalStorage.getWishlistItems();
         const wishlistIds = new Set(wishlist.map((i) => i.id));
         localWishlist.forEach((local) => {
-          if (!wishlistIds.has(local.id) && !this.pendingDeletions.has(local.id)) {
+          if (
+            !wishlistIds.has(local.id) &&
+            !this.pendingDeletions.has(local.id)
+          ) {
             LocalStorage.deleteWishlistItem(local.id);
           }
         });

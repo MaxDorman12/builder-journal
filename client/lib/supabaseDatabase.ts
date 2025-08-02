@@ -385,7 +385,10 @@ export class SupabaseDatabase {
       clearTimeout(timeoutId);
 
       if (error) {
-        console.error("❌ Failed to delete journal entry:", error.message || error);
+        console.error(
+          "❌ Failed to delete journal entry:",
+          error.message || error,
+        );
 
         // Check if it's a network connectivity issue
         if (
@@ -396,11 +399,15 @@ export class SupabaseDatabase {
           error.message?.toLowerCase().includes("connection") ||
           error.code === "PGRST301"
         ) {
-          console.log("🌐 Network connectivity issue during journal entry deletion - skipping");
+          console.log(
+            "🌐 Network connectivity issue during journal entry deletion - skipping",
+          );
           return;
         }
 
-        throw new Error(`Failed to delete journal entry: ${error.message || error}`);
+        throw new Error(
+          `Failed to delete journal entry: ${error.message || error}`,
+        );
       }
 
       console.log("✅ Journal entry deleted from Supabase");
@@ -416,13 +423,20 @@ export class SupabaseDatabase {
           error.message?.toLowerCase().includes("timeout") ||
           error.message?.toLowerCase().includes("connection")
         ) {
-          console.log("🌐 Network connectivity issue during journal entry deletion - delete will be queued for sync");
+          console.log(
+            "🌐 Network connectivity issue during journal entry deletion - delete will be queued for sync",
+          );
           return; // Don't throw error for network issues
         }
       }
 
-      console.error("❌ Failed to delete journal entry:", error.message || error);
-      throw new Error(`Failed to delete journal entry: ${error.message || error}`);
+      console.error(
+        "❌ Failed to delete journal entry:",
+        error.message || error,
+      );
+      throw new Error(
+        `Failed to delete journal entry: ${error.message || error}`,
+      );
     }
   }
 
@@ -494,8 +508,6 @@ export class SupabaseDatabase {
     }
   }
 
-
-
   static async getMapPins(): Promise<MapPin[]> {
     console.log("🗺️ Fetching map pins from Supabase Database...");
 
@@ -528,12 +540,16 @@ export class SupabaseDatabase {
           error.message?.toLowerCase().includes("connection") ||
           error.code === "PGRST301"
         ) {
-          console.log("🌐 Network connectivity issue during map pins fetch - returning empty array");
+          console.log(
+            "🌐 Network connectivity issue during map pins fetch - returning empty array",
+          );
           return []; // Return empty array for network issues
         }
 
         // For any other errors, also return empty array to prevent app crashes
-        console.log("⚠️ Unknown error in map pins fetch, returning empty array to prevent app crash");
+        console.log(
+          "⚠️ Unknown error in map pins fetch, returning empty array to prevent app crash",
+        );
         return [];
       }
 
@@ -553,12 +569,13 @@ export class SupabaseDatabase {
       return pins;
     } catch (error) {
       // Better error logging
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       const errorName = error instanceof Error ? error.name : typeof error;
       console.error("❌ Failed to get map pins:", {
         message: errorMessage,
         name: errorName,
-        error: error instanceof Error ? error : String(error)
+        error: error instanceof Error ? error : String(error),
       });
 
       // Check if it's a network connectivity issue
@@ -576,13 +593,18 @@ export class SupabaseDatabase {
           lowerErrorMessage.includes("network") ||
           lowerErrorMessage.includes("aborted")
         ) {
-          console.log("🌐 Network connectivity issue detected during map pins fetch. Returning empty array.");
+          console.log(
+            "🌐 Network connectivity issue detected during map pins fetch. Returning empty array.",
+          );
           return [];
         }
       }
 
       // For any other errors, return empty array to prevent app crashes
-      console.log("⚠️ Unknown error in map pins fetch, returning empty array to prevent app crash:", { errorMessage, errorName });
+      console.log(
+        "⚠️ Unknown error in map pins fetch, returning empty array to prevent app crash:",
+        { errorMessage, errorName },
+      );
       return [];
     }
   }
@@ -615,7 +637,9 @@ export class SupabaseDatabase {
           error.message?.toLowerCase().includes("connection") ||
           error.code === "PGRST301"
         ) {
-          console.log("🌐 Network connectivity issue during map pin deletion - skipping");
+          console.log(
+            "🌐 Network connectivity issue during map pin deletion - skipping",
+          );
           return;
         }
 
@@ -635,7 +659,9 @@ export class SupabaseDatabase {
           error.message?.toLowerCase().includes("timeout") ||
           error.message?.toLowerCase().includes("connection")
         ) {
-          console.log("🌐 Network connectivity issue during map pin deletion - delete will be queued for sync");
+          console.log(
+            "🌐 Network connectivity issue during map pin deletion - delete will be queued for sync",
+          );
           return; // Don't throw error for network issues
         }
       }
@@ -784,7 +810,10 @@ export class SupabaseDatabase {
       clearTimeout(timeoutId);
 
       if (error) {
-        console.error("❌ Failed to fetch wishlist items:", error.message || error);
+        console.error(
+          "❌ Failed to fetch wishlist items:",
+          error.message || error,
+        );
 
         // Check if it's a network connectivity issue
         if (
@@ -795,13 +824,17 @@ export class SupabaseDatabase {
           error.message?.toLowerCase().includes("connection") ||
           error.code === "PGRST301"
         ) {
-          console.log("🌐 Network connectivity issue during wishlist fetch - returning empty array");
+          console.log(
+            "🌐 Network connectivity issue during wishlist fetch - returning empty array",
+          );
           console.log("���️ Returning empty wishlist due to network issue");
           return [];
         }
 
         // For any other errors, return empty array to prevent app crashes
-        console.log("⚠️ Unknown error in wishlist fetch, returning empty array to prevent app crash");
+        console.log(
+          "⚠️ Unknown error in wishlist fetch, returning empty array to prevent app crash",
+        );
         return [];
       }
 
@@ -881,7 +914,10 @@ export class SupabaseDatabase {
       clearTimeout(timeoutId);
 
       if (error) {
-        console.error("❌ Failed to delete wishlist item:", error.message || error);
+        console.error(
+          "❌ Failed to delete wishlist item:",
+          error.message || error,
+        );
 
         // Check if it's a network connectivity issue
         if (
@@ -892,11 +928,15 @@ export class SupabaseDatabase {
           error.message?.toLowerCase().includes("connection") ||
           error.code === "PGRST301"
         ) {
-          console.log("🌐 Network connectivity issue during wishlist deletion - skipping");
+          console.log(
+            "🌐 Network connectivity issue during wishlist deletion - skipping",
+          );
           return;
         }
 
-        throw new Error(`Failed to delete wishlist item: ${error.message || error}`);
+        throw new Error(
+          `Failed to delete wishlist item: ${error.message || error}`,
+        );
       }
 
       console.log("✅ Wishlist item deleted from Supabase");
@@ -912,13 +952,20 @@ export class SupabaseDatabase {
           error.message?.toLowerCase().includes("timeout") ||
           error.message?.toLowerCase().includes("connection")
         ) {
-          console.log("���� Network connectivity issue during wishlist deletion - delete will be queued for sync");
+          console.log(
+            "���� Network connectivity issue during wishlist deletion - delete will be queued for sync",
+          );
           return; // Don't throw error for network issues
         }
       }
 
-      console.error("❌ Failed to delete wishlist item:", error.message || error);
-      throw new Error(`Failed to delete wishlist item: ${error.message || error}`);
+      console.error(
+        "❌ Failed to delete wishlist item:",
+        error.message || error,
+      );
+      throw new Error(
+        `Failed to delete wishlist item: ${error.message || error}`,
+      );
     }
   }
 
@@ -1113,7 +1160,10 @@ export class SupabaseDatabase {
       clearTimeout(timeoutId);
 
       if (error) {
-        console.error("❌ Failed to delete YouTube video:", error.message || error);
+        console.error(
+          "❌ Failed to delete YouTube video:",
+          error.message || error,
+        );
 
         // Check if it's a network connectivity issue
         if (
@@ -1122,11 +1172,15 @@ export class SupabaseDatabase {
           error.message?.includes("fetch") ||
           error.code === "PGRST301"
         ) {
-          console.log("🌐 Network connectivity issue during YouTube video delete - skipping");
+          console.log(
+            "🌐 Network connectivity issue during YouTube video delete - skipping",
+          );
           return;
         }
 
-        throw new Error(`Failed to delete YouTube video: ${error.message || error}`);
+        throw new Error(
+          `Failed to delete YouTube video: ${error.message || error}`,
+        );
       }
 
       console.log("✅ YouTube video deleted from Supabase Database");
@@ -1140,13 +1194,20 @@ export class SupabaseDatabase {
           error.message?.includes("fetch") ||
           error.message?.includes("network")
         ) {
-          console.log("🌐 Network connectivity issue during YouTube video delete - delete will be queued for sync");
+          console.log(
+            "🌐 Network connectivity issue during YouTube video delete - delete will be queued for sync",
+          );
           return; // Don't throw error for network issues
         }
       }
 
-      console.error("❌ Failed to delete YouTube video:", error.message || error);
-      throw new Error(`Failed to delete YouTube video: ${error.message || error}`);
+      console.error(
+        "❌ Failed to delete YouTube video:",
+        error.message || error,
+      );
+      throw new Error(
+        `Failed to delete YouTube video: ${error.message || error}`,
+      );
     }
   }
 
