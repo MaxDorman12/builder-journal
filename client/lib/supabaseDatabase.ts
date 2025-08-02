@@ -559,29 +559,26 @@ export class SupabaseDatabase {
       clearTimeout(timeoutId);
 
       if (error) {
-        console.error("❌ Failed to delete map pin:", error);
+        console.error("❌ Failed to delete map pin:", error.message || error);
 
         // Check if it's a network connectivity issue
         if (
           error.message?.includes("Failed to fetch") ||
           error.message?.includes("NetworkError") ||
           error.message?.includes("fetch") ||
+          error.message?.toLowerCase().includes("timeout") ||
+          error.message?.toLowerCase().includes("connection") ||
           error.code === "PGRST301"
         ) {
-          console.error(
-            "🌐 Network connectivity issue during map pin deletion",
-          );
-          console.log("⚠️ Skipping map pin deletion due to network issue");
+          console.log("🌐 Network connectivity issue during map pin deletion - skipping");
           return;
         }
 
-        throw error;
+        throw new Error(`Failed to delete map pin: ${error.message || error}`);
       }
 
       console.log("✅ Map pin deleted from Supabase");
     } catch (error) {
-      console.error("❌ Failed to delete map pin:", error);
-
       // Check if it's a network connectivity issue (catch block)
       if (error instanceof Error) {
         if (
@@ -589,19 +586,17 @@ export class SupabaseDatabase {
           error.name === "AbortError" ||
           error.message?.includes("NetworkError") ||
           error.message?.includes("fetch") ||
-          error.message?.includes("network")
+          error.message?.includes("network") ||
+          error.message?.toLowerCase().includes("timeout") ||
+          error.message?.toLowerCase().includes("connection")
         ) {
-          console.error(
-            "🌐 Network connectivity issue during map pin deletion (catch)",
-          );
-          console.log(
-            "⚠️ Skipping map pin deletion due to network issue (catch)",
-          );
-          return;
+          console.log("🌐 Network connectivity issue during map pin deletion - delete will be queued for sync");
+          return; // Don't throw error for network issues
         }
       }
 
-      throw error;
+      console.error("❌ Failed to delete map pin:", error.message || error);
+      throw new Error(`Failed to delete map pin: ${error.message || error}`);
     }
   }
 
