@@ -118,14 +118,16 @@ export default function Journal() {
           <BookOpen className="h-8 w-8 text-blue-600" />
           <div>
             <h1 className="text-3xl font-bold">Family Journal</h1>
-            <p className="text-gray-600">
-              Capturing our Scottish adventures
+            <div className="flex items-center gap-2">
+              <p className="text-gray-600">
+                Capturing our Scottish adventures
+              </p>
               {entries.length > 0 && (
-                <Badge variant="secondary" className="ml-2">
+                <Badge variant="secondary">
                   {entries.length} entries
                 </Badge>
               )}
-            </p>
+            </div>
           </div>
         </div>
         <Button onClick={() => setIsCreateFormOpen(true)} className="gap-2">
