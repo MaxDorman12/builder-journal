@@ -103,6 +103,7 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
         date,
         location: location.trim(),
         areaType: areaType as any,
+        customAreaType: areaType === "other" ? customAreaType.trim() : undefined,
         moodRating,
         weather: weather.trim(),
         temperature: temperature.trim(),
