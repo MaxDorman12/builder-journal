@@ -68,7 +68,7 @@ export class SupabaseStorage {
   }
 
   static async deleteYouTubeVideo(): Promise<void> {
-    await SupabaseDatabase.deleteYouTubeVideo();
+    await SupabaseDatabase.deleteYouTubeVideo("family-youtube-video");
     console.log("🔄 YouTube video deleted, notifying listeners...");
     this.notifyListeners();
   }
