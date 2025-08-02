@@ -798,7 +798,9 @@ export class SupabaseDatabase {
           return [];
         }
 
-        throw error;
+        // For any other errors, return empty array to prevent app crashes
+        console.log("⚠️ Unknown error in wishlist fetch, returning empty array to prevent app crash");
+        return [];
       }
 
       const items: WishlistItem[] = (data || []).map((row) => ({
