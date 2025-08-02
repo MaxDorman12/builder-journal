@@ -56,14 +56,15 @@ export interface Comment {
 
 export interface MapPin {
   id: string;
-  lat: number;
-  lng: number;
+  latitude: number;
+  longitude: number;
   title: string;
   description: string;
-  moodRating: 1 | 2 | 3 | 4 | 5;
-  journalEntryId?: string;
-  visitDate: string;
+  areaType?: string;
   images: string[];
+  updatedBy: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface WishlistItem {
@@ -110,7 +111,7 @@ export const FAMILY_MEMBERS: FamilyMember[] = [
 
 export const AREA_TYPES = [
   { value: "town", label: "🏘️ Town", emoji: "🏘️" },
-  { value: "city", label: "🏙️ City", emoji: "🏙️" },
+  { value: "city", label: "🏙️ City", emoji: "��️" },
   { value: "loch", label: "🌊 Loch", emoji: "🌊" },
   { value: "mountain", label: "⛰️ Mountain", emoji: "⛰️" },
   { value: "hike", label: "🥾 Hiking Trail", emoji: "🥾" },
