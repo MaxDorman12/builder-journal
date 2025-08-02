@@ -48,14 +48,32 @@ export default function Journal() {
   const loadEntries = async () => {
     try {
       setIsLoading(true);
-      const allEntries = await SupabaseStorage.getJournalEntries();
-      setEntries(allEntries);
-      console.log("📖 Entries loaded from Supabase:", {
-        count: allEntries.length,
-        entries: allEntries,
-      });
+
+      // Try Supabase first
+      try {
+        const allEntries = await SupabaseStorage.getJournalEntries();
+        setEntries(allEntries);
+        console.log("📖 Entries loaded from Supabase:", {
+          count: allEntries.length,
+          entries: allEntries,
+        });
+        return;
+      } catch (supabaseError) {
+        console.warn("⚠️ Supabase failed, trying local storage fallback:", supabaseError);
+
+        // Fallback to local storage
+        const localEntries = JSON.parse(localStorage.getItem('journal_entries') || '[]');
+        setEntries(localEntries);
+        console.log("📱 Entries loaded from local storage:", {
+          count: localEntries.length,
+        });
+
+        if (localEntries.length === 0) {
+          console.log("💡 No local entries found. You can still create new entries offline.");
+        }
+      }
     } catch (error) {
-      console.error("❌ Failed to load entries:", error);
+      console.error("❌ Failed to load entries from any source:", error);
       setEntries([]);
     } finally {
       setIsLoading(false);
