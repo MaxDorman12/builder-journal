@@ -5,6 +5,13 @@ import { SupabaseStorage } from "@/lib/supabaseOnly";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { CreateEntryForm } from "@/components/CreateEntryForm";
 import { EditEntryForm } from "@/components/EditEntryForm";
 import { JournalEntryCard } from "@/components/JournalEntryCard";
