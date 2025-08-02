@@ -784,7 +784,7 @@ export class SupabaseDatabase {
       clearTimeout(timeoutId);
 
       if (error) {
-        console.error("❌ Failed to fetch wishlist items:", error);
+        console.error("❌ Failed to fetch wishlist items:", error.message || error);
 
         // Check if it's a network connectivity issue
         if (
