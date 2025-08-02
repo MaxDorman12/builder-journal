@@ -181,7 +181,7 @@ export default function Map() {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-              <ScotlandMapWrapper
+              <SimpleScotlandMap
                 pins={pins}
                 onMapClick={handleMapClick}
                 onPinClick={handlePinClick}
