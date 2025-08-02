@@ -357,6 +357,21 @@ export default function Index() {
     setTempYoutubeDescription("");
   };
 
+  const handleYoutubeDelete = async () => {
+    try {
+      await HybridStorage.deleteYouTubeVideo();
+      setYoutubeVideo(null);
+      setYoutubeUrl("https://www.youtube.com/@AWeeAdventures");
+      setIsYoutubeDialogOpen(false);
+      setTempYoutubeUrl("");
+      setTempYoutubeTitle("");
+      setTempYoutubeDescription("");
+      console.log("✅ YouTube video deleted successfully");
+    } catch (error) {
+      console.error("Failed to delete YouTube video:", error);
+    }
+  };
+
   const handleCharlieSave = async () => {
     console.log("🐕 Charlie save clicked:", {
       hasNewDescription: !!tempCharlieData.description.trim(),
