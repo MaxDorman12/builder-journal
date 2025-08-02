@@ -139,6 +139,7 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
       setDate(new Date().toISOString().split("T")[0]);
       setLocation("");
       setAreaType("");
+      setCustomAreaType("");
       setMoodRating(5);
       setWeather("");
       setTemperature("");
