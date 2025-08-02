@@ -420,7 +420,9 @@ export default function Index() {
               )}
             </div>
             
-            <p className="text-gray-600 mb-6">{charlieData.description}</p>
+            <p className="text-gray-600 mb-6">
+              {charlieData.description || "No family adventure is complete without our beloved four-legged companion, Charlie! This loyal and energetic member of the Dorman family brings joy and excitement to every journey we embark on across Scotland."}
+            </p>
             
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">
