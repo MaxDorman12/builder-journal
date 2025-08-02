@@ -346,6 +346,32 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
               )}
             </div>
 
+            {/* Activity Cost Information */}
+            <div className="space-y-4">
+              <Label className="text-base font-semibold">💳 Activity Information</Label>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="isPaidActivity"
+                  checked={isPaidActivity}
+                  onCheckedChange={(checked) => setIsPaidActivity(checked as boolean)}
+                />
+                <Label htmlFor="isPaidActivity">This was a paid activity</Label>
+              </div>
+
+              {isPaidActivity && (
+                <div>
+                  <Label htmlFor="activityCost">Activity Cost</Label>
+                  <Input
+                    id="activityCost"
+                    value={activityCost}
+                    onChange={(e) => setActivityCost(e.target.value)}
+                    placeholder="e.g., £15 per person, £45 for family ticket"
+                  />
+                </div>
+              )}
+            </div>
+
             {/* Privacy */}
             <div className="flex items-center space-x-2">
               <Checkbox
