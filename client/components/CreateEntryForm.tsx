@@ -98,7 +98,7 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
         const result = e.target?.result as string;
         if (result) {
           setImages((prev) => [...prev, result]);
-          console.log(`✅ Image "${file.name}" loaded successfully`);
+          console.log(`��� Image "${file.name}" loaded successfully`);
         }
       };
       reader.readAsDataURL(file);
@@ -347,7 +347,7 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
 
             {/* Images */}
             <div>
-              <Label>Photos</Label>
+              <Label>Photos ({images.length}/10)</Label>
               <div className="mt-2">
                 <input
                   ref={fileInputRef}
@@ -362,10 +362,16 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
                   variant="outline"
                   onClick={() => fileInputRef.current?.click()}
                   className="w-full"
+                  disabled={images.length >= 10}
                 >
                   <Camera className="h-4 w-4 mr-2" />
-                  Add Photos
+                  {images.length >= 10 ? "Photo limit reached" : "Add Photos"}
                 </Button>
+                {images.length >= 8 && (
+                  <p className="text-sm text-amber-600 mt-1">
+                    ⚠️ Approaching photo limit ({images.length}/10). Large numbers of photos may cause upload issues.
+                  </p>
+                )}
               </div>
               
               {images.length > 0 && (
