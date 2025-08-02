@@ -100,7 +100,7 @@ export function SupabaseTest() {
         details: error
       });
     } finally {
-      setIsesting(false);
+      setIsTesting(false);
     }
   };
 
