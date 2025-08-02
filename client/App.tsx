@@ -20,6 +20,7 @@ import Settings from "./pages/Settings";
 import Calendar from "./pages/Calendar";
 import NotFound from "./pages/NotFound";
 import { SupabaseStorage } from "./lib/supabaseOnly";
+import { PhotoStorage } from "./lib/photoStorage";
 import { useEffect } from "react";
 
 const queryClient = new QueryClient();
