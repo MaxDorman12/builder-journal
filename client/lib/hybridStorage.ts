@@ -20,6 +20,19 @@ export class HybridStorage {
     return Array.from(this.pendingDeletions);
   }
 
+  // Method to manually clear a pending deletion (for debugging)
+  static clearPendingDeletion(id: string): void {
+    this.pendingDeletions.delete(id);
+    console.log(`🧹 Manually cleared pending deletion for: ${id}`);
+  }
+
+  // Method to clear all pending deletions (for debugging)
+  static clearAllPendingDeletions(): void {
+    const count = this.pendingDeletions.size;
+    this.pendingDeletions.clear();
+    console.log(`🧹 Manually cleared ${count} pending deletions`);
+  }
+
   static getSupabaseStatus(): { enabled: boolean; message: string } {
     return {
       enabled: this.supabaseEnabled,
@@ -595,7 +608,7 @@ export class HybridStorage {
             `🔄 Real-time update: ${supabaseEntries.length} journal entries from Supabase`,
           );
           console.log(
-            "📝 Entry IDs received:",
+            "�� Entry IDs received:",
             supabaseEntries.map((e) => e.id),
           );
 
