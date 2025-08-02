@@ -98,30 +98,36 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
     setIsUploading(true);
 
     try {
-      // Generate temporary entry ID for organizing photos
-      const tempEntryId = `temp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      // Skip cloud storage for now due to network issues, use base64 directly
+      console.log(`📷 Using local base64 storage for ${files.length} photos due to network issues...`);
 
-      console.log(`📤 Uploading ${files.length} photos to cloud storage...`);
+      // Use base64 storage with reasonable limits
+      const maxFiles = Math.min(files.length, 10); // Limit to 10 photos
+      const allowedFiles = files.slice(0, maxFiles).filter(f => f.size <= 5 * 1024 * 1024); // 5MB limit
 
-      // Upload to cloud storage with progress tracking
-      const uploadedUrls = await PhotoStorage.uploadPhotos(
-        files,
-        tempEntryId,
-        (current, total, fileName) => {
-          setUploadProgress({ current, total, fileName });
-        }
-      );
-
-      if (uploadedUrls.length > 0) {
-        setImages((prev) => [...prev, ...uploadedUrls]);
-        console.log(`✅ Successfully uploaded ${uploadedUrls.length}/${files.length} photos`);
-
-        if (uploadedUrls.length < files.length) {
-          alert(`Warning: Only ${uploadedUrls.length} of ${files.length} photos were uploaded successfully. Some uploads may have failed.`);
-        }
-      } else {
-        throw new Error("No photos were uploaded successfully");
+      if (allowedFiles.length < files.length) {
+        alert(`Due to network issues, using local storage. Limited to ${allowedFiles.length} photos under 5MB each.`);
       }
+
+      // Process files with progress
+      for (let i = 0; i < allowedFiles.length; i++) {
+        const file = allowedFiles[i];
+        setUploadProgress({ current: i + 1, total: allowedFiles.length, fileName: file.name });
+
+        await new Promise<void>((resolve) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const result = e.target?.result as string;
+            if (result) {
+              setImages((prev) => [...prev, result]);
+            }
+            resolve();
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      console.log(`✅ Successfully processed ${allowedFiles.length} photos locally`);
 
     } catch (error) {
       console.error("❌ Photo upload failed:", error);
