@@ -714,7 +714,7 @@ export class SupabaseDatabase {
           error.message?.toLowerCase().includes("connection") ||
           error.code === "PGRST301"
         ) {
-          console.error("🌐 Network connectivity issue during wishlist save:");
+          console.error("��� Network connectivity issue during wishlist save:");
           console.error("  - Internet connection lost");
           console.error("  - Supabase service temporarily unavailable");
           console.error("  - Request timeout (>10 seconds)");
@@ -1579,6 +1579,10 @@ export class SupabaseDatabase {
     message: string;
   }> {
     try {
+      console.log("🧪 Testing Supabase connection...");
+      console.log("📍 URL:", supabase.supabaseUrl);
+      console.log("🔑 Key (first 20 chars):", supabase.supabaseKey.substring(0, 20) + "...");
+
       const { data, error } = await supabase
         .from("charlie_data")
         .select("id")
