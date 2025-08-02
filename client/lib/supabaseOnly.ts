@@ -188,8 +188,9 @@ export class SupabaseStorage {
   }
 
   static cleanup(): void {
+    console.log(`🧹 Cleaning up ${this.listeners.length} real-time listeners...`);
     this.listeners = [];
-    console.log("🧹 SupabaseStorage cleanup completed");
+    console.log("✅ SupabaseStorage cleanup completed");
   }
 
   // Export functionality
