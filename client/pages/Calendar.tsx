@@ -176,15 +176,22 @@ export default function Calendar() {
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between">
                       <span>{entry.title}</span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleLike(entry.id)}
-                        className={`gap-1 ${entry.isLiked ? "text-red-600" : "text-gray-400"}`}
-                      >
-                        <Heart className={`h-4 w-4 ${entry.isLiked ? "fill-current" : ""}`} />
-                        {entry.likes || 0}
-                      </Button>
+                      {isAuthenticated ? (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleLike(entry.id)}
+                          className={`gap-1 ${entry.isLiked ? "text-red-600" : "text-gray-400"}`}
+                        >
+                          <Heart className={`h-4 w-4 ${entry.isLiked ? "fill-current" : ""}`} />
+                          {entry.likes || 0}
+                        </Button>
+                      ) : (
+                        <div className="flex items-center gap-1 text-gray-400">
+                          <Heart className="h-4 w-4" />
+                          {entry.likes || 0}
+                        </div>
+                      )}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
