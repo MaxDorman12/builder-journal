@@ -134,6 +134,7 @@ export function JournalEntryCard({
             </Badge>
             <Badge variant="outline" className="text-xs">
               {areaData.emoji} {areaData.label}
+              {entry.areaType === "other" && entry.customAreaType && ` (${entry.customAreaType})`}
             </Badge>
             {entry.weather && (
               <Badge variant="outline" className="text-xs">
@@ -146,6 +147,47 @@ export function JournalEntryCard({
               </Badge>
             )}
           </div>
+
+          {/* Parking & Activity Information */}
+          {(entry.hasFreeParkingAvailable !== undefined || entry.isPaidActivity !== undefined) && (
+            <div className="space-y-2 p-3 bg-gray-50 rounded-lg">
+              <h4 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                ℹ️ Additional Information
+              </h4>
+              <div className="space-y-1">
+                {entry.hasFreeParkingAvailable !== undefined && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="text-gray-600">🚗 Parking:</span>
+                    {entry.hasFreeParkingAvailable ? (
+                      <Badge className="bg-green-100 text-green-700 text-xs">Free parking available</Badge>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <Badge className="bg-orange-100 text-orange-700 text-xs">Paid parking</Badge>
+                        {entry.parkingCost && (
+                          <span className="text-gray-700 text-xs">({entry.parkingCost})</span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+                {entry.isPaidActivity !== undefined && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="text-gray-600">💳 Activity:</span>
+                    {entry.isPaidActivity ? (
+                      <div className="flex items-center gap-2">
+                        <Badge className="bg-blue-100 text-blue-700 text-xs">Paid activity</Badge>
+                        {entry.activityCost && (
+                          <span className="text-gray-700 text-xs">({entry.activityCost})</span>
+                        )}
+                      </div>
+                    ) : (
+                      <Badge className="bg-green-100 text-green-700 text-xs">Free activity</Badge>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Images */}
           {entry.images && entry.images.length > 0 && (
