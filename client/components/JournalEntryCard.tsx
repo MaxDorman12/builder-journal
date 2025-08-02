@@ -186,19 +186,26 @@ export function JournalEntryCard({
 
           {/* Actions */}
           <div className="flex items-center justify-between pt-2 border-t">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onLike(entry.id)}
-              className={`gap-2 ${
-                entry.isLiked ? "text-red-600" : "text-gray-500"
-              }`}
-            >
-              <Heart 
-                className={`h-4 w-4 ${entry.isLiked ? "fill-current" : ""}`} 
-              />
-              {entry.likes || 0}
-            </Button>
+            {onLike ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onLike(entry.id)}
+                className={`gap-2 ${
+                  entry.isLiked ? "text-red-600" : "text-gray-500"
+                }`}
+              >
+                <Heart
+                  className={`h-4 w-4 ${entry.isLiked ? "fill-current" : ""}`}
+                />
+                {entry.likes || 0}
+              </Button>
+            ) : (
+              <div className="flex items-center gap-2 text-gray-500">
+                <Heart className="h-4 w-4" />
+                {entry.likes || 0}
+              </div>
+            )}
 
             <div className="text-xs text-gray-500">
               {entry.updatedBy && `By ${entry.updatedBy}`}
