@@ -195,7 +195,22 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
       
     } catch (error) {
       console.error("❌ Failed to save journal entry:", error);
-      alert("Failed to save journal entry. Please try again.");
+
+      // Provide more helpful error messages
+      let errorMessage = "Failed to save journal entry. ";
+      if (error instanceof Error) {
+        if (error.message.includes('fetch') || error.message.includes('network')) {
+          errorMessage += "Please check your internet connection and try again.";
+        } else if (error.message.includes('size') || error.message.includes('large') || error.message.includes('limit')) {
+          errorMessage += "The entry may be too large. Try reducing the number of photos or compressing them.";
+        } else {
+          errorMessage += "Please try again or contact support if the problem persists.";
+        }
+      } else {
+        errorMessage += "Please try again.";
+      }
+
+      alert(errorMessage);
     } finally {
       setIsSaving(false);
     }
