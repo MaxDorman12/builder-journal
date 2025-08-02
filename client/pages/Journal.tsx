@@ -226,6 +226,11 @@ export default function Journal() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
       <div className="container mx-auto px-4 py-12 max-w-7xl">
+
+        {/* Database Test - Remove after fixing */}
+        <div className="mb-8">
+          <DatabaseTest />
+        </div>
         {/* Header Section */}
         <div className="text-center mb-12">
           <div className="mb-6">
