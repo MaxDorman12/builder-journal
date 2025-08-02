@@ -31,7 +31,8 @@ export interface JournalEntry {
     | "hike"
     | "beach"
     | "forest"
-    | "village";
+    | "village"
+    | "other";
   wouldReturnReason: string;
   wouldReturn: boolean;
   hasFreeParkingAvailable: boolean;
