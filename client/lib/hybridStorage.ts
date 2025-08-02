@@ -191,7 +191,6 @@ export class HybridStorage {
           this.pendingDeletions.delete(id);
           console.log("🔄 DELETE: Removed from pending deletions tracking");
         }, 2000); // 2 second delay
-
       } catch (error) {
         console.error(
           "❌ DELETE: Failed to delete entry from Supabase:",
@@ -283,9 +282,10 @@ export class HybridStorage {
         // Wait a bit for the deletion to propagate before removing from pending
         setTimeout(() => {
           this.pendingDeletions.delete(id);
-          console.log("🔄 DELETE MAP PIN: Removed from pending deletions tracking");
+          console.log(
+            "🔄 DELETE MAP PIN: Removed from pending deletions tracking",
+          );
         }, 2000); // 2 second delay
-
       } catch (error) {
         console.error(
           "❌ DELETE MAP PIN: Failed to delete from Supabase:",
@@ -350,9 +350,10 @@ export class HybridStorage {
         // Wait a bit for the deletion to propagate before removing from pending
         setTimeout(() => {
           this.pendingDeletions.delete(id);
-          console.log("🔄 DELETE WISHLIST: Removed from pending deletions tracking");
+          console.log(
+            "🔄 DELETE WISHLIST: Removed from pending deletions tracking",
+          );
         }, 2000); // 2 second delay
-
       } catch (error) {
         console.error(
           "❌ DELETE WISHLIST: Failed to delete from Supabase:",
@@ -546,11 +547,16 @@ export class HybridStorage {
         try {
           const cloudVideo = await SupabaseDatabase.getYouTubeVideo();
           if (cloudVideo) {
-            console.log("📺 No local YouTube video but found cloud video - keeping cloud version");
+            console.log(
+              "📺 No local YouTube video but found cloud video - keeping cloud version",
+            );
             LocalStorage.saveYouTubeVideo(cloudVideo);
           }
         } catch (error) {
-          console.warn("Failed to check cloud YouTube video during sync:", error);
+          console.warn(
+            "Failed to check cloud YouTube video during sync:",
+            error,
+          );
         }
       }
 
@@ -600,7 +606,9 @@ export class HybridStorage {
             if (!this.pendingDeletions.has(entry.id)) {
               LocalStorage.saveJournalEntry(entry);
             } else {
-              console.log(`🔄 Skipping entry ${entry.title} - pending deletion`);
+              console.log(
+                `🔄 Skipping entry ${entry.title} - pending deletion`,
+              );
             }
           });
 
@@ -683,7 +691,9 @@ export class HybridStorage {
             if (!this.pendingDeletions.has(item.id)) {
               LocalStorage.saveWishlistItem(item);
             } else {
-              console.log(`🔄 Skipping wishlist item ${item.title} - pending deletion`);
+              console.log(
+                `🔄 Skipping wishlist item ${item.title} - pending deletion`,
+              );
             }
           });
 
