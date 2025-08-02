@@ -5,6 +5,7 @@ import { StorageStatus } from "@/components/StorageStatus";
 import { SyncTest } from "@/components/SyncTest";
 import { SupabaseTest } from "@/components/SupabaseTest";
 import { AppTester } from "@/components/AppTester";
+import { TestingGuide } from "@/components/TestingGuide";
 import { SupabaseStorage } from "@/lib/supabaseOnly";
 import { Download, Settings as SettingsIcon, Database } from "lucide-react";
 
