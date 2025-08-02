@@ -123,16 +123,7 @@ export default function Wishlist() {
     }
   };
 
-  if (!isAuthenticated) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Wishlist</h1>
-          <p className="text-gray-600">Please log in to view the family wishlist.</p>
-        </div>
-      </div>
-    );
-  }
+  // Allow guest access to view wishlist items
 
   const pendingItems = wishlistItems.filter(item => !item.isCompleted);
   const completedItems = wishlistItems.filter(item => item.isCompleted);
