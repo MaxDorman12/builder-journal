@@ -118,6 +118,7 @@ export const AREA_TYPES = [
   { value: "beach", label: "🏖️ Beach", emoji: "🏖️" },
   { value: "forest", label: "🌲 Forest", emoji: "🌲" },
   { value: "village", label: "🏡 Village", emoji: "🏡" },
+  { value: "other", label: "📝 Other", emoji: "📝" },
 ] as const;
 
 export const MOOD_RATINGS = [
