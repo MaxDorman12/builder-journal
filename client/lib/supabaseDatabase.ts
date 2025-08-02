@@ -455,13 +455,13 @@ export class SupabaseDatabase {
           id: pin.id,
           title: pin.title,
           description: pin.description,
-          latitude: pin.lat,
-          longitude: pin.lng,
-          type: "visited", // Default value for now
-          mood_rating: pin.moodRating,
-          journal_entry_id: pin.journalEntryId || null,
+          latitude: pin.latitude,
+          longitude: pin.longitude,
+          area_type: pin.areaType || "highlands",
           images: JSON.stringify(pin.images || []),
-          created_at: pin.visitDate || new Date().toISOString(),
+          updated_by: pin.updatedBy,
+          created_at: pin.createdAt,
+          updated_at: pin.updatedAt,
         })
         .abortSignal(controller.signal);
 
@@ -971,7 +971,7 @@ export class SupabaseDatabase {
 
   // YouTube Video methods
   static async saveYouTubeVideo(video: YouTubeVideo): Promise<void> {
-    console.log("📺 Saving YouTube video to Supabase Database:", video.title);
+    console.log("��� Saving YouTube video to Supabase Database:", video.title);
 
     try {
       // Add timeout for network issues
