@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StorageStatus } from "@/components/StorageStatus";
+import { SyncTest } from "@/components/SyncTest";
 import { SupabaseStorage } from "@/lib/supabaseOnly";
 import { Download, Settings as SettingsIcon, Database } from "lucide-react";
 
