@@ -314,7 +314,8 @@ export class HybridStorage {
         // Still remove from pending deletions after some time
         setTimeout(() => {
           this.pendingDeletions.delete(id);
-        }, 5000);
+          console.log("🔄 DELETE MAP PIN: Removed from pending deletions tracking (after error)");
+        }, 3000); // 3 seconds (reduced from 5 seconds)
       }
     } else {
       console.log(
