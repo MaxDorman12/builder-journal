@@ -264,7 +264,7 @@ export default function Map() {
 
       {/* Create Pin Dialog */}
       <Dialog open={isCreatePinOpen} onOpenChange={setIsCreatePinOpen}>
-        <DialogContent>
+        <DialogContent className="z-[10000]">
           <DialogHeader>
             <DialogTitle>Add New Map Pin</DialogTitle>
           </DialogHeader>
