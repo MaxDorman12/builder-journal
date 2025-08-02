@@ -63,6 +63,8 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
   const [isPaidActivity, setIsPaidActivity] = useState(false);
   const [activityCost, setActivityCost] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0, fileName: "" });
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
