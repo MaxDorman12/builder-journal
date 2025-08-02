@@ -682,6 +682,10 @@ export class HybridStorage {
             "🔍 MAP PINS SYNC: Supabase pin IDs:",
             supabasePins.map((p) => p.id),
           );
+          console.log(
+            "🔍 MAP PINS SYNC: Local pin IDs before sync:",
+            LocalStorage.getMapPins().map((p) => p.id),
+          );
 
           supabasePins.forEach((pin) => {
             if (!this.pendingDeletions.has(pin.id)) {
@@ -693,6 +697,11 @@ export class HybridStorage {
               );
             }
           });
+
+          console.log(
+            "🔍 MAP PINS SYNC: Local pin IDs after sync:",
+            LocalStorage.getMapPins().map((p) => p.id),
+          );
 
           this.notifyListeners();
         },
