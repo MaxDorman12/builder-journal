@@ -22,7 +22,7 @@ export class PhotoStorage {
         const { error: createError } = await supabase.storage.createBucket(this.BUCKET_NAME, {
           public: true, // Make photos publicly accessible
           fileSizeLimit: 50 * 1024 * 1024, // 50MB limit per file
-          allowedMimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+          allowedMimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/heic', 'image/heif']
         });
 
         if (createError) {
