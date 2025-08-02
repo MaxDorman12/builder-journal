@@ -198,7 +198,7 @@ export default function Map() {
             <CardContent className="p-0">
               <SimpleScotlandMap
                 pins={pins}
-                onMapClick={handleMapClick}
+                onMapClick={isAuthenticated ? handleMapClick : undefined}
                 onPinClick={handlePinClick}
                 className="h-96"
               />
