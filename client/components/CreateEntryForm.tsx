@@ -152,12 +152,23 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
         isLiked: false,
       };
 
+      // Calculate total data size
+      const entryJson = JSON.stringify(entry);
+      const dataSizeKB = Math.round(entryJson.length / 1024);
+      const dataSizeMB = Math.round(entryJson.length / 1024 / 1024 * 100) / 100;
+
       console.log("💾 Saving journal entry:", {
         entryId: entry.id,
         title: entry.title,
         imageCount: entry.images.length,
-        totalSize: JSON.stringify(entry).length,
+        dataSizeKB,
+        dataSizeMB,
       });
+
+      // Warn if entry is very large (>5MB could cause issues)
+      if (dataSizeMB > 5) {
+        console.warn(`⚠️ Large journal entry (${dataSizeMB}MB) - this may cause save issues`);
+      }
 
       await SupabaseStorage.saveJournalEntry(entry);
 
