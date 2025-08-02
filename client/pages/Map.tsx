@@ -48,10 +48,11 @@ export default function Map() {
   };
 
   useEffect(() => {
-    if (isAuthenticated) {
-      loadMapData();
+    // Load data for all users (guests and authenticated)
+    loadMapData();
 
-      // Listen for real-time updates
+    // Only set up real-time updates for authenticated users
+    if (isAuthenticated) {
       const unsubscribe = SupabaseStorage.onUpdate(() => {
         console.log("🔄 MAP: Real-time update received, refreshing map data...");
         loadMapData();
