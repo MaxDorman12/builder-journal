@@ -59,17 +59,24 @@ export default function Journal() {
         });
         return;
       } catch (supabaseError) {
-        console.warn("⚠️ Supabase failed, trying local storage fallback:", supabaseError);
+        console.warn(
+          "⚠️ Supabase failed, trying local storage fallback:",
+          supabaseError,
+        );
 
         // Fallback to local storage
-        const localEntries = JSON.parse(localStorage.getItem('journal_entries') || '[]');
+        const localEntries = JSON.parse(
+          localStorage.getItem("journal_entries") || "[]",
+        );
         setEntries(localEntries);
         console.log("📱 Entries loaded from local storage:", {
           count: localEntries.length,
         });
 
         if (localEntries.length === 0) {
-          console.log("💡 No local entries found. You can still create new entries offline.");
+          console.log(
+            "💡 No local entries found. You can still create new entries offline.",
+          );
         }
       }
     } catch (error) {
@@ -136,9 +143,11 @@ export default function Journal() {
         console.warn("⚠️ Supabase save failed, saving locally:", supabaseError);
 
         // Fallback to local storage
-        const localEntries = JSON.parse(localStorage.getItem('journal_entries') || '[]');
+        const localEntries = JSON.parse(
+          localStorage.getItem("journal_entries") || "[]",
+        );
         localEntries.unshift(entry);
-        localStorage.setItem('journal_entries', JSON.stringify(localEntries));
+        localStorage.setItem("journal_entries", JSON.stringify(localEntries));
         console.log("📱 Entry saved to local storage");
       }
 
@@ -169,16 +178,16 @@ export default function Journal() {
   const handleCreateMapPin = () => {
     if (createdEntry) {
       // Navigate to map page with prefilled data
-      navigate('/map', {
+      navigate("/map", {
         state: {
           createPin: true,
           prefillData: {
             title: createdEntry.title,
-            description: `Journal entry: ${createdEntry.content.substring(0, 100)}${createdEntry.content.length > 100 ? '...' : ''}`,
+            description: `Journal entry: ${createdEntry.content.substring(0, 100)}${createdEntry.content.length > 100 ? "..." : ""}`,
             journalEntryId: createdEntry.id,
-            location: createdEntry.location
-          }
-        }
+            location: createdEntry.location,
+          },
+        },
       });
     }
     setShowMapPinDialog(false);
@@ -258,7 +267,6 @@ export default function Journal() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
       <div className="container mx-auto px-4 py-12 max-w-7xl">
-
         {/* Network Status Banner */}
         <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
           <div className="flex items-center gap-2">
@@ -266,12 +274,12 @@ export default function Journal() {
             <div>
               <p className="text-amber-800 font-medium">Offline Mode Active</p>
               <p className="text-amber-700 text-sm">
-                Network connection issues detected. Your entries are being saved locally and will sync when connection is restored.
+                Network connection issues detected. Your entries are being saved
+                locally and will sync when connection is restored.
               </p>
             </div>
           </div>
         </div>
-
 
         {/* Header Section */}
         <div className="text-center mb-12">
@@ -639,12 +647,15 @@ export default function Journal() {
                 📍 Add Map Pin?
               </DialogTitle>
               <DialogDescription>
-                Would you like to add a map pin for this journal entry? You can mark the location on the map.
+                Would you like to add a map pin for this journal entry? You can
+                mark the location on the map.
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div className="p-4 bg-blue-50 rounded-lg">
-                <h4 className="font-medium text-blue-800 mb-2">"{createdEntry?.title}"</h4>
+                <h4 className="font-medium text-blue-800 mb-2">
+                  "{createdEntry?.title}"
+                </h4>
                 <p className="text-sm text-blue-600">
                   {createdEntry?.location && `📍 ${createdEntry.location}`}
                 </p>

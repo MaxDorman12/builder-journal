@@ -8,22 +8,35 @@ export class PhotoStorage {
   static async initializeBucket(): Promise<void> {
     try {
       // Check if bucket exists
-      const { data: buckets, error: listError } = await supabase.storage.listBuckets();
-      
+      const { data: buckets, error: listError } =
+        await supabase.storage.listBuckets();
+
       if (listError) {
         console.warn("⚠️ Could not list buckets:", listError.message);
         return;
       }
 
-      const bucketExists = buckets?.some(bucket => bucket.name === this.BUCKET_NAME);
-      
+      const bucketExists = buckets?.some(
+        (bucket) => bucket.name === this.BUCKET_NAME,
+      );
+
       if (!bucketExists) {
         // Create bucket if it doesn't exist
-        const { error: createError } = await supabase.storage.createBucket(this.BUCKET_NAME, {
-          public: true, // Make photos publicly accessible
-          fileSizeLimit: 50 * 1024 * 1024, // 50MB limit per file
-          allowedMimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/heic', 'image/heif']
-        });
+        const { error: createError } = await supabase.storage.createBucket(
+          this.BUCKET_NAME,
+          {
+            public: true, // Make photos publicly accessible
+            fileSizeLimit: 50 * 1024 * 1024, // 50MB limit per file
+            allowedMimeTypes: [
+              "image/jpeg",
+              "image/png",
+              "image/gif",
+              "image/webp",
+              "image/heic",
+              "image/heif",
+            ],
+          },
+        );
 
         if (createError) {
           console.warn("⚠️ Could not create bucket:", createError.message);
@@ -44,16 +57,18 @@ export class PhotoStorage {
       // Check if bucket exists first, try to create if it doesn't
       await this.ensureBucketExists();
 
-      const fileExt = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+      const fileExt = file.name.split(".").pop()?.toLowerCase() || "jpg";
       const fileName = `${entryId}/${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
 
-      console.log(`📤 Uploading photo to cloud storage: ${fileName} (${Math.round(file.size / 1024)}KB)`);
+      console.log(
+        `📤 Uploading photo to cloud storage: ${fileName} (${Math.round(file.size / 1024)}KB)`,
+      );
 
       const { data, error } = await supabase.storage
         .from(this.BUCKET_NAME)
         .upload(fileName, file, {
-          cacheControl: '3600', // 1 hour cache
-          upsert: false
+          cacheControl: "3600", // 1 hour cache
+          upsert: false,
         });
 
       if (error) {
@@ -67,7 +82,6 @@ export class PhotoStorage {
 
       console.log(`✅ Photo uploaded successfully: ${urlData.publicUrl}`);
       return urlData.publicUrl;
-
     } catch (error) {
       console.error("❌ Photo upload failed:", error);
       throw error;
@@ -77,45 +91,61 @@ export class PhotoStorage {
   // Ensure bucket exists, create if needed
   private static async ensureBucketExists(): Promise<void> {
     try {
-      const { data: buckets, error: listError } = await supabase.storage.listBuckets();
+      const { data: buckets, error: listError } =
+        await supabase.storage.listBuckets();
 
       if (listError) {
         throw new Error(`Cannot access storage: ${listError.message}`);
       }
 
-      const bucketExists = buckets?.some(bucket => bucket.name === this.BUCKET_NAME);
+      const bucketExists = buckets?.some(
+        (bucket) => bucket.name === this.BUCKET_NAME,
+      );
 
       if (!bucketExists) {
         console.log("📁 Creating storage bucket...");
-        const { error: createError } = await supabase.storage.createBucket(this.BUCKET_NAME, {
-          public: true,
-          fileSizeLimit: 50 * 1024 * 1024, // 50MB
-          allowedMimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/heic']
-        });
+        const { error: createError } = await supabase.storage.createBucket(
+          this.BUCKET_NAME,
+          {
+            public: true,
+            fileSizeLimit: 50 * 1024 * 1024, // 50MB
+            allowedMimeTypes: [
+              "image/jpeg",
+              "image/png",
+              "image/gif",
+              "image/webp",
+              "image/heic",
+            ],
+          },
+        );
 
         if (createError) {
-          throw new Error(`Cannot create storage bucket: ${createError.message}`);
+          throw new Error(
+            `Cannot create storage bucket: ${createError.message}`,
+          );
         }
 
         console.log("✅ Storage bucket created successfully");
       }
     } catch (error) {
       console.error("❌ Storage bucket check failed:", error);
-      throw new Error("Cloud storage is not available. This may be due to permissions or configuration issues.");
+      throw new Error(
+        "Cloud storage is not available. This may be due to permissions or configuration issues.",
+      );
     }
   }
 
   // Upload multiple photos with progress tracking
   static async uploadPhotos(
-    files: File[], 
+    files: File[],
     entryId: string,
-    onProgress?: (current: number, total: number, fileName: string) => void
+    onProgress?: (current: number, total: number, fileName: string) => void,
   ): Promise<string[]> {
     const uploadedUrls: string[] = [];
-    
+
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      
+
       if (onProgress) {
         onProgress(i + 1, files.length, file.name);
       }
@@ -136,8 +166,8 @@ export class PhotoStorage {
   static async deletePhotos(photoUrls: string[]): Promise<void> {
     try {
       const filePaths = photoUrls
-        .filter(url => url.includes(this.BUCKET_NAME))
-        .map(url => {
+        .filter((url) => url.includes(this.BUCKET_NAME))
+        .map((url) => {
           // Extract file path from URL
           const parts = url.split(`/${this.BUCKET_NAME}/`);
           return parts[1];
@@ -163,40 +193,48 @@ export class PhotoStorage {
   }
 
   // Compress image if needed (fallback for very large files)
-  static async compressImage(file: File, maxWidth: number = 1920, quality: number = 0.8): Promise<File> {
+  static async compressImage(
+    file: File,
+    maxWidth: number = 1920,
+    quality: number = 0.8,
+  ): Promise<File> {
     return new Promise((resolve) => {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d')!;
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d")!;
       const img = new Image();
-      
+
       img.onload = () => {
         // Calculate new dimensions
         let { width, height } = img;
-        
+
         if (width > maxWidth) {
           height = (height * maxWidth) / width;
           width = maxWidth;
         }
-        
+
         canvas.width = width;
         canvas.height = height;
-        
+
         // Draw and compress
         ctx.drawImage(img, 0, 0, width, height);
-        
-        canvas.toBlob((blob) => {
-          if (blob) {
-            const compressedFile = new File([blob], file.name, {
-              type: 'image/jpeg',
-              lastModified: Date.now()
-            });
-            resolve(compressedFile);
-          } else {
-            resolve(file); // Fallback to original if compression fails
-          }
-        }, 'image/jpeg', quality);
+
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              const compressedFile = new File([blob], file.name, {
+                type: "image/jpeg",
+                lastModified: Date.now(),
+              });
+              resolve(compressedFile);
+            } else {
+              resolve(file); // Fallback to original if compression fails
+            }
+          },
+          "image/jpeg",
+          quality,
+        );
       };
-      
+
       img.src = URL.createObjectURL(file);
     });
   }
@@ -224,7 +262,8 @@ export class PhotoStorage {
       }
 
       const { data: buckets } = await supabase.storage.listBuckets();
-      const bucketExists = buckets?.some(bucket => bucket.name === this.BUCKET_NAME) || false;
+      const bucketExists =
+        buckets?.some((bucket) => bucket.name === this.BUCKET_NAME) || false;
 
       if (!bucketExists) {
         return { isAvailable: true, bucketExists: false };
@@ -232,7 +271,9 @@ export class PhotoStorage {
 
       // Try to count photos (optional, might fail with permissions)
       try {
-        const { data: files } = await supabase.storage.from(this.BUCKET_NAME).list();
+        const { data: files } = await supabase.storage
+          .from(this.BUCKET_NAME)
+          .list();
         const photoCount = files?.length || 0;
         return { isAvailable: true, bucketExists: true, photoCount };
       } catch {
