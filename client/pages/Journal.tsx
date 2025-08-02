@@ -259,6 +259,19 @@ export default function Journal() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
       <div className="container mx-auto px-4 py-12 max-w-7xl">
 
+        {/* Network Status Banner */}
+        <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+          <div className="flex items-center gap-2">
+            <span className="text-amber-600">⚠️</span>
+            <div>
+              <p className="text-amber-800 font-medium">Offline Mode Active</p>
+              <p className="text-amber-700 text-sm">
+                Network connection issues detected. Your entries are being saved locally and will sync when connection is restored.
+              </p>
+            </div>
+          </div>
+        </div>
+
 
         {/* Header Section */}
         <div className="text-center mb-12">
