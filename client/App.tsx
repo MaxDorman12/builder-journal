@@ -1,6 +1,6 @@
 import "./global.css";
 
-// Enable fetch protection for Firebase/Supabase
+// Enable fetch protection for Supabase
 import "./lib/fetchProtection";
 
 import { Toaster } from "@/components/ui/toaster";
@@ -21,7 +21,7 @@ import Search from "./pages/Search";
 import Settings from "./pages/Settings";
 import Calendar from "./pages/Calendar";
 import NotFound from "./pages/NotFound";
-import { HybridStorage } from "./lib/hybridStorage";
+import { SupabaseStorage } from "./lib/supabaseOnly";
 import { useEffect } from "react";
 import "./lib/wishlistTest";
 import "./lib/mapPinTest";
@@ -32,14 +32,13 @@ const queryClient = new QueryClient();
 // Global initialization component
 const StorageInitializer = () => {
   useEffect(() => {
-    console.log("🚀 Initializing HybridStorage globally...");
-    HybridStorage.initialize().then((success) => {
-      if (success) {
-        console.log("✅ HybridStorage initialized successfully");
-      } else {
-        console.log("⚠️ HybridStorage initialized with local storage only");
-      }
-    });
+    console.log("🚀 Setting up Supabase-only storage...");
+    SupabaseStorage.setupSubscriptions();
+    console.log("✅ SupabaseStorage initialized successfully");
+
+    return () => {
+      SupabaseStorage.cleanup();
+    };
   }, []);
 
   return null;
