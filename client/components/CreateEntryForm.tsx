@@ -140,10 +140,6 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
       console.log("✅ Journal entry saved successfully");
       onEntryCreated(entry);
 
-      // Store the created entry and show map pin dialog
-      setCreatedEntry(entry);
-      setShowMapPinDialog(true);
-
       // Reset form
       setTitle("");
       setContent("");
