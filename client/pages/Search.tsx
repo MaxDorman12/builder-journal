@@ -1,495 +1,239 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { LocalStorage } from "@/lib/storage";
-import { HybridStorage } from "@/lib/hybridStorage";
-import { initializeSampleData } from "@/lib/sampleData";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { SupabaseStorage } from "@/lib/supabaseOnly";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import {
-  Search as SearchIcon,
-  BookOpen,
-  Star,
-  MapPin,
-  Calendar,
-  User,
-  Heart,
-  MessageCircle,
-  Filter,
-  X,
-  ArrowRight,
-} from "lucide-react";
-import {
-  JournalEntry,
-  WishlistItem,
-  MapPin as MapPinType,
-  MOOD_RATINGS,
-  AREA_TYPES,
-  WISHLIST_CATEGORIES,
-  WISHLIST_PRIORITIES,
-} from "@shared/api";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Search as SearchIcon, BookOpen, MapPin, Heart } from "lucide-react";
+import { JournalEntry, MapPin as MapPinType, WishlistItem } from "@shared/api";
 
 interface SearchResult {
   id: string;
-  type: "journal" | "wishlist" | "pin" | "comment";
   title: string;
   content: string;
-  location?: string;
+  type: "entry" | "pin" | "wishlist";
   date?: string;
-  author?: string;
-  moodRating?: number;
-  likes?: number;
-  entryId?: string; // For comments
-  parentTitle?: string; // For comments
-  category?: string;
-  priority?: string;
-  isCompleted?: boolean;
+  location?: string;
 }
 
 export default function Search() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [results, setResults] = useState<SearchResult[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [filterType, setFilterType] = useState<string>("all");
-  const [sortBy, setSortBy] = useState<"relevance" | "date" | "rating">(
-    "relevance",
-  );
+  const [allData, setAllData] = useState<{
+    entries: JournalEntry[];
+    pins: MapPinType[];
+    wishlistItems: WishlistItem[];
+  }>({ entries: [], pins: [], wishlistItems: [] });
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Initialize sample data if no data exists
-    initializeSampleData();
+    const loadData = async () => {
+      try {
+        setIsLoading(true);
+        const [entries, pins, wishlistItems] = await Promise.all([
+          SupabaseStorage.getJournalEntries(),
+          SupabaseStorage.getMapPins(),
+          SupabaseStorage.getWishlistItems(),
+        ]);
+        setAllData({ entries, pins, wishlistItems });
+      } catch (error) {
+        console.error("❌ Failed to load search data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
+
+    // Listen for real-time updates
+    const unsubscribe = SupabaseStorage.onUpdate(() => {
+      loadData();
+    });
+
+    return unsubscribe;
   }, []);
 
-  const allData = useMemo(() => {
-    const entries = HybridStorage.getJournalEntries();
-    const wishlistItems = HybridStorage.getWishlistItems();
-    const pins = HybridStorage.getMapPins();
+  const searchResults = useMemo(() => {
+    if (!searchTerm.trim()) return [];
 
-    const searchableData: SearchResult[] = [];
+    const results: SearchResult[] = [];
+    const term = searchTerm.toLowerCase();
 
-    // Add journal entries
-    entries.forEach((entry) => {
-      searchableData.push({
-        id: entry.id,
-        type: "journal",
-        title: entry.title,
-        content: entry.content,
-        location: entry.location,
-        date: entry.date,
-        author: entry.author,
-        moodRating: entry.moodRating,
-        likes: entry.likes,
-      });
-
-      // Add comments as separate searchable items
-      entry.comments.forEach((comment) => {
-        searchableData.push({
-          id: comment.id,
-          type: "comment",
-          title: `Comment on "${entry.title}"`,
-          content: comment.content,
-          author: comment.author,
-          date: comment.createdAt,
-          entryId: entry.id,
-          parentTitle: entry.title,
-          likes: comment.likes,
+    // Search journal entries
+    allData.entries.forEach(entry => {
+      if (
+        entry.title.toLowerCase().includes(term) ||
+        entry.content.toLowerCase().includes(term) ||
+        entry.location?.toLowerCase().includes(term)
+      ) {
+        results.push({
+          id: entry.id,
+          title: entry.title,
+          content: entry.content,
+          type: "entry",
+          date: entry.date,
+          location: entry.location,
         });
-      });
+      }
     });
 
-    // Add wishlist items
-    wishlistItems.forEach((item) => {
-      searchableData.push({
-        id: item.id,
-        type: "wishlist",
-        title: item.title,
-        content: item.description,
-        location: item.location,
-        author: item.addedBy,
-        date: item.createdAt,
-        category: item.category,
-        priority: item.priority,
-        isCompleted: item.isCompleted,
-      });
+    // Search map pins
+    allData.pins.forEach(pin => {
+      if (
+        pin.title.toLowerCase().includes(term) ||
+        pin.description?.toLowerCase().includes(term)
+      ) {
+        results.push({
+          id: pin.id,
+          title: pin.title,
+          content: pin.description || "",
+          type: "pin",
+          location: `${pin.latitude}, ${pin.longitude}`,
+        });
+      }
     });
 
-    // Add map pins
-    pins.forEach((pin) => {
-      searchableData.push({
-        id: pin.id,
-        type: "pin",
-        title: pin.title,
-        content: pin.description,
-        date: pin.visitDate,
-        moodRating: pin.moodRating,
-      });
+    // Search wishlist items
+    allData.wishlistItems.forEach(item => {
+      if (
+        item.title.toLowerCase().includes(term) ||
+        item.description?.toLowerCase().includes(term) ||
+        item.location?.toLowerCase().includes(term)
+      ) {
+        results.push({
+          id: item.id,
+          title: item.title,
+          content: item.description || "",
+          type: "wishlist",
+          location: item.location,
+        });
+      }
     });
 
-    return searchableData;
-  }, []);
-
-  const performSearch = (term: string) => {
-    if (!term.trim()) {
-      setResults([]);
-      return;
-    }
-
-    setIsLoading(true);
-
-    // Simulate search delay for better UX
-    setTimeout(() => {
-      const searchTermLower = term.toLowerCase();
-
-      let filteredResults = allData.filter((item) => {
-        // Type filter
-        if (filterType !== "all" && item.type !== filterType) return false;
-
-        // Text search
-        const titleMatch = item.title.toLowerCase().includes(searchTermLower);
-        const contentMatch = item.content
-          .toLowerCase()
-          .includes(searchTermLower);
-        const locationMatch = item.location
-          ?.toLowerCase()
-          .includes(searchTermLower);
-        const authorMatch = item.author
-          ?.toLowerCase()
-          .includes(searchTermLower);
-
-        return titleMatch || contentMatch || locationMatch || authorMatch;
-      });
-
-      // Sort results
-      filteredResults.sort((a, b) => {
-        switch (sortBy) {
-          case "date":
-            return (
-              new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime()
-            );
-          case "rating":
-            return (b.moodRating || 0) - (a.moodRating || 0);
-          case "relevance":
-          default:
-            // Simple relevance: title matches score higher than content matches
-            const aScore =
-              (a.title.toLowerCase().includes(searchTermLower) ? 2 : 0) +
-              (a.content.toLowerCase().includes(searchTermLower) ? 1 : 0);
-            const bScore =
-              (b.title.toLowerCase().includes(searchTermLower) ? 2 : 0) +
-              (b.content.toLowerCase().includes(searchTermLower) ? 1 : 0);
-            return bScore - aScore;
-        }
-      });
-
-      setResults(filteredResults);
-      setIsLoading(false);
-    }, 300);
-  };
-
-  useEffect(() => {
-    performSearch(searchTerm);
-  }, [searchTerm, filterType, sortBy, allData]);
+    return results;
+  }, [searchTerm, allData]);
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case "journal":
-        return BookOpen;
-      case "wishlist":
-        return Star;
+      case "entry":
+        return <BookOpen className="h-4 w-4 text-blue-600" />;
       case "pin":
-        return MapPin;
-      case "comment":
-        return MessageCircle;
+        return <MapPin className="h-4 w-4 text-green-600" />;
+      case "wishlist":
+        return <Heart className="h-4 w-4 text-red-600" />;
       default:
-        return SearchIcon;
+        return null;
     }
   };
 
-  const getTypeColor = (type: string) => {
+  const getTypeLabel = (type: string) => {
     switch (type) {
-      case "journal":
-        return "bg-blue-100 text-blue-700";
-      case "wishlist":
-        return "bg-purple-100 text-purple-700";
+      case "entry":
+        return "Journal Entry";
       case "pin":
-        return "bg-green-100 text-green-700";
-      case "comment":
-        return "bg-orange-100 text-orange-700";
+        return "Map Pin";
+      case "wishlist":
+        return "Wishlist Item";
       default:
-        return "bg-gray-100 text-gray-700";
+        return type;
     }
   };
 
-  const getMoodEmoji = (rating?: number) => {
-    if (!rating) return null;
-    const mood = MOOD_RATINGS.find((r) => r.value === rating);
-    return mood?.emoji;
-  };
-
-  const getCategoryLabel = (category?: string) => {
-    if (!category) return null;
-    const cat = WISHLIST_CATEGORIES.find((c) => c.value === category);
-    return cat?.label;
-  };
-
-  const getPriorityLabel = (priority?: string) => {
-    if (!priority) return null;
-    const pri = WISHLIST_PRIORITIES.find((p) => p.value === priority);
-    return pri ? `${pri.emoji} ${pri.label}` : null;
-  };
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading search data...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-          🔍 Search Adventures
-        </h1>
-        <p className="text-muted-foreground text-sm md:text-base">
-          Find anything across your journal entries, wishlist, and memories
-        </p>
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex items-center gap-3 mb-8">
+        <SearchIcon className="h-8 w-8 text-blue-600" />
+        <div>
+          <h1 className="text-3xl font-bold">Search</h1>
+          <p className="text-gray-600">Find your family memories and plans</p>
+        </div>
       </div>
 
       {/* Search Input */}
-      <Card className="family-card">
-        <CardContent className="p-4 md:p-6">
-          <div className="space-y-4">
-            <div className="relative">
-              <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search for adventures, places, activities, or memories..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 text-base" // Prevents zoom on iOS
-              />
-              {searchTerm && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setSearchTerm("")}
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              )}
-            </div>
-
-            {/* Filters */}
-            <div className="flex flex-col sm:flex-row gap-3">
-              <select
-                value={filterType}
-                onChange={(e) => setFilterType(e.target.value)}
-                className="px-3 py-2 border border-input bg-background rounded-md text-sm"
-              >
-                <option value="all">All Types</option>
-                <option value="journal">📖 Journal Entries</option>
-                <option value="wishlist">⭐ Wishlist Items</option>
-                <option value="pin">📍 Map Pins</option>
-                <option value="comment">💬 Comments</option>
-              </select>
-
-              <select
-                value={sortBy}
-                onChange={(e) =>
-                  setSortBy(e.target.value as "relevance" | "date" | "rating")
-                }
-                className="px-3 py-2 border border-input bg-background rounded-md text-sm"
-              >
-                <option value="relevance">🎯 Most Relevant</option>
-                <option value="date">📅 Most Recent</option>
-                <option value="rating">⭐ Highest Rated</option>
-              </select>
-            </div>
-
-            {/* Search Stats */}
-            {searchTerm && (
-              <div className="flex items-center justify-between text-sm text-muted-foreground">
-                <span>
-                  {isLoading
-                    ? "Searching..."
-                    : `Found ${results.length} result${results.length !== 1 ? "s" : ""}`}
-                </span>
-                {searchTerm && !isLoading && <span>for "{searchTerm}"</span>}
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+      <div className="relative mb-8">
+        <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+        <Input
+          type="text"
+          placeholder="Search journal entries, map pins, and wishlist items..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="pl-10 text-lg py-6"
+        />
+      </div>
 
       {/* Search Results */}
-      {!searchTerm ? (
-        <Card className="family-card">
-          <CardContent className="text-center py-12">
-            <SearchIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Start Your Search</h3>
-            <p className="text-muted-foreground mb-4">
-              Search through your journal entries, wishlist, map pins, and
-              comments
-            </p>
-            <div className="flex flex-wrap justify-center gap-2 mt-4">
-              <Badge variant="secondary">Try: "castle"</Badge>
-              <Badge variant="secondary">Try: "free parking"</Badge>
-              <Badge variant="secondary">Try: "Charlotte"</Badge>
-              <Badge variant="secondary">Try: "Edinburgh"</Badge>
+      {searchTerm.trim() ? (
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <h2 className="text-xl font-semibold">Search Results</h2>
+            <Badge variant="secondary">
+              {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}
+            </Badge>
+          </div>
+
+          {searchResults.length === 0 ? (
+            <Card>
+              <CardContent className="text-center py-8">
+                <SearchIcon className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-600">No results found for "{searchTerm}"</p>
+                <p className="text-sm text-gray-500 mt-2">
+                  Try different keywords or check your spelling
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="space-y-4">
+              {searchResults.map((result) => (
+                <Card key={`${result.type}-${result.id}`} className="hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      {getTypeIcon(result.type)}
+                      <span className="flex-1">{result.title}</span>
+                      <Badge variant="outline">
+                        {getTypeLabel(result.type)}
+                      </Badge>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-700 mb-2 line-clamp-2">
+                      {result.content}
+                    </p>
+                    <div className="flex items-center gap-4 text-sm text-gray-500">
+                      {result.date && (
+                        <span>📅 {new Date(result.date).toLocaleDateString()}</span>
+                      )}
+                      {result.location && (
+                        <span>📍 {result.location}</span>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
-          </CardContent>
-        </Card>
-      ) : results.length === 0 && !isLoading ? (
-        <Card className="family-card">
+          )}
+        </div>
+      ) : (
+        <Card>
           <CardContent className="text-center py-12">
-            <SearchIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No Results Found</h3>
-            <p className="text-muted-foreground">
-              Try different search terms or check your spelling
+            <SearchIcon className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+            <h2 className="text-xl font-semibold text-gray-600 mb-2">
+              Start Searching
+            </h2>
+            <p className="text-gray-500">
+              Enter keywords to search through your journal entries, map pins, and wishlist items
             </p>
           </CardContent>
         </Card>
-      ) : (
-        <div className="space-y-4">
-          {results.map((result) => {
-            const IconComponent = getTypeIcon(result.type);
-
-            return (
-              <Card
-                key={`${result.type}-${result.id}`}
-                className="family-card hover:shadow-lg transition-shadow"
-              >
-                <CardContent className="p-4">
-                  <div className="flex items-start space-x-4">
-                    <div
-                      className={`p-2 rounded-lg ${getTypeColor(result.type)}`}
-                    >
-                      <IconComponent className="h-5 w-5" />
-                    </div>
-
-                    <div className="flex-1 space-y-2">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <h3 className="font-semibold line-clamp-2">
-                            {result.title}
-                          </h3>
-                          {result.parentTitle && (
-                            <p className="text-sm text-muted-foreground">
-                              Comment on: {result.parentTitle}
-                            </p>
-                          )}
-                        </div>
-
-                        <div className="flex items-center space-x-2 ml-4">
-                          {result.moodRating && (
-                            <span className="text-lg">
-                              {getMoodEmoji(result.moodRating)}
-                            </span>
-                          )}
-                          {result.isCompleted !== undefined && (
-                            <Badge
-                              variant={
-                                result.isCompleted ? "default" : "secondary"
-                              }
-                            >
-                              {result.isCompleted ? "✅ Done" : "⏳ Pending"}
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-
-                      <p className="text-sm text-muted-foreground line-clamp-3">
-                        {result.content}
-                      </p>
-
-                      <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-                        {result.location && (
-                          <div className="flex items-center space-x-1">
-                            <MapPin className="h-3 w-3" />
-                            <span>{result.location}</span>
-                          </div>
-                        )}
-                        {result.date && (
-                          <div className="flex items-center space-x-1">
-                            <Calendar className="h-3 w-3" />
-                            <span>
-                              {new Date(result.date).toLocaleDateString()}
-                            </span>
-                          </div>
-                        )}
-                        {result.author && (
-                          <div className="flex items-center space-x-1">
-                            <User className="h-3 w-3" />
-                            <span>{result.author}</span>
-                          </div>
-                        )}
-                        {result.likes !== undefined && result.likes > 0 && (
-                          <div className="flex items-center space-x-1">
-                            <Heart className="h-3 w-3 text-red-500" />
-                            <span>{result.likes}</span>
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="flex flex-wrap gap-2">
-                        <Badge variant="outline" className="text-xs">
-                          {result.type === "journal" && "📖 Journal"}
-                          {result.type === "wishlist" && "⭐ Wishlist"}
-                          {result.type === "pin" && "📍 Map Pin"}
-                          {result.type === "comment" && "💬 Comment"}
-                        </Badge>
-
-                        {result.category && (
-                          <Badge variant="outline" className="text-xs">
-                            {getCategoryLabel(result.category)}
-                          </Badge>
-                        )}
-
-                        {result.priority && (
-                          <Badge variant="outline" className="text-xs">
-                            {getPriorityLabel(result.priority)}
-                          </Badge>
-                        )}
-                      </div>
-
-                      {/* Action Button */}
-                      <div className="pt-2">
-                        {result.type === "journal" && (
-                          <Link to="/journal">
-                            <Button variant="ghost" size="sm" className="group">
-                              View in Journal
-                              <ArrowRight className="h-3 w-3 ml-1 group-hover:translate-x-1 transition-transform" />
-                            </Button>
-                          </Link>
-                        )}
-                        {result.type === "wishlist" && (
-                          <Link to="/wishlist">
-                            <Button variant="ghost" size="sm" className="group">
-                              View in Wishlist
-                              <ArrowRight className="h-3 w-3 ml-1 group-hover:translate-x-1 transition-transform" />
-                            </Button>
-                          </Link>
-                        )}
-                        {result.type === "pin" && (
-                          <Link to="/map">
-                            <Button variant="ghost" size="sm" className="group">
-                              View on Map
-                              <ArrowRight className="h-3 w-3 ml-1 group-hover:translate-x-1 transition-transform" />
-                            </Button>
-                          </Link>
-                        )}
-                        {result.type === "comment" && result.entryId && (
-                          <Link to="/journal">
-                            <Button variant="ghost" size="sm" className="group">
-                              View Original Entry
-                              <ArrowRight className="h-3 w-3 ml-1 group-hover:translate-x-1 transition-transform" />
-                            </Button>
-                          </Link>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
       )}
     </div>
   );
