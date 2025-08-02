@@ -332,23 +332,6 @@ export default function Index() {
                 <Badge className="bg-pink-500 text-white">
                   💜 Dorman Family Adventures 💜
                 </Badge>
-                <Badge className="bg-purple-100 text-purple-700">
-                  20 Hours
-                </Badge>
-                <Badge className="bg-blue-100 text-blue-700">1D Journal</Badge>
-                <Badge className="bg-green-100 text-green-700">2D Map</Badge>
-                <Badge className="bg-yellow-100 text-yellow-700">
-                  4D Gallery
-                </Badge>
-                <Badge className="bg-red-100 text-red-700">5D Wishlist</Badge>
-                <Badge className="bg-purple-100 text-purple-700">
-                  6D Calendar
-                </Badge>
-                <Badge className="bg-gray-100 text-gray-700">
-                  Family Memories
-                </Badge>
-                <Badge className="bg-pink-100 text-pink-700">🛠️ Settings</Badge>
-                <Badge className="bg-red-100 text-red-700">🚪 Logout</Badge>
               </div>
             </div>
           </div>
