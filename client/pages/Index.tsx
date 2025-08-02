@@ -1004,16 +1004,29 @@ export default function Index() {
                 devices.
               </p>
             </div>
-            <div className="flex justify-end space-x-2">
-              <Button variant="outline" onClick={handleYoutubeCancel}>
-                Cancel
-              </Button>
-              <Button
-                onClick={handleYoutubeSave}
-                disabled={!tempYoutubeUrl.trim()}
-              >
-                Update Video
-              </Button>
+            <div className="flex justify-between">
+              <div>
+                {youtubeVideo && (
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={handleYoutubeDelete}
+                  >
+                    🗑️ Delete Video
+                  </Button>
+                )}
+              </div>
+              <div className="flex space-x-2">
+                <Button variant="outline" onClick={handleYoutubeCancel}>
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleYoutubeSave}
+                  disabled={!tempYoutubeUrl.trim()}
+                >
+                  Update Video
+                </Button>
+              </div>
             </div>
           </div>
         </DialogContent>
