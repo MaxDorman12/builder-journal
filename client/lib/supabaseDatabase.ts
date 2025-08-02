@@ -552,7 +552,37 @@ export class SupabaseDatabase {
       console.log(`✅ Loaded ${pins.length} map pins from Supabase`);
       return pins;
     } catch (error) {
-      console.error("❌ Failed to get map pins:", error);
+      // Better error logging
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorName = error instanceof Error ? error.name : typeof error;
+      console.error("❌ Failed to get map pins:", {
+        message: errorMessage,
+        name: errorName,
+        error: error instanceof Error ? error : String(error)
+      });
+
+      // Check if it's a network connectivity issue
+      if (error instanceof Error || typeof error === "string") {
+        const lowerErrorMessage = errorMessage.toLowerCase();
+
+        if (
+          lowerErrorMessage.includes("failed to fetch") ||
+          errorName === "AbortError" ||
+          errorName === "TypeError" ||
+          lowerErrorMessage.includes("networkerror") ||
+          lowerErrorMessage.includes("fetch") ||
+          lowerErrorMessage.includes("timeout") ||
+          lowerErrorMessage.includes("connection") ||
+          lowerErrorMessage.includes("network") ||
+          lowerErrorMessage.includes("aborted")
+        ) {
+          console.log("🌐 Network connectivity issue detected during map pins fetch. Returning empty array.");
+          return [];
+        }
+      }
+
+      // For any other errors, return empty array to prevent app crashes
+      console.log("⚠️ Unknown error in map pins fetch, returning empty array to prevent app crash:", { errorMessage, errorName });
       return [];
     }
   }
@@ -1047,7 +1077,7 @@ export class SupabaseDatabase {
           lowerErrorMessage.includes("aborted")
         ) {
           console.log(
-            "��� Network connectivity issue detected during YouTube video fetch. Returning null.",
+            "🌐 Network connectivity issue detected during YouTube video fetch. Returning null.",
           );
           return null;
         }
@@ -1321,7 +1351,7 @@ export class SupabaseDatabase {
       .subscribe();
 
     return () => {
-      console.log("🔇 Unsubscribing from map pins");
+      console.log("�� Unsubscribing from map pins");
       supabase.removeChannel(subscription);
     };
   }
