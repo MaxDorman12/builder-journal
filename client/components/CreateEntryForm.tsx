@@ -66,11 +66,13 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
   const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0, fileName: "" });
   const [isUploading, setIsUploading] = useState(false);
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
 
-    // Validate photo count limit
-    const maxPhotos = 10; // Reasonable limit for database performance
+    if (files.length === 0) return;
+
+    // Increased limits for cloud storage
+    const maxPhotos = 25; // Higher limit with cloud storage
     const currentCount = images.length;
     const totalCount = currentCount + files.length;
 
@@ -82,34 +84,73 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
       return;
     }
 
-    // Validate file sizes
-    const maxFileSize = 5 * 1024 * 1024; // 5MB per image
+    // Validate file sizes (increased for cloud storage)
+    const maxFileSize = 25 * 1024 * 1024; // 25MB per image for cloud storage
     const oversizedFiles = files.filter(file => file.size > maxFileSize);
     if (oversizedFiles.length > 0) {
-      alert(`The following images are too large (max 5MB each):\n${oversizedFiles.map(f => `${f.name} (${Math.round(f.size / 1024 / 1024)}MB)`).join('\n')}\n\nPlease choose smaller images or compress them first.`);
+      alert(`The following images are too large (max 25MB each):\n${oversizedFiles.map(f => `${f.name} (${Math.round(f.size / 1024 / 1024)}MB)`).join('\n')}\n\nPlease choose smaller images.`);
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
       return;
     }
 
-    files.forEach((file) => {
-      console.log(`📷 Processing image "${file.name}" (${Math.round(file.size / 1024)}KB)`);
+    setIsUploading(true);
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target?.result as string;
-        if (result) {
-          setImages((prev) => [...prev, result]);
-          console.log(`✅ Image "${file.name}" loaded successfully`);
+    try {
+      // Generate temporary entry ID for organizing photos
+      const tempEntryId = `temp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+      console.log(`📤 Uploading ${files.length} photos to cloud storage...`);
+
+      // Upload to cloud storage with progress tracking
+      const uploadedUrls = await PhotoStorage.uploadPhotos(
+        files,
+        tempEntryId,
+        (current, total, fileName) => {
+          setUploadProgress({ current, total, fileName });
         }
-      };
-      reader.readAsDataURL(file);
-    });
+      );
 
-    // Reset the input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+      if (uploadedUrls.length > 0) {
+        setImages((prev) => [...prev, ...uploadedUrls]);
+        console.log(`✅ Successfully uploaded ${uploadedUrls.length}/${files.length} photos`);
+
+        if (uploadedUrls.length < files.length) {
+          alert(`Warning: Only ${uploadedUrls.length} of ${files.length} photos were uploaded successfully. Some uploads may have failed.`);
+        }
+      } else {
+        throw new Error("No photos were uploaded successfully");
+      }
+
+    } catch (error) {
+      console.error("❌ Photo upload failed:", error);
+
+      // Fallback to base64 for small files
+      if (files.length <= 3 && files.every(f => f.size <= 2 * 1024 * 1024)) {
+        console.log("📷 Falling back to base64 storage for small photos...");
+
+        files.forEach((file) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const result = e.target?.result as string;
+            if (result) {
+              setImages((prev) => [...prev, result]);
+            }
+          };
+          reader.readAsDataURL(file);
+        });
+      } else {
+        alert("Photo upload failed. Please try with smaller or fewer photos, or check your internet connection.");
+      }
+    } finally {
+      setIsUploading(false);
+      setUploadProgress({ current: 0, total: 0, fileName: "" });
+
+      // Reset the input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     }
   };
 
