@@ -7,10 +7,10 @@ import { Badge } from "@/components/ui/badge";
 import { CreateEntryForm } from "@/components/CreateEntryForm";
 import { EditEntryForm } from "@/components/EditEntryForm";
 import { JournalEntryCard } from "@/components/JournalEntryCard";
-import { 
-  BookOpen, 
-  Plus, 
-  Heart, 
+import {
+  BookOpen,
+  Plus,
+  Heart,
   Calendar,
   MapPin,
   Camera,
@@ -21,7 +21,7 @@ import {
   Filter,
   Search,
   Eye,
-  TrendingUp
+  TrendingUp,
 } from "lucide-react";
 import { JournalEntry } from "@shared/api";
 
@@ -79,7 +79,7 @@ export default function Journal() {
         await SupabaseStorage.saveJournalEntry(updatedEntry);
         // Update local state immediately
         setEntries((prev) =>
-          prev.map((e) => (e.id === entryId ? updatedEntry : e))
+          prev.map((e) => (e.id === entryId ? updatedEntry : e)),
         );
       }
     } catch (error) {
@@ -110,7 +110,7 @@ export default function Journal() {
     try {
       await SupabaseStorage.saveJournalEntry(updatedEntry);
       setEntries((prev) =>
-        prev.map((e) => (e.id === updatedEntry.id ? updatedEntry : e))
+        prev.map((e) => (e.id === updatedEntry.id ? updatedEntry : e)),
       );
       setEditingEntry(null);
     } catch (error) {
@@ -119,13 +119,24 @@ export default function Journal() {
   };
 
   // Calculate stats
-  const totalPhotos = entries.reduce((count, entry) => count + (entry.images?.length || 0), 0);
-  const totalLikes = entries.reduce((sum, entry) => sum + (entry.likes || 0), 0);
-  const entriesWithPhotos = entries.filter(entry => entry.images && entry.images.length > 0).length;
-  const averageLikes = entries.length > 0 ? Math.round((totalLikes / entries.length) * 10) / 10 : 0;
+  const totalPhotos = entries.reduce(
+    (count, entry) => count + (entry.images?.length || 0),
+    0,
+  );
+  const totalLikes = entries.reduce(
+    (sum, entry) => sum + (entry.likes || 0),
+    0,
+  );
+  const entriesWithPhotos = entries.filter(
+    (entry) => entry.images && entry.images.length > 0,
+  ).length;
+  const averageLikes =
+    entries.length > 0
+      ? Math.round((totalLikes / entries.length) * 10) / 10
+      : 0;
 
   // Filter entries
-  const filteredEntries = entries.filter(entry => {
+  const filteredEntries = entries.filter((entry) => {
     switch (selectedFilter) {
       case "recent":
         const weekAgo = new Date();
@@ -141,12 +152,18 @@ export default function Journal() {
   });
 
   // Get unique months for timeline
-  const entriesByMonth = entries.reduce((acc, entry) => {
-    const month = new Date(entry.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
-    if (!acc[month]) acc[month] = [];
-    acc[month].push(entry);
-    return acc;
-  }, {} as Record<string, JournalEntry[]>);
+  const entriesByMonth = entries.reduce(
+    (acc, entry) => {
+      const month = new Date(entry.date).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+      });
+      if (!acc[month]) acc[month] = [];
+      acc[month].push(entry);
+      return acc;
+    },
+    {} as Record<string, JournalEntry[]>,
+  );
 
   if (isLoading) {
     return (
@@ -154,8 +171,12 @@ export default function Journal() {
         <Card className="w-full max-w-md">
           <CardContent className="text-center p-8">
             <BookOpen className="h-12 w-12 text-blue-600 mx-auto mb-4 animate-pulse" />
-            <p className="text-lg font-medium text-gray-700">Loading our adventure stories...</p>
-            <p className="text-sm text-gray-500 mt-2">📖 Gathering family memories</p>
+            <p className="text-lg font-medium text-gray-700">
+              Loading our adventure stories...
+            </p>
+            <p className="text-sm text-gray-500 mt-2">
+              📖 Gathering family memories
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -172,30 +193,31 @@ export default function Journal() {
               📖 Dive into our family adventure stories
             </Badge>
           </div>
-          
+
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-4">
             Family Adventure Journal
           </h1>
           <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent mb-6">
             Scottish Story Collection
           </h2>
-          
+
           <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8 leading-relaxed">
-            Every adventure tells a story. From highland hikes to coastal discoveries, 
-            our family journal captures the magic of exploring Scotland together.
+            Every adventure tells a story. From highland hikes to coastal
+            discoveries, our family journal captures the magic of exploring
+            Scotland together.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
             {isAuthenticated && (
-              <Button 
-                onClick={() => setIsCreateFormOpen(true)} 
+              <Button
+                onClick={() => setIsCreateFormOpen(true)}
                 className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-3 rounded-full text-lg font-semibold shadow-lg"
               >
                 <Feather className="h-5 w-5 mr-2" />
                 ✍️ Write New Story
               </Button>
             )}
-            <Button 
+            <Button
               variant="outline"
               className="border-blue-300 text-blue-700 hover:bg-blue-50 px-8 py-3 rounded-full text-lg font-semibold"
             >
@@ -207,7 +229,8 @@ export default function Journal() {
           {!isAuthenticated && (
             <div className="inline-block p-4 bg-blue-100 border border-blue-200 rounded-lg mb-8">
               <p className="text-blue-800">
-                👁️ <strong>Reader mode</strong> - Explore our family's Scottish adventure stories!
+                👁️ <strong>Reader mode</strong> - Explore our family's Scottish
+                adventure stories!
               </p>
             </div>
           )}
@@ -218,19 +241,23 @@ export default function Journal() {
           <Card className="bg-gradient-to-br from-blue-100 to-blue-200 border-blue-300 text-center hover:scale-105 transition-transform">
             <CardContent className="p-6">
               <BookOpen className="h-8 w-8 mx-auto mb-2 text-blue-700" />
-              <p className="text-2xl font-bold text-blue-800">{entries.length}</p>
+              <p className="text-2xl font-bold text-blue-800">
+                {entries.length}
+              </p>
               <p className="text-sm text-blue-600">Adventure Stories</p>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-gradient-to-br from-purple-100 to-purple-200 border-purple-300 text-center hover:scale-105 transition-transform">
             <CardContent className="p-6">
               <Camera className="h-8 w-8 mx-auto mb-2 text-purple-700" />
-              <p className="text-2xl font-bold text-purple-800">{totalPhotos}</p>
+              <p className="text-2xl font-bold text-purple-800">
+                {totalPhotos}
+              </p>
               <p className="text-sm text-purple-600">Photos Shared</p>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-gradient-to-br from-pink-100 to-pink-200 border-pink-300 text-center hover:scale-105 transition-transform">
             <CardContent className="p-6">
               <Heart className="h-8 w-8 mx-auto mb-2 text-pink-700" />
@@ -238,11 +265,13 @@ export default function Journal() {
               <p className="text-sm text-pink-600">Family Loves</p>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-gradient-to-br from-green-100 to-green-200 border-green-300 text-center hover:scale-105 transition-transform">
             <CardContent className="p-6">
               <Star className="h-8 w-8 mx-auto mb-2 text-green-700" />
-              <p className="text-2xl font-bold text-green-800">{averageLikes}</p>
+              <p className="text-2xl font-bold text-green-800">
+                {averageLikes}
+              </p>
               <p className="text-sm text-green-600">Avg. Rating</p>
             </CardContent>
           </Card>
@@ -262,28 +291,28 @@ export default function Journal() {
               </CardHeader>
               <CardContent className="p-6">
                 <div className="space-y-3">
-                  <Button 
+                  <Button
                     variant={selectedFilter === "all" ? "default" : "ghost"}
                     className="w-full justify-start"
                     onClick={() => setSelectedFilter("all")}
                   >
                     📚 All Stories ({entries.length})
                   </Button>
-                  <Button 
+                  <Button
                     variant={selectedFilter === "recent" ? "default" : "ghost"}
                     className="w-full justify-start"
                     onClick={() => setSelectedFilter("recent")}
                   >
                     🆕 Recent Stories
                   </Button>
-                  <Button 
+                  <Button
                     variant={selectedFilter === "photos" ? "default" : "ghost"}
                     className="w-full justify-start"
                     onClick={() => setSelectedFilter("photos")}
                   >
                     📸 With Photos ({entriesWithPhotos})
                   </Button>
-                  <Button 
+                  <Button
                     variant={selectedFilter === "popular" ? "default" : "ghost"}
                     className="w-full justify-start"
                     onClick={() => setSelectedFilter("popular")}
@@ -305,20 +334,30 @@ export default function Journal() {
               <CardContent className="p-6">
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Total Stories:</span>
-                    <Badge className="bg-blue-100 text-blue-700">{entries.length}</Badge>
+                    <span className="text-sm text-gray-600">
+                      Total Stories:
+                    </span>
+                    <Badge className="bg-blue-100 text-blue-700">
+                      {entries.length}
+                    </Badge>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">With Photos:</span>
-                    <Badge className="bg-purple-100 text-purple-700">{entriesWithPhotos}</Badge>
+                    <Badge className="bg-purple-100 text-purple-700">
+                      {entriesWithPhotos}
+                    </Badge>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Total Likes:</span>
-                    <Badge className="bg-pink-100 text-pink-700">{totalLikes}</Badge>
+                    <Badge className="bg-pink-100 text-pink-700">
+                      {totalLikes}
+                    </Badge>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Avg. Rating:</span>
-                    <Badge className="bg-green-100 text-green-700">{averageLikes}</Badge>
+                    <Badge className="bg-green-100 text-green-700">
+                      {averageLikes}
+                    </Badge>
                   </div>
                 </div>
               </CardContent>
@@ -335,16 +374,23 @@ export default function Journal() {
               <CardContent className="p-6">
                 <div className="space-y-3 max-h-64 overflow-y-auto">
                   {Object.entries(entriesByMonth)
-                    .sort(([a], [b]) => new Date(b).getTime() - new Date(a).getTime())
+                    .sort(
+                      ([a], [b]) =>
+                        new Date(b).getTime() - new Date(a).getTime(),
+                    )
                     .map(([month, monthEntries]) => (
-                      <div key={month} className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600 font-medium">{month}</span>
+                      <div
+                        key={month}
+                        className="flex justify-between items-center"
+                      >
+                        <span className="text-sm text-gray-600 font-medium">
+                          {month}
+                        </span>
                         <Badge variant="outline" className="text-xs">
                           {monthEntries.length} stories
                         </Badge>
                       </div>
-                    ))
-                  }
+                    ))}
                 </div>
               </CardContent>
             </Card>
@@ -355,10 +401,14 @@ export default function Journal() {
             <div className="flex items-center justify-between mb-8">
               <h3 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
                 <BookOpen className="h-8 w-8 text-blue-600" />
-                📖 {selectedFilter === "all" ? "All Adventures" : 
-                     selectedFilter === "recent" ? "Recent Adventures" :
-                     selectedFilter === "photos" ? "Adventures with Photos" :
-                     "Popular Adventures"}
+                📖{" "}
+                {selectedFilter === "all"
+                  ? "All Adventures"
+                  : selectedFilter === "recent"
+                    ? "Recent Adventures"
+                    : selectedFilter === "photos"
+                      ? "Adventures with Photos"
+                      : "Popular Adventures"}
               </h3>
               <Badge className="bg-blue-100 text-blue-700 px-4 py-2 text-lg font-semibold">
                 {filteredEntries.length} stories
@@ -370,21 +420,25 @@ export default function Journal() {
                 <CardContent className="text-center py-16">
                   <BookOpen className="h-20 w-20 text-blue-300 mx-auto mb-6" />
                   <h3 className="text-2xl font-bold text-blue-700 mb-4">
-                    {entries.length === 0 ? "No Adventure Stories Yet!" : `No ${selectedFilter} stories found`}
+                    {entries.length === 0
+                      ? "No Adventure Stories Yet!"
+                      : `No ${selectedFilter} stories found`}
                   </h3>
                   <p className="text-blue-600 mb-8 text-lg max-w-md mx-auto">
-                    {entries.length === 0 
+                    {entries.length === 0
                       ? "Start documenting your Scottish family adventures! Every journey has a story worth telling."
-                      : `Try adjusting your filter or create new ${selectedFilter} stories to see them here.`
-                    }
+                      : `Try adjusting your filter or create new ${selectedFilter} stories to see them here.`}
                   </p>
                   {isAuthenticated && (
-                    <Button 
-                      onClick={() => setIsCreateFormOpen(true)} 
+                    <Button
+                      onClick={() => setIsCreateFormOpen(true)}
                       className="bg-blue-500 hover:bg-blue-600 text-white text-lg px-8 py-4 rounded-full shadow-lg"
                     >
                       <PenTool className="h-6 w-6 mr-2" />
-                      📝 {entries.length === 0 ? "Write Your First Story" : "Create New Adventure"}
+                      📝{" "}
+                      {entries.length === 0
+                        ? "Write Your First Story"
+                        : "Create New Adventure"}
                     </Button>
                   )}
                 </CardContent>
@@ -393,18 +447,18 @@ export default function Journal() {
               <div className="space-y-8">
                 {filteredEntries.map((entry, index) => {
                   const colors = [
-                    'from-blue-100 to-blue-200 border-blue-300',
-                    'from-purple-100 to-purple-200 border-purple-300',
-                    'from-green-100 to-green-200 border-green-300',
-                    'from-pink-100 to-pink-200 border-pink-300',
-                    'from-orange-100 to-orange-200 border-orange-300',
-                    'from-indigo-100 to-indigo-200 border-indigo-300'
+                    "from-blue-100 to-blue-200 border-blue-300",
+                    "from-purple-100 to-purple-200 border-purple-300",
+                    "from-green-100 to-green-200 border-green-300",
+                    "from-pink-100 to-pink-200 border-pink-300",
+                    "from-orange-100 to-orange-200 border-orange-300",
+                    "from-indigo-100 to-indigo-200 border-indigo-300",
                   ];
                   const colorClass = colors[index % colors.length];
-                  
+
                   return (
-                    <Card 
-                      key={entry.id} 
+                    <Card
+                      key={entry.id}
                       className={`bg-gradient-to-br ${colorClass} hover:scale-[1.02] transition-all duration-300 shadow-lg`}
                     >
                       <div className="p-6">
@@ -433,8 +487,8 @@ export default function Journal() {
                     <Feather className="h-8 w-8 text-blue-600" />
                     ✍️ Write New Adventure Story
                   </h2>
-                  <Button 
-                    variant="ghost" 
+                  <Button
+                    variant="ghost"
                     onClick={() => setIsCreateFormOpen(false)}
                     className="text-gray-500 hover:text-gray-700"
                   >
@@ -460,8 +514,8 @@ export default function Journal() {
                     <PenTool className="h-8 w-8 text-purple-600" />
                     📝 Edit Adventure Story
                   </h2>
-                  <Button 
-                    variant="ghost" 
+                  <Button
+                    variant="ghost"
                     onClick={() => setEditingEntry(null)}
                     className="text-gray-500 hover:text-gray-700"
                   >

@@ -36,7 +36,7 @@ export const SyncTest: React.FC = () => {
         id: `sync-test-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         title: "🧪 Sync Test Entry",
         content: `This is a test entry created at ${new Date().toLocaleString()} to verify cross-device synchronization.`,
-        date: new Date().toISOString().split('T')[0],
+        date: new Date().toISOString().split("T")[0],
         location: "Scotland",
         images: [],
         likes: 0,
@@ -48,7 +48,7 @@ export const SyncTest: React.FC = () => {
       console.log("🧪 Creating sync test entry...");
       await SupabaseStorage.saveJournalEntry(testEntry);
       console.log("✅ Sync test entry created successfully");
-      
+
       // Update sync status after test
       setTimeout(checkSyncStatus, 1000);
     } catch (error) {
@@ -58,7 +58,7 @@ export const SyncTest: React.FC = () => {
 
   useEffect(() => {
     checkSyncStatus();
-    
+
     // Set up real-time listener to track updates
     const unsubscribe = SupabaseStorage.onUpdate(() => {
       console.log("🔄 [SYNC TEST] Real-time update detected!");
@@ -95,7 +95,7 @@ export const SyncTest: React.FC = () => {
                 {syncStatus.isConnected ? "Active" : "Inactive"}
               </p>
             </div>
-            
+
             <div className="text-center">
               <div className="text-2xl font-bold text-blue-600">
                 {syncStatus.listenerCount}
@@ -103,7 +103,7 @@ export const SyncTest: React.FC = () => {
               <p className="text-sm font-medium">Listeners</p>
               <p className="text-xs text-gray-500">Active</p>
             </div>
-            
+
             <div className="text-center">
               <div className="text-2xl font-bold text-green-600">
                 {syncStatus.tables.reduce((sum, table) => sum + table.count, 0)}
@@ -111,7 +111,7 @@ export const SyncTest: React.FC = () => {
               <p className="text-sm font-medium">Total Items</p>
               <p className="text-xs text-gray-500">Synced</p>
             </div>
-            
+
             <div className="text-center">
               <div className="text-xs font-mono text-gray-600">
                 {lastSyncTest || "Never"}
@@ -125,8 +125,11 @@ export const SyncTest: React.FC = () => {
         <div className="space-y-2">
           <h4 className="font-medium">Table Counts:</h4>
           {syncStatus?.tables.map((table) => (
-            <div key={table.name} className="flex justify-between items-center text-sm">
-              <span className="capitalize">{table.name.replace('_', ' ')}</span>
+            <div
+              key={table.name}
+              className="flex justify-between items-center text-sm"
+            >
+              <span className="capitalize">{table.name.replace("_", " ")}</span>
               <Badge variant="outline">{table.count}</Badge>
             </div>
           ))}
@@ -140,22 +143,22 @@ export const SyncTest: React.FC = () => {
             size="sm"
             className="gap-2"
           >
-            <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
+            <RefreshCw
+              className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`}
+            />
             Refresh Status
           </Button>
-          
-          <Button
-            onClick={testSyncByCreatingEntry}
-            size="sm"
-            className="gap-2"
-          >
+
+          <Button onClick={testSyncByCreatingEntry} size="sm" className="gap-2">
             <TestTube className="h-4 w-4" />
             Test Sync
           </Button>
         </div>
 
         <div className="text-xs text-gray-500 space-y-1">
-          <p><strong>How to test cross-device sync:</strong></p>
+          <p>
+            <strong>How to test cross-device sync:</strong>
+          </p>
           <ol className="list-decimal list-inside space-y-1 ml-2">
             <li>Open this app on multiple devices/browsers</li>
             <li>Click "Test Sync" on one device</li>

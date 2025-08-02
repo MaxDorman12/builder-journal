@@ -2,10 +2,7 @@ import React, { useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
   Heart,
   Calendar,
@@ -55,8 +52,8 @@ export function JournalEntryCard({
 
   const prevImage = () => {
     if (entry.images && entry.images.length > 0) {
-      setCurrentImageIndex((prev) => 
-        prev === 0 ? entry.images.length - 1 : prev - 1
+      setCurrentImageIndex((prev) =>
+        prev === 0 ? entry.images.length - 1 : prev - 1,
       );
     }
   };
@@ -85,7 +82,7 @@ export function JournalEntryCard({
                   {new Date(entry.date).toLocaleDateString("en-US", {
                     weekday: "short",
                     year: "numeric",
-                    month: "short", 
+                    month: "short",
                     day: "numeric",
                   })}
                 </div>
@@ -156,7 +153,8 @@ export function JournalEntryCard({
               <div className="flex items-center gap-2 mb-2">
                 <Camera className="h-4 w-4 text-gray-500" />
                 <span className="text-sm text-gray-600">
-                  {entry.images.length} photo{entry.images.length !== 1 ? 's' : ''}
+                  {entry.images.length} photo
+                  {entry.images.length !== 1 ? "s" : ""}
                 </span>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
@@ -229,7 +227,7 @@ export function JournalEntryCard({
                 alt={`${entry.title} ${currentImageIndex + 1}`}
                 className="w-full h-auto max-h-[80vh] object-contain"
               />
-              
+
               {entry.images.length > 1 && (
                 <>
                   <Button
@@ -250,7 +248,7 @@ export function JournalEntryCard({
                   </Button>
                 </>
               )}
-              
+
               <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded text-sm">
                 {currentImageIndex + 1} of {entry.images.length}
               </div>

@@ -40,11 +40,7 @@ import {
   Image,
   Settings,
 } from "lucide-react";
-import {
-  JournalEntry,
-  MapPin as MapPinType,
-  YouTubeVideo,
-} from "@shared/api";
+import { JournalEntry, MapPin as MapPinType, YouTubeVideo } from "@shared/api";
 
 export default function Index() {
   const { isAuthenticated, isFamilyMember } = useAuth();
@@ -77,13 +73,14 @@ export default function Index() {
     try {
       setIsLoading(true);
       console.log("🔄 Loading data from Supabase...");
-      
-      const [entriesData, pinsData, charlieData, youtubeData] = await Promise.all([
-        SupabaseStorage.getJournalEntries(),
-        SupabaseStorage.getMapPins(),
-        SupabaseStorage.getCharlieData(),
-        SupabaseStorage.getYouTubeVideo(),
-      ]);
+
+      const [entriesData, pinsData, charlieData, youtubeData] =
+        await Promise.all([
+          SupabaseStorage.getJournalEntries(),
+          SupabaseStorage.getMapPins(),
+          SupabaseStorage.getCharlieData(),
+          SupabaseStorage.getYouTubeVideo(),
+        ]);
 
       setEntries(entriesData);
       setPins(pinsData);
@@ -184,7 +181,10 @@ export default function Index() {
     }
   };
 
-  const totalPhotos = entries.reduce((count, entry) => count + (entry.images?.length || 0), 0);
+  const totalPhotos = entries.reduce(
+    (count, entry) => count + (entry.images?.length || 0),
+    0,
+  );
   const wishlistItems = 5; // Placeholder
 
   if (isLoading) {
@@ -193,7 +193,9 @@ export default function Index() {
         <Card className="w-full max-w-md">
           <CardContent className="text-center p-8">
             <Mountain className="h-12 w-12 text-blue-600 mx-auto mb-4 animate-pulse" />
-            <p className="text-lg font-medium">Loading our Scottish adventures...</p>
+            <p className="text-lg font-medium">
+              Loading our Scottish adventures...
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -210,20 +212,20 @@ export default function Index() {
               💜 Welcome to our magical adventure!
             </Badge>
           </div>
-          
+
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-4">
             The Dorman Family
           </h1>
           <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-6">
             Scottish Adventures
           </h2>
-          
+
           <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8 leading-relaxed">
-            Follow Max, Charlotte, Oscar, Rose, and Lola as they explore the beautiful 
-            landscapes of Scotland, creating memories and sharing their amazing 
-            journeys together.
+            Follow Max, Charlotte, Oscar, Rose, and Lola as they explore the
+            beautiful landscapes of Scotland, creating memories and sharing
+            their amazing journeys together.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Link to="/journal">
               <Button className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white px-8 py-3 rounded-full text-lg font-semibold shadow-lg">
@@ -243,11 +245,13 @@ export default function Index() {
           <Card className="bg-gradient-to-br from-pink-100 to-pink-200 border-pink-300 text-center">
             <CardContent className="p-6">
               <BookOpen className="h-8 w-8 mx-auto mb-2 text-pink-700" />
-              <p className="text-2xl font-bold text-pink-800">{entries.length}</p>
+              <p className="text-2xl font-bold text-pink-800">
+                {entries.length}
+              </p>
               <p className="text-sm text-pink-600">Posts Visited</p>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-gradient-to-br from-purple-100 to-purple-200 border-purple-300 text-center">
             <CardContent className="p-6">
               <Users className="h-8 w-8 mx-auto mb-2 text-purple-700" />
@@ -255,7 +259,7 @@ export default function Index() {
               <p className="text-sm text-purple-600">Family Explorers</p>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-gradient-to-br from-blue-100 to-blue-200 border-blue-300 text-center">
             <CardContent className="p-6">
               <Mountain className="h-8 w-8 mx-auto mb-2 text-blue-700" />
@@ -263,7 +267,7 @@ export default function Index() {
               <p className="text-sm text-blue-600">Family Adventures</p>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-gradient-to-br from-green-100 to-green-200 border-green-300 text-center">
             <CardContent className="p-6">
               <Star className="h-8 w-8 mx-auto mb-2 text-green-700" />
@@ -275,7 +279,10 @@ export default function Index() {
 
         {/* View All Family Stats Link */}
         <div className="text-center mb-12">
-          <Link to="/calendar" className="text-purple-600 hover:text-purple-700 font-medium inline-flex items-center gap-1">
+          <Link
+            to="/calendar"
+            className="text-purple-600 hover:text-purple-700 font-medium inline-flex items-center gap-1"
+          >
             📊 View All Family Stats →
           </Link>
         </div>
@@ -284,42 +291,62 @@ export default function Index() {
         <div className="grid lg:grid-cols-2 gap-12 mb-12">
           {/* About Our Family */}
           <div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">About Our Family</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">
+              About Our Family
+            </h3>
             <div className="space-y-4 text-gray-700 leading-relaxed">
               <p>
-                We are the Dorman family - Max and Charlotte, along with our three wonderful 
-                children Oscar, Rose, and Lola. Living in beautiful Scotland, we're passionate about 
-                exploring the diverse landscapes our country offers, from rugged highlands to 
-                towering Munros.
+                We are the Dorman family - Max and Charlotte, along with our
+                three wonderful children Oscar, Rose, and Lola. Living in
+                beautiful Scotland, we're passionate about exploring the diverse
+                landscapes our country offers, from rugged highlands to towering
+                Munros.
               </p>
               <p>
-                Each journal captures our adventures as we discover hidden gems, bustling cities, 
-                and picturesque villages throughout Scotland. Each day brings new memories, challenges, and stories to share.
+                Each journal captures our adventures as we discover hidden gems,
+                bustling cities, and picturesque villages throughout Scotland.
+                Each day brings new memories, challenges, and stories to share.
               </p>
               <p>
-                Join us as we document our journey filled our experiences, and build our 
-                trove of family memories that we'll cherish forever.
+                Join us as we document our journey filled our experiences, and
+                build our trove of family memories that we'll cherish forever.
               </p>
             </div>
-            
+
             <div className="mt-6 flex flex-wrap gap-2">
-              <Badge className="bg-orange-100 text-orange-700 border-orange-300">🏔️ Highland Hikers</Badge>
-              <Badge className="bg-blue-100 text-blue-700 border-blue-300">🌊 Loch Explorers</Badge>
-              <Badge className="bg-green-100 text-green-700 border-green-300">📝 Memory Makers</Badge>
+              <Badge className="bg-orange-100 text-orange-700 border-orange-300">
+                🏔️ Highland Hikers
+              </Badge>
+              <Badge className="bg-blue-100 text-blue-700 border-blue-300">
+                🌊 Loch Explorers
+              </Badge>
+              <Badge className="bg-green-100 text-green-700 border-green-300">
+                📝 Memory Makers
+              </Badge>
             </div>
-            
+
             <div className="mt-6">
               <p className="text-sm text-gray-500 mb-4">✨ Follow Our Family</p>
-              
+
               <div className="flex flex-wrap gap-2 mb-4">
-                <Badge className="bg-pink-500 text-white">💜 Dorman Family Adventures 💜</Badge>
-                <Badge className="bg-purple-100 text-purple-700">20 Hours</Badge>
+                <Badge className="bg-pink-500 text-white">
+                  💜 Dorman Family Adventures 💜
+                </Badge>
+                <Badge className="bg-purple-100 text-purple-700">
+                  20 Hours
+                </Badge>
                 <Badge className="bg-blue-100 text-blue-700">1D Journal</Badge>
                 <Badge className="bg-green-100 text-green-700">2D Map</Badge>
-                <Badge className="bg-yellow-100 text-yellow-700">4D Gallery</Badge>
+                <Badge className="bg-yellow-100 text-yellow-700">
+                  4D Gallery
+                </Badge>
                 <Badge className="bg-red-100 text-red-700">5D Wishlist</Badge>
-                <Badge className="bg-purple-100 text-purple-700">6D Calendar</Badge>
-                <Badge className="bg-gray-100 text-gray-700">Family Memories</Badge>
+                <Badge className="bg-purple-100 text-purple-700">
+                  6D Calendar
+                </Badge>
+                <Badge className="bg-gray-100 text-gray-700">
+                  Family Memories
+                </Badge>
                 <Badge className="bg-pink-100 text-pink-700">🛠️ Settings</Badge>
                 <Badge className="bg-red-100 text-red-700">🚪 Logout</Badge>
               </div>
@@ -329,14 +356,16 @@ export default function Index() {
           {/* Our Scotland Adventures */}
           <div>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold text-gray-900">🎬 Our Scotland Adventures</h3>
+              <h3 className="text-2xl font-bold text-gray-900">
+                🎬 Our Scotland Adventures
+              </h3>
               {isAuthenticated && (
                 <Button variant="ghost" size="sm" onClick={handleYoutubeEdit}>
                   <Edit2 className="h-4 w-4" />
                 </Button>
               )}
             </div>
-            
+
             {youtubeVideo ? (
               <Card className="bg-purple-50 border-purple-200">
                 <CardContent className="p-6">
@@ -349,10 +378,16 @@ export default function Index() {
                     />
                   </div>
                   <div className="text-center">
-                    <h4 className="font-semibold text-purple-800 mb-2">{youtubeVideo.title}</h4>
-                    <p className="text-sm text-purple-600 mb-4">Click to open in YouTube</p>
+                    <h4 className="font-semibold text-purple-800 mb-2">
+                      {youtubeVideo.title}
+                    </h4>
+                    <p className="text-sm text-purple-600 mb-4">
+                      Click to open in YouTube
+                    </p>
                     {youtubeVideo.description && (
-                      <p className="text-gray-600 text-sm">{youtubeVideo.description}</p>
+                      <p className="text-gray-600 text-sm">
+                        {youtubeVideo.description}
+                      </p>
                     )}
                   </div>
                 </CardContent>
@@ -363,12 +398,19 @@ export default function Index() {
                   <div className="aspect-video rounded-lg bg-purple-100 flex items-center justify-center mb-4">
                     <div className="text-center">
                       <Youtube className="h-16 w-16 text-purple-400 mx-auto mb-4" />
-                      <h4 className="font-semibold text-purple-800 mb-2">Watch Our Latest Adventure</h4>
-                      <p className="text-sm text-purple-600">Click to open in YouTube</p>
+                      <h4 className="font-semibold text-purple-800 mb-2">
+                        Watch Our Latest Adventure
+                      </h4>
+                      <p className="text-sm text-purple-600">
+                        Click to open in YouTube
+                      </p>
                     </div>
                   </div>
                   {isAuthenticated && (
-                    <Button onClick={handleYoutubeEdit} className="bg-purple-500 hover:bg-purple-600 text-white">
+                    <Button
+                      onClick={handleYoutubeEdit}
+                      className="bg-purple-500 hover:bg-purple-600 text-white"
+                    >
                       <Plus className="h-4 w-4 mr-2" />
                       Add Video
                     </Button>
@@ -395,7 +437,9 @@ export default function Index() {
                   <div className="w-full h-96 bg-green-100 flex items-center justify-center">
                     <div className="text-center">
                       <User className="h-16 w-16 text-green-400 mx-auto mb-4" />
-                      <p className="text-green-600">Charlie's photo coming soon!</p>
+                      <p className="text-green-600">
+                        Charlie's photo coming soon!
+                      </p>
                     </div>
                   </div>
                 )}
@@ -406,33 +450,52 @@ export default function Index() {
           {/* Meet Charlie */}
           <div>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold text-gray-900">🐕 Meet Charlie</h3>
+              <h3 className="text-2xl font-bold text-gray-900">
+                🐕 Meet Charlie
+              </h3>
               {isAuthenticated && (
                 <div className="flex gap-2">
-                  <Button variant="ghost" size="sm" className="text-green-600">Save</Button>
-                  <Button variant="ghost" size="sm" className="text-yellow-600">Edit</Button>
-                  <Button variant="ghost" size="sm" className="text-orange-600">Clean</Button>
-                  <Button variant="ghost" size="sm" className="text-red-600">Reset</Button>
+                  <Button variant="ghost" size="sm" className="text-green-600">
+                    Save
+                  </Button>
+                  <Button variant="ghost" size="sm" className="text-yellow-600">
+                    Edit
+                  </Button>
+                  <Button variant="ghost" size="sm" className="text-orange-600">
+                    Clean
+                  </Button>
+                  <Button variant="ghost" size="sm" className="text-red-600">
+                    Reset
+                  </Button>
                   <Button variant="ghost" size="sm" onClick={handleCharlieEdit}>
                     <Edit2 className="h-4 w-4" />
                   </Button>
                 </div>
               )}
             </div>
-            
+
             <p className="text-gray-600 mb-6">
-              {charlieData.description || "No family adventure is complete without our beloved four-legged companion, Charlie! This loyal and energetic member of the Dorman family brings joy and excitement to every journey we embark on across Scotland."}
+              {charlieData.description ||
+                "No family adventure is complete without our beloved four-legged companion, Charlie! This loyal and energetic member of the Dorman family brings joy and excitement to every journey we embark on across Scotland."}
             </p>
-            
+
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">
-                <Badge className="bg-red-100 text-red-700">❤️ Adventure Buddy</Badge>
-                <Badge className="bg-green-100 text-green-700">🌿 Trail Explorer</Badge>
-                <Badge className="bg-blue-100 text-blue-700">📸 Photo Star</Badge>
+                <Badge className="bg-red-100 text-red-700">
+                  ❤️ Adventure Buddy
+                </Badge>
+                <Badge className="bg-green-100 text-green-700">
+                  🌿 Trail Explorer
+                </Badge>
+                <Badge className="bg-blue-100 text-blue-700">
+                  📸 Photo Star
+                </Badge>
               </div>
-              
+
               <div className="flex flex-wrap gap-2">
-                <Badge className="bg-pink-100 text-pink-700">💖 Family Heart</Badge>
+                <Badge className="bg-pink-100 text-pink-700">
+                  💖 Family Heart
+                </Badge>
               </div>
             </div>
           </div>
@@ -441,32 +504,50 @@ export default function Index() {
         {/* Recent Adventures */}
         <div>
           <div className="flex items-center justify-between mb-8">
-            <h3 className="text-2xl font-bold text-gray-900">Recent Adventures</h3>
-            <Link to="/journal" className="text-purple-600 hover:text-purple-700 font-medium">
+            <h3 className="text-2xl font-bold text-gray-900">
+              Recent Adventures
+            </h3>
+            <Link
+              to="/journal"
+              className="text-purple-600 hover:text-purple-700 font-medium"
+            >
               View All Entries →
             </Link>
           </div>
-          
+
           <div className="grid md:grid-cols-3 gap-6">
             {entries.slice(0, 3).map((entry, index) => (
-              <Card key={entry.id} className="hover:shadow-lg transition-shadow">
+              <Card
+                key={entry.id}
+                className="hover:shadow-lg transition-shadow"
+              >
                 <CardContent className="p-6">
                   <div className="flex items-center gap-2 mb-4">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${
-                      index === 0 ? 'bg-red-500' : index === 1 ? 'bg-yellow-500' : 'bg-orange-500'
-                    }`}>
-                      {index === 0 ? '🏠' : index === 1 ? '🏰' : '🥾'}
+                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${
+                        index === 0
+                          ? "bg-red-500"
+                          : index === 1
+                            ? "bg-yellow-500"
+                            : "bg-orange-500"
+                      }`}
+                    >
+                      {index === 0 ? "🏠" : index === 1 ? "🏰" : "🥾"}
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900">{entry.title}</h4>
-                      <p className="text-xs text-gray-500">{new Date(entry.date).toLocaleDateString()}</p>
+                      <h4 className="font-semibold text-gray-900">
+                        {entry.title}
+                      </h4>
+                      <p className="text-xs text-gray-500">
+                        {new Date(entry.date).toLocaleDateString()}
+                      </p>
                     </div>
                   </div>
-                  
+
                   <p className="text-sm text-gray-600 mb-4 line-clamp-3">
                     {entry.content}
                   </p>
-                  
+
                   <div className="flex items-center justify-between text-xs text-gray-500">
                     <span>👥 {entry.likes || 0} likes</span>
                     <span>🏴󠁧󠁢󠁳󠁣󠁴󠁿 Scotland</span>
@@ -474,7 +555,7 @@ export default function Index() {
                 </CardContent>
               </Card>
             ))}
-            
+
             {entries.length === 0 && (
               <>
                 {[1, 2, 3].map((i) => (
@@ -512,7 +593,10 @@ export default function Index() {
         </div>
 
         {/* YouTube Edit Dialog */}
-        <Dialog open={isYoutubeDialogOpen} onOpenChange={setIsYoutubeDialogOpen}>
+        <Dialog
+          open={isYoutubeDialogOpen}
+          onOpenChange={setIsYoutubeDialogOpen}
+        >
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
@@ -550,7 +634,10 @@ export default function Index() {
                 />
               </div>
               <div className="flex gap-2">
-                <Button onClick={handleYoutubeSave} className="flex-1 bg-red-500 hover:bg-red-600">
+                <Button
+                  onClick={handleYoutubeSave}
+                  className="flex-1 bg-red-500 hover:bg-red-600"
+                >
                   <Youtube className="h-4 w-4 mr-2" />
                   Save Video
                 </Button>
@@ -565,7 +652,10 @@ export default function Index() {
         </Dialog>
 
         {/* Charlie Edit Dialog */}
-        <Dialog open={isCharlieDialogOpen} onOpenChange={setIsCharlieDialogOpen}>
+        <Dialog
+          open={isCharlieDialogOpen}
+          onOpenChange={setIsCharlieDialogOpen}
+        >
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">

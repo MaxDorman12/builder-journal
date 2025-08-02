@@ -1258,7 +1258,11 @@ export class SupabaseDatabase {
         .eq("id", "charlie")
         .single();
 
-      console.log("🐕 Charlie data query result:", { data, error, errorCode: error?.code });
+      console.log("🐕 Charlie data query result:", {
+        data,
+        error,
+        errorCode: error?.code,
+      });
 
       if (error && error.code !== "PGRST116") {
         // PGRST116 = no rows returned

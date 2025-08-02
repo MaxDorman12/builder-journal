@@ -17,7 +17,7 @@ export default function Settings() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `family-journal-export-${new Date().toISOString().split('T')[0]}.json`;
+      a.download = `family-journal-export-${new Date().toISOString().split("T")[0]}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -86,7 +86,9 @@ export default function Settings() {
                 <div>
                   <p className="font-medium">Supabase Cloud Database</p>
                   <p className="text-gray-600">
-                    All your data is stored securely in Supabase's cloud database with automatic backups and real-time synchronization across all devices.
+                    All your data is stored securely in Supabase's cloud
+                    database with automatic backups and real-time
+                    synchronization across all devices.
                   </p>
                 </div>
               </div>
@@ -95,7 +97,8 @@ export default function Settings() {
                 <div>
                   <p className="font-medium">Real-time Sync</p>
                   <p className="text-gray-600">
-                    Changes are automatically synchronized across all family members' devices in real-time.
+                    Changes are automatically synchronized across all family
+                    members' devices in real-time.
                   </p>
                 </div>
               </div>
@@ -104,7 +107,9 @@ export default function Settings() {
                 <div>
                   <p className="font-medium">No Local Storage</p>
                   <p className="text-gray-600">
-                    This app no longer uses browser local storage or Firebase. Everything is stored directly in Supabase for better reliability and performance.
+                    This app no longer uses browser local storage or Firebase.
+                    Everything is stored directly in Supabase for better
+                    reliability and performance.
                   </p>
                 </div>
               </div>

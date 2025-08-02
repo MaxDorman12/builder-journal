@@ -14,11 +14,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { 
-  Heart, 
-  Plus, 
-  Check, 
-  Trash2, 
+import {
+  Heart,
+  Plus,
+  Check,
+  Trash2,
   Star,
   Target,
   Trophy,
@@ -30,7 +30,7 @@ import {
   Filter,
   Calendar,
   TrendingUp,
-  Zap
+  Zap,
 } from "lucide-react";
 import { WishlistItem } from "@shared/api";
 
@@ -80,7 +80,7 @@ export default function Wishlist() {
 
     try {
       await SupabaseStorage.deleteWishlistItem(id);
-      setWishlistItems((prev) => prev.filter(item => item.id !== id));
+      setWishlistItems((prev) => prev.filter((item) => item.id !== id));
       console.log("✅ Wishlist item deleted successfully");
     } catch (error) {
       console.error("❌ Failed to delete wishlist item:", error);
@@ -94,9 +94,13 @@ export default function Wishlist() {
       setWishlistItems((prev) =>
         prev.map((item) =>
           item.id === id
-            ? { ...item, isCompleted: true, completedDate: new Date().toISOString() }
-            : item
-        )
+            ? {
+                ...item,
+                isCompleted: true,
+                completedDate: new Date().toISOString(),
+              }
+            : item,
+        ),
       );
       console.log("✅ Wishlist item marked as completed");
     } catch (error) {
@@ -143,16 +147,16 @@ export default function Wishlist() {
     }
   };
 
-  const pendingItems = wishlistItems.filter(item => !item.isCompleted);
-  const completedItems = wishlistItems.filter(item => item.isCompleted);
-  const recentItems = wishlistItems.filter(item => {
+  const pendingItems = wishlistItems.filter((item) => !item.isCompleted);
+  const completedItems = wishlistItems.filter((item) => item.isCompleted);
+  const recentItems = wishlistItems.filter((item) => {
     const weekAgo = new Date();
     weekAgo.setDate(weekAgo.getDate() - 7);
     return new Date(item.createdAt) >= weekAgo;
   });
 
   // Filter items
-  const filteredItems = wishlistItems.filter(item => {
+  const filteredItems = wishlistItems.filter((item) => {
     switch (selectedFilter) {
       case "pending":
         return !item.isCompleted;
@@ -168,9 +172,10 @@ export default function Wishlist() {
   });
 
   // Calculate completion rate
-  const completionRate = wishlistItems.length > 0 
-    ? Math.round((completedItems.length / wishlistItems.length) * 100) 
-    : 0;
+  const completionRate =
+    wishlistItems.length > 0
+      ? Math.round((completedItems.length / wishlistItems.length) * 100)
+      : 0;
 
   if (isLoading) {
     return (
@@ -178,8 +183,12 @@ export default function Wishlist() {
         <Card className="w-full max-w-md">
           <CardContent className="text-center p-8">
             <Heart className="h-12 w-12 text-pink-600 mx-auto mb-4 animate-pulse" />
-            <p className="text-lg font-medium text-gray-700">Loading our Scottish dreams...</p>
-            <p className="text-sm text-gray-500 mt-2">🌟 Gathering adventure wishes</p>
+            <p className="text-lg font-medium text-gray-700">
+              Loading our Scottish dreams...
+            </p>
+            <p className="text-sm text-gray-500 mt-2">
+              🌟 Gathering adventure wishes
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -196,30 +205,30 @@ export default function Wishlist() {
               ⭐ Dream big and explore Scotland's wonders
             </Badge>
           </div>
-          
+
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-4">
             Family Dream List
           </h1>
           <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-600 to-pink-800 bg-clip-text text-transparent mb-6">
             Scottish Adventure Goals
           </h2>
-          
+
           <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8 leading-relaxed">
-            Every great adventure starts with a dream. Our family wishlist captures all the magical 
-            places and experiences we hope to discover across beautiful Scotland.
+            Every great adventure starts with a dream. Our family wishlist
+            captures all the magical places and experiences we hope to discover
+            across beautiful Scotland.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
             {isAuthenticated && (
-              <Button 
-                onClick={() => setIsCreateDialogOpen(true)} 
+              <Button
+                onClick={() => setIsCreateDialogOpen(true)}
                 className="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white px-8 py-3 rounded-full text-lg font-semibold shadow-lg"
               >
-                <Sparkles className="h-5 w-5 mr-2" />
-                ✨ Add New Dream
+                <Sparkles className="h-5 w-5 mr-2" />✨ Add New Dream
               </Button>
             )}
-            <Button 
+            <Button
               variant="outline"
               className="border-pink-300 text-pink-700 hover:bg-pink-50 px-8 py-3 rounded-full text-lg font-semibold"
             >
@@ -231,7 +240,8 @@ export default function Wishlist() {
           {!isAuthenticated && (
             <div className="inline-block p-4 bg-pink-100 border border-pink-200 rounded-lg mb-8">
               <p className="text-pink-800">
-                👁️ <strong>Dream explorer mode</strong> - Discover our family's Scottish adventure wishlist!
+                👁️ <strong>Dream explorer mode</strong> - Discover our family's
+                Scottish adventure wishlist!
               </p>
             </div>
           )}
@@ -242,31 +252,39 @@ export default function Wishlist() {
           <Card className="bg-gradient-to-br from-pink-100 to-pink-200 border-pink-300 text-center hover:scale-105 transition-transform">
             <CardContent className="p-6">
               <Heart className="h-8 w-8 mx-auto mb-2 text-pink-700" />
-              <p className="text-2xl font-bold text-pink-800">{wishlistItems.length}</p>
+              <p className="text-2xl font-bold text-pink-800">
+                {wishlistItems.length}
+              </p>
               <p className="text-sm text-pink-600">Total Dreams</p>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-gradient-to-br from-green-100 to-green-200 border-green-300 text-center hover:scale-105 transition-transform">
             <CardContent className="p-6">
               <Trophy className="h-8 w-8 mx-auto mb-2 text-green-700" />
-              <p className="text-2xl font-bold text-green-800">{completedItems.length}</p>
+              <p className="text-2xl font-bold text-green-800">
+                {completedItems.length}
+              </p>
               <p className="text-sm text-green-600">Dreams Achieved</p>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-gradient-to-br from-blue-100 to-blue-200 border-blue-300 text-center hover:scale-105 transition-transform">
             <CardContent className="p-6">
               <Target className="h-8 w-8 mx-auto mb-2 text-blue-700" />
-              <p className="text-2xl font-bold text-blue-800">{pendingItems.length}</p>
+              <p className="text-2xl font-bold text-blue-800">
+                {pendingItems.length}
+              </p>
               <p className="text-sm text-blue-600">Dreams to Chase</p>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-gradient-to-br from-orange-100 to-orange-200 border-orange-300 text-center hover:scale-105 transition-transform">
             <CardContent className="p-6">
               <Zap className="h-8 w-8 mx-auto mb-2 text-orange-700" />
-              <p className="text-2xl font-bold text-orange-800">{completionRate}%</p>
+              <p className="text-2xl font-bold text-orange-800">
+                {completionRate}%
+              </p>
               <p className="text-sm text-orange-600">Success Rate</p>
             </CardContent>
           </Card>
@@ -286,36 +304,40 @@ export default function Wishlist() {
               </CardHeader>
               <CardContent className="p-6">
                 <div className="space-y-3">
-                  <Button 
+                  <Button
                     variant={selectedFilter === "all" ? "default" : "ghost"}
                     className="w-full justify-start"
                     onClick={() => setSelectedFilter("all")}
                   >
                     ⭐ All Dreams ({wishlistItems.length})
                   </Button>
-                  <Button 
+                  <Button
                     variant={selectedFilter === "pending" ? "default" : "ghost"}
                     className="w-full justify-start"
                     onClick={() => setSelectedFilter("pending")}
                   >
                     🎯 To Chase ({pendingItems.length})
                   </Button>
-                  <Button 
-                    variant={selectedFilter === "completed" ? "default" : "ghost"}
+                  <Button
+                    variant={
+                      selectedFilter === "completed" ? "default" : "ghost"
+                    }
                     className="w-full justify-start"
                     onClick={() => setSelectedFilter("completed")}
                   >
                     🏆 Achieved ({completedItems.length})
                   </Button>
-                  <Button 
+                  <Button
                     variant={selectedFilter === "recent" ? "default" : "ghost"}
                     className="w-full justify-start"
                     onClick={() => setSelectedFilter("recent")}
                   >
                     ✨ Recent Dreams
                   </Button>
-                  <Button 
-                    variant={selectedFilter === "withLocation" ? "default" : "ghost"}
+                  <Button
+                    variant={
+                      selectedFilter === "withLocation" ? "default" : "ghost"
+                    }
                     className="w-full justify-start"
                     onClick={() => setSelectedFilter("withLocation")}
                   >
@@ -336,29 +358,39 @@ export default function Wishlist() {
               <CardContent className="p-6">
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Completion Rate:</span>
-                    <Badge className="bg-green-100 text-green-700">{completionRate}%</Badge>
+                    <span className="text-sm text-gray-600">
+                      Completion Rate:
+                    </span>
+                    <Badge className="bg-green-100 text-green-700">
+                      {completionRate}%
+                    </Badge>
                   </div>
-                  
+
                   <div className="w-full bg-gray-200 rounded-full h-3">
-                    <div 
+                    <div
                       className="bg-gradient-to-r from-green-500 to-green-600 h-3 rounded-full transition-all duration-500"
                       style={{ width: `${completionRate}%` }}
                     ></div>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <div className="flex justify-between items-center text-sm">
                       <span className="text-gray-600">Total Dreams:</span>
-                      <span className="font-medium">{wishlistItems.length}</span>
+                      <span className="font-medium">
+                        {wishlistItems.length}
+                      </span>
                     </div>
                     <div className="flex justify-between items-center text-sm">
                       <span className="text-gray-600">Achieved:</span>
-                      <span className="text-green-600 font-medium">{completedItems.length}</span>
+                      <span className="text-green-600 font-medium">
+                        {completedItems.length}
+                      </span>
                     </div>
                     <div className="flex justify-between items-center text-sm">
                       <span className="text-gray-600">Remaining:</span>
-                      <span className="text-blue-600 font-medium">{pendingItems.length}</span>
+                      <span className="text-blue-600 font-medium">
+                        {pendingItems.length}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -376,7 +408,7 @@ export default function Wishlist() {
                 </CardHeader>
                 <CardContent className="p-6">
                   <div className="space-y-3">
-                    <Button 
+                    <Button
                       onClick={() => setIsCreateDialogOpen(true)}
                       className="w-full bg-pink-500 hover:bg-pink-600 text-white"
                     >
@@ -393,12 +425,16 @@ export default function Wishlist() {
           <div className="lg:col-span-3">
             <div className="flex items-center justify-between mb-8">
               <h3 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                <Star className="h-8 w-8 text-pink-600" />
-                ⭐ {selectedFilter === "all" ? "All Dreams" : 
-                     selectedFilter === "pending" ? "Dreams to Chase" :
-                     selectedFilter === "completed" ? "Dreams Achieved" :
-                     selectedFilter === "recent" ? "Recent Dreams" :
-                     "Dreams with Location"}
+                <Star className="h-8 w-8 text-pink-600" />⭐{" "}
+                {selectedFilter === "all"
+                  ? "All Dreams"
+                  : selectedFilter === "pending"
+                    ? "Dreams to Chase"
+                    : selectedFilter === "completed"
+                      ? "Dreams Achieved"
+                      : selectedFilter === "recent"
+                        ? "Recent Dreams"
+                        : "Dreams with Location"}
               </h3>
               <Badge className="bg-pink-100 text-pink-700 px-4 py-2 text-lg font-semibold">
                 {filteredItems.length} dreams
@@ -410,21 +446,24 @@ export default function Wishlist() {
                 <CardContent className="text-center py-16">
                   <Heart className="h-20 w-20 text-pink-300 mx-auto mb-6" />
                   <h3 className="text-2xl font-bold text-pink-700 mb-4">
-                    {wishlistItems.length === 0 ? "No Dreams Yet!" : `No ${selectedFilter} dreams found`}
+                    {wishlistItems.length === 0
+                      ? "No Dreams Yet!"
+                      : `No ${selectedFilter} dreams found`}
                   </h3>
                   <p className="text-pink-600 mb-8 text-lg max-w-md mx-auto">
-                    {wishlistItems.length === 0 
+                    {wishlistItems.length === 0
                       ? "Start building your Scottish adventure wishlist! Every great journey begins with a dream."
-                      : `Try adjusting your filter or add new dreams to see them here.`
-                    }
+                      : `Try adjusting your filter or add new dreams to see them here.`}
                   </p>
                   {isAuthenticated && (
-                    <Button 
-                      onClick={() => setIsCreateDialogOpen(true)} 
+                    <Button
+                      onClick={() => setIsCreateDialogOpen(true)}
                       className="bg-pink-500 hover:bg-pink-600 text-white text-lg px-8 py-4 rounded-full shadow-lg"
                     >
-                      <Sparkles className="h-6 w-6 mr-2" />
-                      ✨ {wishlistItems.length === 0 ? "Add Your First Dream" : "Create New Dream"}
+                      <Sparkles className="h-6 w-6 mr-2" />✨{" "}
+                      {wishlistItems.length === 0
+                        ? "Add Your First Dream"
+                        : "Create New Dream"}
                     </Button>
                   )}
                 </CardContent>
@@ -432,44 +471,127 @@ export default function Wishlist() {
             ) : (
               <div className="space-y-8">
                 {/* Pending Dreams */}
-                {selectedFilter === "all" || selectedFilter === "pending" ? (
-                  filteredItems.filter(item => !item.isCompleted).length > 0 && (
-                    <div>
-                      <h4 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                        <Target className="h-6 w-6 text-blue-600" />
-                        🎯 Dreams to Chase ({filteredItems.filter(item => !item.isCompleted).length})
-                      </h4>
-                      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {filteredItems.filter(item => !item.isCompleted).map((item, index) => {
-                          const colors = [
-                            'from-pink-100 to-pink-200 border-pink-300',
-                            'from-blue-100 to-blue-200 border-blue-300',
-                            'from-purple-100 to-purple-200 border-purple-300',
-                            'from-indigo-100 to-indigo-200 border-indigo-300',
-                            'from-orange-100 to-orange-200 border-orange-300',
-                            'from-green-100 to-green-200 border-green-300'
-                          ];
-                          const colorClass = colors[index % colors.length];
-                          
-                          return (
-                            <Card 
-                              key={item.id} 
-                              className={`bg-gradient-to-br ${colorClass} hover:scale-105 transition-all duration-300 shadow-lg`}
-                            >
-                              <CardHeader>
-                                <CardTitle className="flex items-center justify-between">
-                                  <span className="font-bold text-gray-800 flex-1">{item.title}</span>
-                                  {isAuthenticated && (
-                                    <div className="flex gap-1">
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => handleMarkCompleted(item.id)}
-                                        className="text-green-600 hover:text-green-700 hover:bg-green-50"
-                                        title="Mark as completed"
-                                      >
-                                        <Check className="h-4 w-4" />
-                                      </Button>
+                {selectedFilter === "all" || selectedFilter === "pending"
+                  ? filteredItems.filter((item) => !item.isCompleted).length >
+                      0 && (
+                      <div>
+                        <h4 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                          <Target className="h-6 w-6 text-blue-600" />
+                          🎯 Dreams to Chase (
+                          {
+                            filteredItems.filter((item) => !item.isCompleted)
+                              .length
+                          }
+                          )
+                        </h4>
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                          {filteredItems
+                            .filter((item) => !item.isCompleted)
+                            .map((item, index) => {
+                              const colors = [
+                                "from-pink-100 to-pink-200 border-pink-300",
+                                "from-blue-100 to-blue-200 border-blue-300",
+                                "from-purple-100 to-purple-200 border-purple-300",
+                                "from-indigo-100 to-indigo-200 border-indigo-300",
+                                "from-orange-100 to-orange-200 border-orange-300",
+                                "from-green-100 to-green-200 border-green-300",
+                              ];
+                              const colorClass = colors[index % colors.length];
+
+                              return (
+                                <Card
+                                  key={item.id}
+                                  className={`bg-gradient-to-br ${colorClass} hover:scale-105 transition-all duration-300 shadow-lg`}
+                                >
+                                  <CardHeader>
+                                    <CardTitle className="flex items-center justify-between">
+                                      <span className="font-bold text-gray-800 flex-1">
+                                        {item.title}
+                                      </span>
+                                      {isAuthenticated && (
+                                        <div className="flex gap-1">
+                                          <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() =>
+                                              handleMarkCompleted(item.id)
+                                            }
+                                            className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                                            title="Mark as completed"
+                                          >
+                                            <Check className="h-4 w-4" />
+                                          </Button>
+                                          <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() =>
+                                              handleDelete(item.id)
+                                            }
+                                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                            title="Delete dream"
+                                          >
+                                            <Trash2 className="h-4 w-4" />
+                                          </Button>
+                                        </div>
+                                      )}
+                                    </CardTitle>
+                                  </CardHeader>
+                                  <CardContent>
+                                    {item.description && (
+                                      <p className="text-gray-700 mb-3 line-clamp-3">
+                                        {item.description}
+                                      </p>
+                                    )}
+                                    <div className="flex items-center justify-between">
+                                      {item.location && (
+                                        <Badge
+                                          variant="outline"
+                                          className="text-xs"
+                                        >
+                                          📍 {item.location}
+                                        </Badge>
+                                      )}
+                                      <Badge className="bg-white/50 text-gray-700 text-xs">
+                                        ⭐ Dream
+                                      </Badge>
+                                    </div>
+                                  </CardContent>
+                                </Card>
+                              );
+                            })}
+                        </div>
+                      </div>
+                    )
+                  : null}
+
+                {/* Completed Dreams */}
+                {selectedFilter === "all" || selectedFilter === "completed"
+                  ? filteredItems.filter((item) => item.isCompleted).length >
+                      0 && (
+                      <div>
+                        <h4 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                          <Trophy className="h-6 w-6 text-green-600" />
+                          🏆 Dreams Achieved (
+                          {
+                            filteredItems.filter((item) => item.isCompleted)
+                              .length
+                          }
+                          )
+                        </h4>
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                          {filteredItems
+                            .filter((item) => item.isCompleted)
+                            .map((item, index) => (
+                              <Card
+                                key={item.id}
+                                className="bg-gradient-to-br from-green-100 to-green-200 border-green-300 hover:scale-105 transition-all duration-300 shadow-lg"
+                              >
+                                <CardHeader>
+                                  <CardTitle className="flex items-center justify-between">
+                                    <span className="font-bold text-green-800 flex-1 line-through">
+                                      {item.title}
+                                    </span>
+                                    {isAuthenticated && (
                                       <Button
                                         variant="ghost"
                                         size="sm"
@@ -479,120 +601,76 @@ export default function Wishlist() {
                                       >
                                         <Trash2 className="h-4 w-4" />
                                       </Button>
+                                    )}
+                                  </CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                  {item.description && (
+                                    <p className="text-green-700 mb-3 line-clamp-3">
+                                      {item.description}
+                                    </p>
+                                  )}
+                                  <div className="space-y-2">
+                                    <div className="flex items-center justify-between">
+                                      {item.location && (
+                                        <Badge
+                                          variant="outline"
+                                          className="text-xs border-green-500 text-green-700"
+                                        >
+                                          📍 {item.location}
+                                        </Badge>
+                                      )}
+                                      <Badge className="bg-green-500 text-white text-xs">
+                                        ✅ Achieved
+                                      </Badge>
                                     </div>
-                                  )}
-                                </CardTitle>
-                              </CardHeader>
-                              <CardContent>
-                                {item.description && (
-                                  <p className="text-gray-700 mb-3 line-clamp-3">{item.description}</p>
-                                )}
-                                <div className="flex items-center justify-between">
-                                  {item.location && (
-                                    <Badge variant="outline" className="text-xs">
-                                      📍 {item.location}
-                                    </Badge>
-                                  )}
-                                  <Badge className="bg-white/50 text-gray-700 text-xs">
-                                    ⭐ Dream
-                                  </Badge>
-                                </div>
-                              </CardContent>
-                            </Card>
-                          );
-                        })}
+                                    {item.completedDate && (
+                                      <p className="text-xs text-green-600 font-medium">
+                                        🎉 Completed:{" "}
+                                        {new Date(
+                                          item.completedDate,
+                                        ).toLocaleDateString("en-US", {
+                                          month: "short",
+                                          day: "numeric",
+                                          year: "numeric",
+                                        })}
+                                      </p>
+                                    )}
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            ))}
+                        </div>
                       </div>
-                    </div>
-                  )
-                ) : null}
-
-                {/* Completed Dreams */}
-                {selectedFilter === "all" || selectedFilter === "completed" ? (
-                  filteredItems.filter(item => item.isCompleted).length > 0 && (
-                    <div>
-                      <h4 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                        <Trophy className="h-6 w-6 text-green-600" />
-                        🏆 Dreams Achieved ({filteredItems.filter(item => item.isCompleted).length})
-                      </h4>
-                      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {filteredItems.filter(item => item.isCompleted).map((item, index) => (
-                          <Card 
-                            key={item.id} 
-                            className="bg-gradient-to-br from-green-100 to-green-200 border-green-300 hover:scale-105 transition-all duration-300 shadow-lg"
-                          >
-                            <CardHeader>
-                              <CardTitle className="flex items-center justify-between">
-                                <span className="font-bold text-green-800 flex-1 line-through">{item.title}</span>
-                                {isAuthenticated && (
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => handleDelete(item.id)}
-                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                                    title="Delete dream"
-                                  >
-                                    <Trash2 className="h-4 w-4" />
-                                  </Button>
-                                )}
-                              </CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                              {item.description && (
-                                <p className="text-green-700 mb-3 line-clamp-3">{item.description}</p>
-                              )}
-                              <div className="space-y-2">
-                                <div className="flex items-center justify-between">
-                                  {item.location && (
-                                    <Badge variant="outline" className="text-xs border-green-500 text-green-700">
-                                      📍 {item.location}
-                                    </Badge>
-                                  )}
-                                  <Badge className="bg-green-500 text-white text-xs">
-                                    ✅ Achieved
-                                  </Badge>
-                                </div>
-                                {item.completedDate && (
-                                  <p className="text-xs text-green-600 font-medium">
-                                    🎉 Completed: {new Date(item.completedDate).toLocaleDateString('en-US', {
-                                      month: 'short',
-                                      day: 'numeric',
-                                      year: 'numeric'
-                                    })}
-                                  </p>
-                                )}
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-                    </div>
-                  )
-                ) : null}
+                    )
+                  : null}
 
                 {/* Filtered Dreams (for other filters) */}
                 {!["all", "pending", "completed"].includes(selectedFilter) && (
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredItems.map((item, index) => {
                       const colors = [
-                        'from-pink-100 to-pink-200 border-pink-300',
-                        'from-blue-100 to-blue-200 border-blue-300',
-                        'from-purple-100 to-purple-200 border-purple-300',
-                        'from-indigo-100 to-indigo-200 border-indigo-300',
-                        'from-orange-100 to-orange-200 border-orange-300',
-                        'from-green-100 to-green-200 border-green-300'
+                        "from-pink-100 to-pink-200 border-pink-300",
+                        "from-blue-100 to-blue-200 border-blue-300",
+                        "from-purple-100 to-purple-200 border-purple-300",
+                        "from-indigo-100 to-indigo-200 border-indigo-300",
+                        "from-orange-100 to-orange-200 border-orange-300",
+                        "from-green-100 to-green-200 border-green-300",
                       ];
-                      const colorClass = item.isCompleted 
-                        ? 'from-green-100 to-green-200 border-green-300' 
+                      const colorClass = item.isCompleted
+                        ? "from-green-100 to-green-200 border-green-300"
                         : colors[index % colors.length];
-                      
+
                       return (
-                        <Card 
-                          key={item.id} 
+                        <Card
+                          key={item.id}
                           className={`bg-gradient-to-br ${colorClass} hover:scale-105 transition-all duration-300 shadow-lg`}
                         >
                           <CardHeader>
                             <CardTitle className="flex items-center justify-between">
-                              <span className={`font-bold flex-1 ${item.isCompleted ? 'text-green-800 line-through' : 'text-gray-800'}`}>
+                              <span
+                                className={`font-bold flex-1 ${item.isCompleted ? "text-green-800 line-through" : "text-gray-800"}`}
+                              >
                                 {item.title}
                               </span>
                               {isAuthenticated && (
@@ -601,7 +679,9 @@ export default function Wishlist() {
                                     <Button
                                       variant="ghost"
                                       size="sm"
-                                      onClick={() => handleMarkCompleted(item.id)}
+                                      onClick={() =>
+                                        handleMarkCompleted(item.id)
+                                      }
                                       className="text-green-600 hover:text-green-700 hover:bg-green-50"
                                     >
                                       <Check className="h-4 w-4" />
@@ -621,7 +701,9 @@ export default function Wishlist() {
                           </CardHeader>
                           <CardContent>
                             {item.description && (
-                              <p className={`mb-3 line-clamp-3 ${item.isCompleted ? 'text-green-700' : 'text-gray-700'}`}>
+                              <p
+                                className={`mb-3 line-clamp-3 ${item.isCompleted ? "text-green-700" : "text-gray-700"}`}
+                              >
                                 {item.description}
                               </p>
                             )}
@@ -632,13 +714,20 @@ export default function Wishlist() {
                                     📍 {item.location}
                                   </Badge>
                                 )}
-                                <Badge className={`text-xs ${item.isCompleted ? 'bg-green-500 text-white' : 'bg-white/50 text-gray-700'}`}>
-                                  {item.isCompleted ? '✅ Achieved' : '⭐ Dream'}
+                                <Badge
+                                  className={`text-xs ${item.isCompleted ? "bg-green-500 text-white" : "bg-white/50 text-gray-700"}`}
+                                >
+                                  {item.isCompleted
+                                    ? "✅ Achieved"
+                                    : "⭐ Dream"}
                                 </Badge>
                               </div>
                               {item.completedDate && (
                                 <p className="text-xs text-green-600 font-medium">
-                                  🎉 Completed: {new Date(item.completedDate).toLocaleDateString()}
+                                  🎉 Completed:{" "}
+                                  {new Date(
+                                    item.completedDate,
+                                  ).toLocaleDateString()}
                                 </p>
                               )}
                             </div>
@@ -658,18 +747,22 @@ export default function Wishlist() {
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2 text-2xl">
-                <Sparkles className="h-8 w-8 text-pink-600" />
-                ✨ Add New Scottish Dream
+                <Sparkles className="h-8 w-8 text-pink-600" />✨ Add New
+                Scottish Dream
               </DialogTitle>
             </DialogHeader>
             <div className="mb-6 p-4 bg-gradient-to-r from-pink-50 to-purple-50 border border-pink-200 rounded-lg">
               <p className="text-pink-700 font-medium">
-                🌟 <strong>Dream Big!</strong> What Scottish adventure would make your heart sing? Share your vision and we'll make it happen together.
+                🌟 <strong>Dream Big!</strong> What Scottish adventure would
+                make your heart sing? Share your vision and we'll make it happen
+                together.
               </p>
             </div>
             <form onSubmit={handleCreateItem} className="space-y-6">
               <div>
-                <Label htmlFor="title" className="text-lg font-semibold">Dream Title *</Label>
+                <Label htmlFor="title" className="text-lg font-semibold">
+                  Dream Title *
+                </Label>
                 <Input
                   id="title"
                   value={title}
@@ -680,7 +773,9 @@ export default function Wishlist() {
                 />
               </div>
               <div>
-                <Label htmlFor="description" className="text-lg font-semibold">Why is this special?</Label>
+                <Label htmlFor="description" className="text-lg font-semibold">
+                  Why is this special?
+                </Label>
                 <Textarea
                   id="description"
                   value={description}
@@ -691,7 +786,9 @@ export default function Wishlist() {
                 />
               </div>
               <div>
-                <Label htmlFor="location" className="text-lg font-semibold">Location in Scotland</Label>
+                <Label htmlFor="location" className="text-lg font-semibold">
+                  Location in Scotland
+                </Label>
                 <Input
                   id="location"
                   value={location}
@@ -706,7 +803,9 @@ export default function Wishlist() {
                   checked={isPublic}
                   onCheckedChange={(checked) => setIsPublic(checked as boolean)}
                 />
-                <Label htmlFor="isPublic" className="font-medium">Share this dream with the family</Label>
+                <Label htmlFor="isPublic" className="font-medium">
+                  Share this dream with the family
+                </Label>
               </div>
               <div className="flex gap-3">
                 <Button
@@ -717,8 +816,8 @@ export default function Wishlist() {
                 >
                   Cancel
                 </Button>
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   className="flex-1 bg-pink-500 hover:bg-pink-600 text-white font-bold"
                 >
                   <Heart className="h-5 w-5 mr-2" />

@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { MapPin as MapPinType } from '@shared/api';
+import React, { useEffect, useRef, useState } from "react";
+import { MapPin as MapPinType } from "@shared/api";
 
 interface SimpleScotlandMapProps {
   pins: MapPinType[];
@@ -8,7 +8,12 @@ interface SimpleScotlandMapProps {
   className?: string;
 }
 
-export function SimpleScotlandMap({ pins, onMapClick, onPinClick, className = '' }: SimpleScotlandMapProps) {
+export function SimpleScotlandMap({
+  pins,
+  onMapClick,
+  onPinClick,
+  className = "",
+}: SimpleScotlandMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [mapInstance, setMapInstance] = useState<any>(null);
   const [markers, setMarkers] = useState<any[]>([]);
@@ -20,31 +25,40 @@ export function SimpleScotlandMap({ pins, onMapClick, onPinClick, className = ''
 
     try {
       setIsLoading(true);
-      console.log('🗺️ Attempting to load Leaflet...');
+      console.log("🗺️ Attempting to load Leaflet...");
 
       // Try to load Leaflet JavaScript module with timeout
-      const loadPromise = import('leaflet');
+      const loadPromise = import("leaflet");
 
       const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Leaflet import timeout after 10 seconds')), 10000)
+        setTimeout(
+          () => reject(new Error("Leaflet import timeout after 10 seconds")),
+          10000,
+        ),
       );
 
-      const leafletModule = await Promise.race([loadPromise, timeoutPromise]) as any;
+      const leafletModule = (await Promise.race([
+        loadPromise,
+        timeoutPromise,
+      ])) as any;
       const L = leafletModule.default || leafletModule;
 
       if (!L || !L.map) {
-        throw new Error('Leaflet module loaded but missing required functions');
+        throw new Error("Leaflet module loaded but missing required functions");
       }
 
-      console.log('✅ Leaflet loaded successfully');
+      console.log("✅ Leaflet loaded successfully");
 
       // Fix marker icons
       if (L.Icon && L.Icon.Default) {
         delete (L.Icon.Default.prototype as any)._getIconUrl;
         L.Icon.Default.mergeOptions({
-          iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-          iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-          shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+          iconRetinaUrl:
+            "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+          iconUrl:
+            "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+          shadowUrl:
+            "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
         });
       }
 
@@ -53,34 +67,36 @@ export function SimpleScotlandMap({ pins, onMapClick, onPinClick, className = ''
         center: [56.8, -4.2],
         zoom: 6,
         zoomControl: true,
-        scrollWheelZoom: true
+        scrollWheelZoom: true,
       });
 
       // Add tile layer
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "© OpenStreetMap contributors",
         maxZoom: 18,
       }).addTo(map);
 
       // Set Scotland bounds
-      const scotlandBounds = [[54.6, -8.0], [60.9, -1.5]];
+      const scotlandBounds = [
+        [54.6, -8.0],
+        [60.9, -1.5],
+      ];
       map.fitBounds(scotlandBounds);
 
       // Add click handler
       if (onMapClick) {
-        map.on('click', (e: any) => {
+        map.on("click", (e: any) => {
           onMapClick(e.latlng.lat, e.latlng.lng);
         });
       }
 
       setMapInstance(map);
       setIsLoading(false);
-      console.log('🎉 Map initialized successfully');
-
+      console.log("🎉 Map initialized successfully");
     } catch (error) {
-      console.error('❌ Failed to initialize map:', error);
+      console.error("❌ Failed to initialize map:", error);
       setIsLoading(false);
-      setLoadAttempts(prev => prev + 1);
+      setLoadAttempts((prev) => prev + 1);
     }
   };
 
@@ -92,7 +108,7 @@ export function SimpleScotlandMap({ pins, onMapClick, onPinClick, className = ''
         try {
           mapInstance.remove();
         } catch (e) {
-          console.warn('Error cleaning up map:', e);
+          console.warn("Error cleaning up map:", e);
         }
       }
     };
@@ -103,26 +119,26 @@ export function SimpleScotlandMap({ pins, onMapClick, onPinClick, className = ''
 
     const addMarkers = async () => {
       try {
-        const leafletModule = await import('leaflet');
+        const leafletModule = await import("leaflet");
         const L = leafletModule.default || leafletModule;
 
         // Clear existing markers
-        markers.forEach(marker => {
+        markers.forEach((marker) => {
           try {
             mapInstance.removeLayer(marker);
           } catch (e) {
-            console.warn('Error removing marker:', e);
+            console.warn("Error removing marker:", e);
           }
         });
 
         // Add new markers
-        const newMarkers = pins.map(pin => {
-          const marker = L.marker([pin.latitude, pin.longitude])
-            .addTo(mapInstance)
-            .bindPopup(`
+        const newMarkers = pins.map((pin) => {
+          const marker = L.marker([pin.latitude, pin.longitude]).addTo(
+            mapInstance,
+          ).bindPopup(`
               <div style="min-width: 150px;">
                 <h3 style="margin: 0 0 8px 0; font-weight: bold;">${pin.title}</h3>
-                ${pin.description ? `<p style="margin: 0 0 8px 0; font-size: 14px;">${pin.description}</p>` : ''}
+                ${pin.description ? `<p style="margin: 0 0 8px 0; font-size: 14px;">${pin.description}</p>` : ""}
                 <div style="font-size: 12px; color: #666;">
                   📍 ${pin.latitude.toFixed(4)}, ${pin.longitude.toFixed(4)}
                 </div>
@@ -130,7 +146,7 @@ export function SimpleScotlandMap({ pins, onMapClick, onPinClick, className = ''
             `);
 
           if (onPinClick) {
-            marker.on('click', () => onPinClick(pin));
+            marker.on("click", () => onPinClick(pin));
           }
 
           return marker;
@@ -138,7 +154,7 @@ export function SimpleScotlandMap({ pins, onMapClick, onPinClick, className = ''
 
         setMarkers(newMarkers);
       } catch (error) {
-        console.error('Error adding markers:', error);
+        console.error("Error adding markers:", error);
       }
     };
 
@@ -155,23 +171,30 @@ export function SimpleScotlandMap({ pins, onMapClick, onPinClick, className = ''
   if (loadAttempts > 2) {
     return (
       <div className={`relative ${className}`}>
-        <div className="w-full h-full rounded-lg shadow-lg bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center border-2 border-dashed border-blue-200" style={{ minHeight: '400px' }}>
+        <div
+          className="w-full h-full rounded-lg shadow-lg bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center border-2 border-dashed border-blue-200"
+          style={{ minHeight: "400px" }}
+        >
           <div className="text-center p-6">
             <div className="text-6xl mb-4">🏴󠁧󠁢󠁳󠁣󠁴󠁿</div>
-            <h3 className="text-xl font-bold text-gray-700 mb-3">Scotland Adventure Map</h3>
-            <p className="text-gray-600 mb-4">Interactive map temporarily unavailable</p>
+            <h3 className="text-xl font-bold text-gray-700 mb-3">
+              Scotland Adventure Map
+            </h3>
+            <p className="text-gray-600 mb-4">
+              Interactive map temporarily unavailable
+            </p>
             <div className="bg-white p-4 rounded-lg shadow-sm">
               <p className="text-sm text-gray-700 mb-3">
                 You can still add pins by entering coordinates manually:
               </p>
-              <button 
+              <button
                 onClick={() => onMapClick && onMapClick(56.8, -4.2)}
                 className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
               >
                 Add Pin at Scotland Center
               </button>
             </div>
-            <button 
+            <button
               onClick={handleRetry}
               className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
             >
@@ -190,17 +213,19 @@ export function SimpleScotlandMap({ pins, onMapClick, onPinClick, className = ''
 
   return (
     <div className={`relative ${className}`}>
-      <div 
-        ref={mapRef} 
+      <div
+        ref={mapRef}
         className="w-full h-full rounded-lg shadow-lg"
-        style={{ minHeight: '400px' }}
+        style={{ minHeight: "400px" }}
       />
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-90 rounded-lg">
           <div className="text-center p-6">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto mb-4"></div>
             <p className="text-gray-600">Loading Scotland map...</p>
-            <p className="text-xs text-gray-500 mt-2">Attempt {loadAttempts + 1}</p>
+            <p className="text-xs text-gray-500 mt-2">
+              Attempt {loadAttempts + 1}
+            </p>
           </div>
         </div>
       )}
@@ -209,7 +234,9 @@ export function SimpleScotlandMap({ pins, onMapClick, onPinClick, className = ''
           <div className="bg-white bg-opacity-90 p-4 rounded-lg shadow-lg pointer-events-auto">
             <div className="text-center">
               <div className="text-3xl mb-2">🏴󠁧󠁢󠁳󠁣󠁴󠁿</div>
-              <h3 className="font-semibold text-gray-700 mb-1">Welcome to Scotland!</h3>
+              <h3 className="font-semibold text-gray-700 mb-1">
+                Welcome to Scotland!
+              </h3>
               <p className="text-sm text-gray-600">
                 Click anywhere on the map to add your first pin
               </p>

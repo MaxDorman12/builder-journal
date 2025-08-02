@@ -1,6 +1,11 @@
 // Simplified storage service using only Supabase
-import { SupabaseDatabase } from './supabaseDatabase';
-import type { JournalEntry, MapPin, WishlistItem, YouTubeVideo } from '../../shared/api';
+import { SupabaseDatabase } from "./supabaseDatabase";
+import type {
+  JournalEntry,
+  MapPin,
+  WishlistItem,
+  YouTubeVideo,
+} from "../../shared/api";
 
 export class SupabaseStorage {
   private static listeners: (() => void)[] = [];
@@ -74,11 +79,17 @@ export class SupabaseStorage {
   }
 
   // Charlie Data
-  static async getCharlieData(): Promise<{ image: string; description: string }> {
+  static async getCharlieData(): Promise<{
+    image: string;
+    description: string;
+  }> {
     return await SupabaseDatabase.getCharlieData();
   }
 
-  static async saveCharlieData(data: { image: string; description: string }): Promise<void> {
+  static async saveCharlieData(data: {
+    image: string;
+    description: string;
+  }): Promise<void> {
     await SupabaseDatabase.saveCharlieData(data);
     console.log("🔄 Charlie data saved, notifying listeners...");
     this.notifyListeners();
@@ -91,7 +102,9 @@ export class SupabaseStorage {
     try {
       // Subscribe to journal entries
       SupabaseDatabase.subscribeToJournalEntries(() => {
-        console.log("🔄 [REAL-TIME] Journal entries updated from another device");
+        console.log(
+          "🔄 [REAL-TIME] Journal entries updated from another device",
+        );
         this.notifyListeners();
       });
 
@@ -103,7 +116,9 @@ export class SupabaseStorage {
 
       // Subscribe to wishlist items
       SupabaseDatabase.subscribeToWishlistItems(() => {
-        console.log("🔄 [REAL-TIME] Wishlist items updated from another device");
+        console.log(
+          "🔄 [REAL-TIME] Wishlist items updated from another device",
+        );
         this.notifyListeners();
       });
 
@@ -119,7 +134,9 @@ export class SupabaseStorage {
         this.notifyListeners();
       });
 
-      console.log("✅ All Supabase real-time subscriptions set up successfully");
+      console.log(
+        "✅ All Supabase real-time subscriptions set up successfully",
+      );
       console.log("🌍 Cross-device synchronization is now active!");
     } catch (error) {
       console.error("❌ Failed to set up real-time subscriptions:", error);
@@ -130,7 +147,7 @@ export class SupabaseStorage {
   static async toggleLike(entryId: string): Promise<void> {
     try {
       const entries = await this.getJournalEntries();
-      const entry = entries.find(e => e.id === entryId);
+      const entry = entries.find((e) => e.id === entryId);
       if (entry) {
         const updatedEntry = {
           ...entry,
@@ -145,10 +162,13 @@ export class SupabaseStorage {
     }
   }
 
-  static async markWishlistItemCompleted(itemId: string, journalEntryId?: string): Promise<void> {
+  static async markWishlistItemCompleted(
+    itemId: string,
+    journalEntryId?: string,
+  ): Promise<void> {
     try {
       const items = await this.getWishlistItems();
-      const item = items.find(i => i.id === itemId);
+      const item = items.find((i) => i.id === itemId);
       if (item) {
         const updatedItem = {
           ...item,
@@ -167,12 +187,16 @@ export class SupabaseStorage {
   // Event listeners
   static onUpdate(callback: () => void): () => void {
     this.listeners.push(callback);
-    console.log(`🔔 Added real-time listener (total: ${this.listeners.length})`);
+    console.log(
+      `🔔 Added real-time listener (total: ${this.listeners.length})`,
+    );
     return () => {
       const index = this.listeners.indexOf(callback);
       if (index > -1) {
         this.listeners.splice(index, 1);
-        console.log(`📋 Removed real-time listener (remaining: ${this.listeners.length})`);
+        console.log(
+          `📋 Removed real-time listener (remaining: ${this.listeners.length})`,
+        );
       }
     };
   }
@@ -188,7 +212,9 @@ export class SupabaseStorage {
   }
 
   static cleanup(): void {
-    console.log(`🧹 Cleaning up ${this.listeners.length} real-time listeners...`);
+    console.log(
+      `🧹 Cleaning up ${this.listeners.length} real-time listeners...`,
+    );
     this.listeners = [];
     console.log("✅ SupabaseStorage cleanup completed");
   }
@@ -204,7 +230,7 @@ export class SupabaseStorage {
       const [entries, pins, wishlist] = await Promise.all([
         this.getJournalEntries(),
         this.getMapPins(),
-        this.getWishlistItems()
+        this.getWishlistItems(),
       ]);
 
       const syncStatus = {
@@ -212,10 +238,10 @@ export class SupabaseStorage {
         listenerCount: this.listeners.length,
         lastUpdate: new Date().toISOString(),
         tables: [
-          { name: 'journal_entries', count: entries.length },
-          { name: 'map_pins', count: pins.length },
-          { name: 'wishlist_items', count: wishlist.length }
-        ]
+          { name: "journal_entries", count: entries.length },
+          { name: "map_pins", count: pins.length },
+          { name: "wishlist_items", count: wishlist.length },
+        ],
       };
 
       console.log("🔍 Sync Status:", syncStatus);
@@ -226,7 +252,7 @@ export class SupabaseStorage {
         isConnected: false,
         listenerCount: this.listeners.length,
         lastUpdate: new Date().toISOString(),
-        tables: []
+        tables: [],
       };
     }
   }
@@ -237,7 +263,7 @@ export class SupabaseStorage {
       this.getJournalEntries(),
       this.getMapPins(),
       this.getWishlistItems(),
-      this.getCharlieData()
+      this.getCharlieData(),
     ]);
 
     const data = {

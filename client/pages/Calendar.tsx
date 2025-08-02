@@ -4,7 +4,15 @@ import { SupabaseStorage } from "@/lib/supabaseOnly";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar as CalendarIcon, Heart, ChevronLeft, ChevronRight, Clock, MapPin, Camera } from "lucide-react";
+import {
+  Calendar as CalendarIcon,
+  Heart,
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  MapPin,
+  Camera,
+} from "lucide-react";
 import { JournalEntry } from "@shared/api";
 
 export default function Calendar() {
@@ -43,13 +51,16 @@ export default function Calendar() {
   }, [isAuthenticated]);
 
   // Group entries by date
-  const entriesByDate = entries.reduce((acc, entry) => {
-    if (!acc[entry.date]) {
-      acc[entry.date] = [];
-    }
-    acc[entry.date].push(entry);
-    return acc;
-  }, {} as Record<string, JournalEntry[]>);
+  const entriesByDate = entries.reduce(
+    (acc, entry) => {
+      if (!acc[entry.date]) {
+        acc[entry.date] = [];
+      }
+      acc[entry.date].push(entry);
+      return acc;
+    },
+    {} as Record<string, JournalEntry[]>,
+  );
 
   const handleDateClick = (date: string) => {
     setSelectedDate(date);
@@ -61,20 +72,30 @@ export default function Calendar() {
       await SupabaseStorage.toggleLike(entryId);
       // Update local state
       setEntries((prev) =>
-        prev.map((e) => 
-          e.id === entryId 
-            ? { ...e, likes: (e.likes || 0) + (e.isLiked ? -1 : 1), isLiked: !e.isLiked }
-            : e
-        )
+        prev.map((e) =>
+          e.id === entryId
+            ? {
+                ...e,
+                likes: (e.likes || 0) + (e.isLiked ? -1 : 1),
+                isLiked: !e.isLiked,
+              }
+            : e,
+        ),
       );
       // Update selected entries if viewing a specific date
       if (selectedDate) {
-        const updatedEntries = entries.map((e) => 
-          e.id === entryId 
-            ? { ...e, likes: (e.likes || 0) + (e.isLiked ? -1 : 1), isLiked: !e.isLiked }
-            : e
+        const updatedEntries = entries.map((e) =>
+          e.id === entryId
+            ? {
+                ...e,
+                likes: (e.likes || 0) + (e.isLiked ? -1 : 1),
+                isLiked: !e.isLiked,
+              }
+            : e,
         );
-        setSelectedEntries(updatedEntries.filter((e) => e.date === selectedDate));
+        setSelectedEntries(
+          updatedEntries.filter((e) => e.date === selectedDate),
+        );
       }
     } catch (error) {
       console.error("❌ Failed to toggle like:", error);
@@ -93,28 +114,28 @@ export default function Calendar() {
     const startingDayOfWeek = firstDay.getDay();
 
     const days = [];
-    
+
     // Add empty cells for days before month starts
     for (let i = 0; i < startingDayOfWeek; i++) {
       days.push(null);
     }
-    
+
     // Add all days of the month
     for (let day = 1; day <= daysInMonth; day++) {
       days.push(new Date(year, month, day));
     }
-    
+
     return days;
   };
 
   const formatDateKey = (date: Date) => {
-    return date.toISOString().split('T')[0];
+    return date.toISOString().split("T")[0];
   };
 
-  const navigateMonth = (direction: 'prev' | 'next') => {
-    setCurrentMonth(prev => {
+  const navigateMonth = (direction: "prev" | "next") => {
+    setCurrentMonth((prev) => {
       const newDate = new Date(prev);
-      if (direction === 'prev') {
+      if (direction === "prev") {
         newDate.setMonth(prev.getMonth() - 1);
       } else {
         newDate.setMonth(prev.getMonth() + 1);
@@ -125,8 +146,14 @@ export default function Calendar() {
 
   const monthDays = getMonthDays(currentMonth);
   const totalAdventures = entries.length;
-  const totalPhotos = entries.reduce((count, entry) => count + (entry.images?.length || 0), 0);
-  const totalLikes = entries.reduce((sum, entry) => sum + (entry.likes || 0), 0);
+  const totalPhotos = entries.reduce(
+    (count, entry) => count + (entry.images?.length || 0),
+    0,
+  );
+  const totalLikes = entries.reduce(
+    (sum, entry) => sum + (entry.likes || 0),
+    0,
+  );
 
   if (isLoading) {
     return (
@@ -134,8 +161,12 @@ export default function Calendar() {
         <Card className="w-full max-w-md">
           <CardContent className="text-center p-8">
             <CalendarIcon className="h-12 w-12 text-purple-600 mx-auto mb-4 animate-pulse" />
-            <p className="text-lg font-medium text-gray-700">Loading our adventure timeline...</p>
-            <p className="text-sm text-gray-500 mt-2">📅 Gathering memories by date</p>
+            <p className="text-lg font-medium text-gray-700">
+              Loading our adventure timeline...
+            </p>
+            <p className="text-sm text-gray-500 mt-2">
+              📅 Gathering memories by date
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -152,23 +183,25 @@ export default function Calendar() {
               📅 Journey through our Scottish timeline
             </Badge>
           </div>
-          
+
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-4">
             Adventure Calendar
           </h1>
           <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-6">
             Our Family Timeline
           </h2>
-          
+
           <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8 leading-relaxed">
-            Explore our Scottish adventures through time. Each date tells a story of discovery, 
-            wonder, and family memories across the beautiful highlands.
+            Explore our Scottish adventures through time. Each date tells a
+            story of discovery, wonder, and family memories across the beautiful
+            highlands.
           </p>
 
           {!isAuthenticated && (
             <div className="inline-block p-4 bg-purple-100 border border-purple-200 rounded-lg mb-8">
               <p className="text-purple-800">
-                👁️ <strong>View-only mode</strong> - Explore our adventure timeline
+                👁️ <strong>View-only mode</strong> - Explore our adventure
+                timeline
               </p>
             </div>
           )}
@@ -179,19 +212,23 @@ export default function Calendar() {
           <Card className="bg-gradient-to-br from-purple-100 to-purple-200 border-purple-300 text-center hover:scale-105 transition-transform">
             <CardContent className="p-6">
               <CalendarIcon className="h-8 w-8 mx-auto mb-2 text-purple-700" />
-              <p className="text-2xl font-bold text-purple-800">{dates.length}</p>
+              <p className="text-2xl font-bold text-purple-800">
+                {dates.length}
+              </p>
               <p className="text-sm text-purple-600">Adventure Days</p>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-gradient-to-br from-blue-100 to-blue-200 border-blue-300 text-center hover:scale-105 transition-transform">
             <CardContent className="p-6">
               <Clock className="h-8 w-8 mx-auto mb-2 text-blue-700" />
-              <p className="text-2xl font-bold text-blue-800">{totalAdventures}</p>
+              <p className="text-2xl font-bold text-blue-800">
+                {totalAdventures}
+              </p>
               <p className="text-sm text-blue-600">Total Adventures</p>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-gradient-to-br from-green-100 to-green-200 border-green-300 text-center hover:scale-105 transition-transform">
             <CardContent className="p-6">
               <Camera className="h-8 w-8 mx-auto mb-2 text-green-700" />
@@ -199,7 +236,7 @@ export default function Calendar() {
               <p className="text-sm text-green-600">Photos Captured</p>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-gradient-to-br from-pink-100 to-pink-200 border-pink-300 text-center hover:scale-105 transition-transform">
             <CardContent className="p-6">
               <Heart className="h-8 w-8 mx-auto mb-2 text-pink-700" />
@@ -219,14 +256,27 @@ export default function Calendar() {
                   <div className="flex items-center gap-3">
                     <CalendarIcon className="h-6 w-6" />
                     <span className="text-xl">
-                      {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                      {currentMonth.toLocaleDateString("en-US", {
+                        month: "long",
+                        year: "numeric",
+                      })}
                     </span>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="ghost" size="sm" onClick={() => navigateMonth('prev')} className="text-white hover:bg-white/20">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => navigateMonth("prev")}
+                      className="text-white hover:bg-white/20"
+                    >
                       <ChevronLeft className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="sm" onClick={() => navigateMonth('next')} className="text-white hover:bg-white/20">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => navigateMonth("next")}
+                      className="text-white hover:bg-white/20"
+                    >
                       <ChevronRight className="h-4 w-4" />
                     </Button>
                   </div>
@@ -235,23 +285,28 @@ export default function Calendar() {
               <CardContent className="p-6">
                 {/* Calendar Grid */}
                 <div className="grid grid-cols-7 gap-2 mb-4">
-                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                    <div key={day} className="text-center text-sm font-semibold text-gray-600 p-2">
-                      {day}
-                    </div>
-                  ))}
+                  {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
+                    (day) => (
+                      <div
+                        key={day}
+                        className="text-center text-sm font-semibold text-gray-600 p-2"
+                      >
+                        {day}
+                      </div>
+                    ),
+                  )}
                 </div>
-                
+
                 <div className="grid grid-cols-7 gap-2">
                   {monthDays.map((day, index) => {
                     if (!day) {
                       return <div key={index} className="p-2"></div>;
                     }
-                    
+
                     const dayKey = formatDateKey(day);
                     const hasEntries = entriesByDate[dayKey];
                     const isSelected = selectedDate === dayKey;
-                    
+
                     return (
                       <button
                         key={dayKey}
@@ -259,9 +314,9 @@ export default function Calendar() {
                         className={`p-3 text-sm rounded-lg transition-all relative ${
                           hasEntries
                             ? isSelected
-                              ? 'bg-purple-600 text-white shadow-lg scale-105'
-                              : 'bg-purple-100 text-purple-800 hover:bg-purple-200 hover:scale-105'
-                            : 'text-gray-400 hover:bg-gray-50'
+                              ? "bg-purple-600 text-white shadow-lg scale-105"
+                              : "bg-purple-100 text-purple-800 hover:bg-purple-200 hover:scale-105"
+                            : "text-gray-400 hover:bg-gray-50"
                         }`}
                       >
                         {day.getDate()}
@@ -289,7 +344,9 @@ export default function Calendar() {
                 {dates.length === 0 ? (
                   <div className="text-center py-12">
                     <CalendarIcon className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-gray-600 mb-2">No Adventures Yet</h3>
+                    <h3 className="text-xl font-semibold text-gray-600 mb-2">
+                      No Adventures Yet
+                    </h3>
                     <p className="text-gray-500 mb-6">
                       Start documenting your Scottish journeys to see them here
                     </p>
@@ -302,20 +359,22 @@ export default function Calendar() {
                     {dates.map((date, index) => {
                       const dateEntries = entriesByDate[date];
                       const colors = [
-                        'from-purple-100 to-purple-200 border-purple-300',
-                        'from-blue-100 to-blue-200 border-blue-300',
-                        'from-green-100 to-green-200 border-green-300',
-                        'from-pink-100 to-pink-200 border-pink-300',
-                        'from-yellow-100 to-yellow-200 border-yellow-300',
-                        'from-indigo-100 to-indigo-200 border-indigo-300'
+                        "from-purple-100 to-purple-200 border-purple-300",
+                        "from-blue-100 to-blue-200 border-blue-300",
+                        "from-green-100 to-green-200 border-green-300",
+                        "from-pink-100 to-pink-200 border-pink-300",
+                        "from-yellow-100 to-yellow-200 border-yellow-300",
+                        "from-indigo-100 to-indigo-200 border-indigo-300",
                       ];
                       const colorClass = colors[index % colors.length];
-                      
+
                       return (
                         <Card
                           key={date}
                           className={`bg-gradient-to-r ${colorClass} cursor-pointer hover:scale-105 transition-all duration-200 ${
-                            selectedDate === date ? 'ring-2 ring-purple-500 shadow-lg' : ''
+                            selectedDate === date
+                              ? "ring-2 ring-purple-500 shadow-lg"
+                              : ""
                           }`}
                           onClick={() => handleDateClick(date)}
                         >
@@ -330,15 +389,20 @@ export default function Calendar() {
                                   })}
                                 </p>
                                 <p className="text-sm text-gray-600">
-                                  {dateEntries.length} adventure{dateEntries.length === 1 ? '' : 's'} • 
-                                  {dateEntries.reduce((sum, e) => sum + (e.likes || 0), 0)} likes
+                                  {dateEntries.length} adventure
+                                  {dateEntries.length === 1 ? "" : "s"} •
+                                  {dateEntries.reduce(
+                                    (sum, e) => sum + (e.likes || 0),
+                                    0,
+                                  )}{" "}
+                                  likes
                                 </p>
                               </div>
                               <div className="flex items-center gap-2">
                                 <Badge className="bg-white/50 text-gray-700 font-bold">
                                   {dateEntries.length}
                                 </Badge>
-                                {dateEntries.some(e => e.images?.length) && (
+                                {dateEntries.some((e) => e.images?.length) && (
                                   <Camera className="h-4 w-4 text-gray-600" />
                                 )}
                               </div>
@@ -359,10 +423,9 @@ export default function Calendar() {
               <CardHeader className="bg-gradient-to-r from-green-500 to-green-600 text-white">
                 <CardTitle className="flex items-center gap-3">
                   <MapPin className="h-6 w-6" />
-                  {selectedDate ? 
-                    `${new Date(selectedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} Adventures` : 
-                    "Select a Date"
-                  }
+                  {selectedDate
+                    ? `${new Date(selectedDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })} Adventures`
+                    : "Select a Date"}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6">
@@ -370,51 +433,67 @@ export default function Calendar() {
                   <div className="space-y-4">
                     <div className="text-center mb-6">
                       <p className="text-2xl font-bold text-gray-800 mb-1">
-                        {new Date(selectedDate).toLocaleDateString('en-US', { 
-                          weekday: 'long',
-                          month: 'long', 
-                          day: 'numeric',
-                          year: 'numeric'
+                        {new Date(selectedDate).toLocaleDateString("en-US", {
+                          weekday: "long",
+                          month: "long",
+                          day: "numeric",
+                          year: "numeric",
                         })}
                       </p>
                       <Badge className="bg-green-100 text-green-700">
-                        {selectedEntries.length} adventure{selectedEntries.length === 1 ? '' : 's'}
+                        {selectedEntries.length} adventure
+                        {selectedEntries.length === 1 ? "" : "s"}
                       </Badge>
                     </div>
-                    
+
                     {selectedEntries.map((entry, index) => (
-                      <Card key={entry.id} className="bg-gradient-to-br from-white to-gray-50 border-gray-200">
+                      <Card
+                        key={entry.id}
+                        className="bg-gradient-to-br from-white to-gray-50 border-gray-200"
+                      >
                         <CardContent className="p-4">
                           <div className="flex items-start gap-3 mb-3">
-                            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${
-                              index % 4 === 0 ? 'bg-purple-500' : 
-                              index % 4 === 1 ? 'bg-blue-500' : 
-                              index % 4 === 2 ? 'bg-green-500' : 'bg-pink-500'
-                            }`}>
+                            <div
+                              className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${
+                                index % 4 === 0
+                                  ? "bg-purple-500"
+                                  : index % 4 === 1
+                                    ? "bg-blue-500"
+                                    : index % 4 === 2
+                                      ? "bg-green-500"
+                                      : "bg-pink-500"
+                              }`}
+                            >
                               {index + 1}
                             </div>
                             <div className="flex-1">
-                              <h4 className="font-bold text-gray-900 mb-1">{entry.title}</h4>
+                              <h4 className="font-bold text-gray-900 mb-1">
+                                {entry.title}
+                              </h4>
                               <p className="text-sm text-gray-600 line-clamp-3 mb-3">
                                 {entry.content}
                               </p>
-                              
+
                               {entry.location && (
                                 <div className="flex items-center gap-1 text-xs text-gray-500 mb-2">
                                   <MapPin className="h-3 w-3" />
                                   {entry.location}
                                 </div>
                               )}
-                              
+
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                   {entry.images && entry.images.length > 0 && (
-                                    <Badge variant="outline" className="text-xs">
-                                      📸 {entry.images.length} photo{entry.images.length === 1 ? '' : 's'}
+                                    <Badge
+                                      variant="outline"
+                                      className="text-xs"
+                                    >
+                                      📸 {entry.images.length} photo
+                                      {entry.images.length === 1 ? "" : "s"}
                                     </Badge>
                                   )}
                                 </div>
-                                
+
                                 {isAuthenticated ? (
                                   <Button
                                     variant="ghost"
@@ -422,7 +501,9 @@ export default function Calendar() {
                                     onClick={() => handleLike(entry.id)}
                                     className={`gap-1 ${entry.isLiked ? "text-red-600" : "text-gray-400"}`}
                                   >
-                                    <Heart className={`h-4 w-4 ${entry.isLiked ? "fill-current" : ""}`} />
+                                    <Heart
+                                      className={`h-4 w-4 ${entry.isLiked ? "fill-current" : ""}`}
+                                    />
                                     {entry.likes || 0}
                                   </Button>
                                 ) : (
@@ -434,17 +515,19 @@ export default function Calendar() {
                               </div>
                             </div>
                           </div>
-                          
+
                           {entry.images && entry.images.length > 0 && (
                             <div className="grid grid-cols-2 gap-2 mt-3">
-                              {entry.images.slice(0, 2).map((image, imgIndex) => (
-                                <img
-                                  key={imgIndex}
-                                  src={image}
-                                  alt={`${entry.title} ${imgIndex + 1}`}
-                                  className="w-full h-20 object-cover rounded border"
-                                />
-                              ))}
+                              {entry.images
+                                .slice(0, 2)
+                                .map((image, imgIndex) => (
+                                  <img
+                                    key={imgIndex}
+                                    src={image}
+                                    alt={`${entry.title} ${imgIndex + 1}`}
+                                    className="w-full h-20 object-cover rounded border"
+                                  />
+                                ))}
                             </div>
                           )}
                         </CardContent>
@@ -459,9 +542,12 @@ export default function Calendar() {
                 ) : (
                   <div className="text-center py-8">
                     <CalendarIcon className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                    <h3 className="font-semibold text-gray-700 mb-2">Choose a Date</h3>
+                    <h3 className="font-semibold text-gray-700 mb-2">
+                      Choose a Date
+                    </h3>
                     <p className="text-gray-500 text-sm">
-                      Click on any highlighted date to see the adventures from that day
+                      Click on any highlighted date to see the adventures from
+                      that day
                     </p>
                   </div>
                 )}

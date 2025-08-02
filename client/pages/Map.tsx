@@ -14,19 +14,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { 
-  MapPin, 
-  Plus, 
-  Edit2, 
-  Trash2, 
-  Map as MapIcon, 
-  Navigation, 
-  Compass, 
-  Mountain, 
+import {
+  MapPin,
+  Plus,
+  Edit2,
+  Trash2,
+  Map as MapIcon,
+  Navigation,
+  Compass,
+  Mountain,
   Camera,
   Star,
   Eye,
-  Target
+  Target,
 } from "lucide-react";
 import { JournalEntry, MapPin as MapPinType } from "@shared/api";
 
@@ -53,7 +53,10 @@ export default function Map() {
       ]);
       setPins(pinsData);
       setEntries(entriesData);
-      console.log("🗺️ Map data loaded:", { pins: pinsData.length, entries: entriesData.length });
+      console.log("🗺️ Map data loaded:", {
+        pins: pinsData.length,
+        entries: entriesData.length,
+      });
     } catch (error) {
       console.error("❌ Failed to load map data:", error);
     } finally {
@@ -68,7 +71,9 @@ export default function Map() {
     // Only set up real-time updates for authenticated users
     if (isAuthenticated) {
       const unsubscribe = SupabaseStorage.onUpdate(() => {
-        console.log("🔄 MAP: Real-time update received, refreshing map data...");
+        console.log(
+          "🔄 MAP: Real-time update received, refreshing map data...",
+        );
         loadMapData();
       });
 
@@ -93,7 +98,12 @@ export default function Map() {
     }
 
     try {
-      console.log("🗺️ Creating pin with data:", { title, description, lat, lng });
+      console.log("🗺️ Creating pin with data:", {
+        title,
+        description,
+        lat,
+        lng,
+      });
 
       const pin: MapPinType = {
         id: `pin-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -135,7 +145,10 @@ export default function Map() {
         errorMessage += "Unknown error occurred.";
       }
 
-      alert(errorMessage + "\n\nPlease check the console for more details and try again.");
+      alert(
+        errorMessage +
+          "\n\nPlease check the console for more details and try again.",
+      );
     }
   };
 
@@ -144,7 +157,7 @@ export default function Map() {
 
     try {
       await SupabaseStorage.deleteMapPin(pinId);
-      setPins((prev) => prev.filter(p => p.id !== pinId));
+      setPins((prev) => prev.filter((p) => p.id !== pinId));
       setSelectedPin(null);
       console.log("✅ Map pin deleted successfully");
     } catch (error) {
@@ -164,9 +177,13 @@ export default function Map() {
   };
 
   // Calculate stats
-  const totalPhotos = entries.reduce((count, entry) => count + (entry.images?.length || 0), 0);
+  const totalPhotos = entries.reduce(
+    (count, entry) => count + (entry.images?.length || 0),
+    0,
+  );
   const totalEntries = entries.length;
-  const areasExplored = new Set(pins.map(pin => pin.areaType || 'unknown')).size;
+  const areasExplored = new Set(pins.map((pin) => pin.areaType || "unknown"))
+    .size;
 
   if (isLoading) {
     return (
@@ -174,8 +191,12 @@ export default function Map() {
         <Card className="w-full max-w-md">
           <CardContent className="text-center p-8">
             <MapIcon className="h-12 w-12 text-green-600 mx-auto mb-4 animate-pulse" />
-            <p className="text-lg font-medium text-gray-700">Loading our Scottish map...</p>
-            <p className="text-sm text-gray-500 mt-2">🗺️ Discovering highland adventures</p>
+            <p className="text-lg font-medium text-gray-700">
+              Loading our Scottish map...
+            </p>
+            <p className="text-sm text-gray-500 mt-2">
+              🗺️ Discovering highland adventures
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -192,30 +213,31 @@ export default function Map() {
               🗺️ Explore our Scottish adventure map
             </Badge>
           </div>
-          
+
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-4">
             Scottish Explorer Map
           </h1>
           <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-green-600 to-green-800 bg-clip-text text-transparent mb-6">
             Highland Adventures
           </h2>
-          
+
           <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8 leading-relaxed">
-            Navigate through our family's Scottish journey. Every pin marks a special place 
-            where memories were made across the beautiful highlands and lowlands.
+            Navigate through our family's Scottish journey. Every pin marks a
+            special place where memories were made across the beautiful
+            highlands and lowlands.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
             {isAuthenticated && (
-              <Button 
-                onClick={() => setIsCreatePinOpen(true)} 
+              <Button
+                onClick={() => setIsCreatePinOpen(true)}
                 className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-8 py-3 rounded-full text-lg font-semibold shadow-lg"
               >
                 <Plus className="h-5 w-5 mr-2" />
                 📍 Mark New Place
               </Button>
             )}
-            <Button 
+            <Button
               variant="outline"
               className="border-green-300 text-green-700 hover:bg-green-50 px-8 py-3 rounded-full text-lg font-semibold"
             >
@@ -227,7 +249,8 @@ export default function Map() {
           {!isAuthenticated && (
             <div className="inline-block p-4 bg-green-100 border border-green-200 rounded-lg mb-8">
               <p className="text-green-800">
-                👁️ <strong>Explorer mode</strong> - Discover our adventure pins and click to explore!
+                👁️ <strong>Explorer mode</strong> - Discover our adventure pins
+                and click to explore!
               </p>
             </div>
           )}
@@ -242,27 +265,33 @@ export default function Map() {
               <p className="text-sm text-green-600">Places Marked</p>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-gradient-to-br from-blue-100 to-blue-200 border-blue-300 text-center hover:scale-105 transition-transform">
             <CardContent className="p-6">
               <Mountain className="h-8 w-8 mx-auto mb-2 text-blue-700" />
-              <p className="text-2xl font-bold text-blue-800">{areasExplored}</p>
+              <p className="text-2xl font-bold text-blue-800">
+                {areasExplored}
+              </p>
               <p className="text-sm text-blue-600">Areas Explored</p>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-gradient-to-br from-purple-100 to-purple-200 border-purple-300 text-center hover:scale-105 transition-transform">
             <CardContent className="p-6">
               <Camera className="h-8 w-8 mx-auto mb-2 text-purple-700" />
-              <p className="text-2xl font-bold text-purple-800">{totalPhotos}</p>
+              <p className="text-2xl font-bold text-purple-800">
+                {totalPhotos}
+              </p>
               <p className="text-sm text-purple-600">Photos Taken</p>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-gradient-to-br from-orange-100 to-orange-200 border-orange-300 text-center hover:scale-105 transition-transform">
             <CardContent className="p-6">
               <Star className="h-8 w-8 mx-auto mb-2 text-orange-700" />
-              <p className="text-2xl font-bold text-orange-800">{totalEntries}</p>
+              <p className="text-2xl font-bold text-orange-800">
+                {totalEntries}
+              </p>
               <p className="text-sm text-orange-600">Adventures</p>
             </CardContent>
           </Card>
@@ -324,25 +353,33 @@ export default function Map() {
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <div className="w-4 h-4 bg-green-500 rounded-full"></div>
-                    <span className="text-sm text-gray-700">Adventure Pins</span>
+                    <span className="text-sm text-gray-700">
+                      Adventure Pins
+                    </span>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="w-4 h-4 bg-blue-500 rounded-full"></div>
-                    <span className="text-sm text-gray-700">Highland Areas</span>
+                    <span className="text-sm text-gray-700">
+                      Highland Areas
+                    </span>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="w-4 h-4 bg-purple-500 rounded-full"></div>
-                    <span className="text-sm text-gray-700">Coastal Regions</span>
+                    <span className="text-sm text-gray-700">
+                      Coastal Regions
+                    </span>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="w-4 h-4 bg-orange-500 rounded-full"></div>
-                    <span className="text-sm text-gray-700">Cities & Towns</span>
+                    <span className="text-sm text-gray-700">
+                      Cities & Towns
+                    </span>
                   </div>
                 </div>
-                
+
                 {isAuthenticated && (
                   <div className="mt-6 pt-4 border-t border-gray-200">
-                    <Button 
+                    <Button
                       onClick={() => setIsCreatePinOpen(true)}
                       className="w-full bg-green-500 hover:bg-green-600 text-white"
                     >
@@ -365,19 +402,27 @@ export default function Map() {
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Total Pins:</span>
-                    <Badge className="bg-green-100 text-green-700">{pins.length}</Badge>
+                    <Badge className="bg-green-100 text-green-700">
+                      {pins.length}
+                    </Badge>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Adventures:</span>
-                    <Badge className="bg-blue-100 text-blue-700">{totalEntries}</Badge>
+                    <Badge className="bg-blue-100 text-blue-700">
+                      {totalEntries}
+                    </Badge>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Photos:</span>
-                    <Badge className="bg-purple-100 text-purple-700">{totalPhotos}</Badge>
+                    <Badge className="bg-purple-100 text-purple-700">
+                      {totalPhotos}
+                    </Badge>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Areas:</span>
-                    <Badge className="bg-orange-100 text-orange-700">{areasExplored}</Badge>
+                    <Badge className="bg-orange-100 text-orange-700">
+                      {areasExplored}
+                    </Badge>
                   </div>
                 </div>
               </CardContent>
@@ -396,19 +441,22 @@ export default function Map() {
               {pins.length} places discovered
             </Badge>
           </div>
-          
+
           {pins.length === 0 ? (
             <Card className="border-2 border-dashed border-green-300 bg-gradient-to-br from-green-50 to-green-100">
               <CardContent className="text-center py-16">
                 <MapPin className="h-20 w-20 text-green-300 mx-auto mb-6" />
-                <h3 className="text-2xl font-bold text-green-700 mb-4">No Adventure Pins Yet!</h3>
+                <h3 className="text-2xl font-bold text-green-700 mb-4">
+                  No Adventure Pins Yet!
+                </h3>
                 <p className="text-green-600 mb-8 text-lg max-w-md mx-auto">
-                  Start exploring Scotland by adding your first adventure pin to the map! 
-                  Click anywhere on the map above to mark a special place.
+                  Start exploring Scotland by adding your first adventure pin to
+                  the map! Click anywhere on the map above to mark a special
+                  place.
                 </p>
                 {isAuthenticated && (
-                  <Button 
-                    onClick={() => setIsCreatePinOpen(true)} 
+                  <Button
+                    onClick={() => setIsCreatePinOpen(true)}
                     className="bg-green-500 hover:bg-green-600 text-white text-lg px-8 py-4 rounded-full shadow-lg"
                   >
                     <Plus className="h-6 w-6 mr-2" />
@@ -421,18 +469,18 @@ export default function Map() {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {pins.map((pin, index) => {
                 const colors = [
-                  'from-green-100 to-green-200 border-green-300',
-                  'from-blue-100 to-blue-200 border-blue-300',
-                  'from-purple-100 to-purple-200 border-purple-300',
-                  'from-orange-100 to-orange-200 border-orange-300',
-                  'from-pink-100 to-pink-200 border-pink-300',
-                  'from-indigo-100 to-indigo-200 border-indigo-300'
+                  "from-green-100 to-green-200 border-green-300",
+                  "from-blue-100 to-blue-200 border-blue-300",
+                  "from-purple-100 to-purple-200 border-purple-300",
+                  "from-orange-100 to-orange-200 border-orange-300",
+                  "from-pink-100 to-pink-200 border-pink-300",
+                  "from-indigo-100 to-indigo-200 border-indigo-300",
                 ];
                 const colorClass = colors[index % colors.length];
-                
+
                 return (
-                  <Card 
-                    key={pin.id} 
+                  <Card
+                    key={pin.id}
                     className={`bg-gradient-to-br ${colorClass} cursor-pointer hover:scale-105 transition-all duration-300 shadow-lg`}
                     onClick={() => handlePinClick(pin)}
                   >
@@ -440,10 +488,15 @@ export default function Map() {
                       <CardTitle className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <MapPin className="h-5 w-5 text-gray-700" />
-                          <span className="font-bold text-gray-800">{pin.title}</span>
+                          <span className="font-bold text-gray-800">
+                            {pin.title}
+                          </span>
                         </div>
                         {isAuthenticated && (
-                          <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
+                          <div
+                            className="flex gap-1"
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <Button
                               variant="ghost"
                               size="sm"
@@ -465,18 +518,22 @@ export default function Map() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-gray-700 mb-3 line-clamp-3">{pin.description}</p>
+                      <p className="text-gray-700 mb-3 line-clamp-3">
+                        {pin.description}
+                      </p>
                       <div className="flex items-center justify-between text-sm">
                         <Badge variant="outline" className="text-xs">
-                          📍 {pin.latitude.toFixed(4)}, {pin.longitude.toFixed(4)}
+                          📍 {pin.latitude.toFixed(4)},{" "}
+                          {pin.longitude.toFixed(4)}
                         </Badge>
                         {pin.images && pin.images.length > 0 && (
                           <Badge className="bg-white/50 text-gray-700 text-xs">
-                            📸 {pin.images.length} photo{pin.images.length === 1 ? '' : 's'}
+                            📸 {pin.images.length} photo
+                            {pin.images.length === 1 ? "" : "s"}
                           </Badge>
                         )}
                       </div>
-                      
+
                       {pin.images && pin.images.length > 0 && (
                         <div className="mt-4">
                           <img
@@ -505,12 +562,16 @@ export default function Map() {
             </DialogHeader>
             <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg">
               <p className="text-green-700 font-medium">
-                💡 <strong>Pro Tip:</strong> You can click anywhere on the Scotland map above to automatically set the coordinates for your new pin!
+                💡 <strong>Pro Tip:</strong> You can click anywhere on the
+                Scotland map above to automatically set the coordinates for your
+                new pin!
               </p>
             </div>
             <form onSubmit={handleCreatePin} className="space-y-6">
               <div>
-                <Label htmlFor="title" className="text-lg font-semibold">Place Name *</Label>
+                <Label htmlFor="title" className="text-lg font-semibold">
+                  Place Name *
+                </Label>
                 <Input
                   id="title"
                   value={title}
@@ -521,7 +582,9 @@ export default function Map() {
                 />
               </div>
               <div>
-                <Label htmlFor="description" className="text-lg font-semibold">Description</Label>
+                <Label htmlFor="description" className="text-lg font-semibold">
+                  Description
+                </Label>
                 <Textarea
                   id="description"
                   value={description}
@@ -533,7 +596,9 @@ export default function Map() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="latitude" className="text-lg font-semibold">Latitude *</Label>
+                  <Label htmlFor="latitude" className="text-lg font-semibold">
+                    Latitude *
+                  </Label>
                   <Input
                     id="latitude"
                     type="number"
@@ -546,7 +611,9 @@ export default function Map() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="longitude" className="text-lg font-semibold">Longitude *</Label>
+                  <Label htmlFor="longitude" className="text-lg font-semibold">
+                    Longitude *
+                  </Label>
                   <Input
                     id="longitude"
                     type="number"
@@ -568,8 +635,8 @@ export default function Map() {
                 >
                   Cancel
                 </Button>
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold"
                 >
                   <MapPin className="h-5 w-5 mr-2" />
@@ -592,21 +659,26 @@ export default function Map() {
             {selectedPin && (
               <div className="space-y-6">
                 <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg">
-                  <p className="text-gray-800 text-lg leading-relaxed">{selectedPin.description}</p>
+                  <p className="text-gray-800 text-lg leading-relaxed">
+                    {selectedPin.description}
+                  </p>
                 </div>
-                
+
                 <div className="flex items-center gap-4">
                   <Badge className="bg-green-100 text-green-700 px-4 py-2">
-                    📍 {selectedPin.latitude.toFixed(6)}, {selectedPin.longitude.toFixed(6)}
+                    📍 {selectedPin.latitude.toFixed(6)},{" "}
+                    {selectedPin.longitude.toFixed(6)}
                   </Badge>
                   <Badge className="bg-blue-100 text-blue-700 px-4 py-2">
                     🏴󠁧󠁢󠁳󠁣󠁴󠁿 Scotland
                   </Badge>
                 </div>
-                
+
                 {selectedPin.images && selectedPin.images.length > 0 && (
                   <div className="space-y-4">
-                    <h4 className="font-semibold text-gray-800">📸 Photos from this location:</h4>
+                    <h4 className="font-semibold text-gray-800">
+                      📸 Photos from this location:
+                    </h4>
                     <div className="grid gap-3">
                       {selectedPin.images.map((image, index) => (
                         <img
@@ -619,7 +691,7 @@ export default function Map() {
                     </div>
                   </div>
                 )}
-                
+
                 {isAuthenticated && (
                   <div className="flex gap-3 pt-4 border-t border-gray-200">
                     <Button
