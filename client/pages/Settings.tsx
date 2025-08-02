@@ -49,6 +49,9 @@ export default function Settings() {
       {/* Supabase Connection Test */}
       <SupabaseTest />
 
+      {/* Comprehensive App Test */}
+      <AppTester />
+
       <div className="grid md:grid-cols-2 gap-6">
         {/* Storage Status */}
         <StorageStatus />
