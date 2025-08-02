@@ -145,10 +145,18 @@ export default function Wishlist() {
             </p>
           </div>
         </div>
-        <Button onClick={() => setIsCreateDialogOpen(true)} className="gap-2">
-          <Plus className="h-4 w-4" />
-          Add Dream
-        </Button>
+        {isAuthenticated && (
+          <Button onClick={() => setIsCreateDialogOpen(true)} className="gap-2">
+            <Plus className="h-4 w-4" />
+            Add Dream
+          </Button>
+        )}
+        {!isAuthenticated && (
+          <div className="text-center">
+            <p className="text-sm text-gray-500">View-only mode</p>
+            <p className="text-xs text-gray-400">Login to add dreams</p>
+          </div>
+        )}
       </div>
 
       {isLoading ? (
