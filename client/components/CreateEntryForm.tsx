@@ -455,6 +455,43 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
           </form>
         </CardContent>
       </Card>
+
+      {/* Map Pin Creation Dialog */}
+      <Dialog open={showMapPinDialog} onOpenChange={setShowMapPinDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              📍 Add Map Pin?
+            </DialogTitle>
+            <DialogDescription>
+              Would you like to add a map pin for this journal entry? You can mark the location on the map.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="p-4 bg-blue-50 rounded-lg">
+              <h4 className="font-medium text-blue-800 mb-2">"{createdEntry?.title}"</h4>
+              <p className="text-sm text-blue-600">
+                {createdEntry?.location && `📍 ${createdEntry.location}`}
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                onClick={handleSkipMapPin}
+                className="flex-1"
+              >
+                Skip
+              </Button>
+              <Button
+                onClick={handleCreateMapPin}
+                className="flex-1 bg-blue-500 hover:bg-blue-600 text-white"
+              >
+                📍 Add Pin
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
