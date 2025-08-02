@@ -268,6 +268,11 @@ export default function Map() {
           <DialogHeader>
             <DialogTitle>Add New Map Pin</DialogTitle>
           </DialogHeader>
+          <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-sm text-blue-700">
+              💡 <strong>Tip:</strong> You can click anywhere on the Scotland map above to automatically set the coordinates!
+            </p>
+          </div>
           <form onSubmit={handleCreatePin} className="space-y-4">
             <div>
               <Label htmlFor="title">Title *</Label>
