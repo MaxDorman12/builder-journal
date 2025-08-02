@@ -126,11 +126,22 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
     } catch (error) {
       console.error("❌ Photo upload failed:", error);
 
-      // Fallback to base64 for small files
-      if (files.length <= 3 && files.every(f => f.size <= 2 * 1024 * 1024)) {
-        console.log("📷 Falling back to base64 storage for small photos...");
+      // Check if it's a storage/bucket issue
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const isStorageIssue = errorMessage.includes('bucket') || errorMessage.includes('storage') || errorMessage.includes('permission');
 
-        files.forEach((file) => {
+      if (isStorageIssue) {
+        console.log("⚠️ Cloud storage unavailable, falling back to base64 storage...");
+
+        // Use base64 fallback with size limits
+        const allowedFiles = files.filter(f => f.size <= 3 * 1024 * 1024); // 3MB limit for base64
+        const oversizedFiles = files.filter(f => f.size > 3 * 1024 * 1024);
+
+        if (oversizedFiles.length > 0) {
+          alert(`Cloud storage is currently unavailable. ${oversizedFiles.length} photos are too large for backup storage and will be skipped. Uploading ${allowedFiles.length} smaller photos...`);
+        }
+
+        allowedFiles.forEach((file) => {
           const reader = new FileReader();
           reader.onload = (e) => {
             const result = e.target?.result as string;
@@ -140,8 +151,13 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
           };
           reader.readAsDataURL(file);
         });
+
+        if (allowedFiles.length > 0) {
+          console.log(`✅ Uploaded ${allowedFiles.length} photos using base64 fallback`);
+        }
       } else {
-        alert("Photo upload failed. Please try with smaller or fewer photos, or check your internet connection.");
+        // Network or other error
+        alert("Photo upload failed. Please check your internet connection and try again. For now, you can continue with your journal entry and add photos later.");
       }
     } finally {
       setIsUploading(false);
