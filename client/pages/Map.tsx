@@ -33,6 +33,7 @@ import { JournalEntry, MapPin as MapPinType } from "@shared/api";
 
 export default function Map() {
   const { isAuthenticated } = useAuth();
+  const location = useLocation();
   const [pins, setPins] = useState<MapPinType[]>([]);
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [isCreatePinOpen, setIsCreatePinOpen] = useState(false);
