@@ -113,14 +113,41 @@ export class SupabaseStorage {
   }
 
   // Utility methods
-  static toggleLike(entryId: string): void {
-    // This will need to be handled by getting the entry, updating it, and saving it back
-    console.warn("toggleLike not implemented yet - need to fetch, update, and save entry");
+  static async toggleLike(entryId: string): Promise<void> {
+    try {
+      const entries = await this.getJournalEntries();
+      const entry = entries.find(e => e.id === entryId);
+      if (entry) {
+        const updatedEntry = {
+          ...entry,
+          likes: (entry.likes || 0) + (entry.isLiked ? -1 : 1),
+          isLiked: !entry.isLiked,
+          updatedAt: new Date().toISOString(),
+        };
+        await this.saveJournalEntry(updatedEntry);
+      }
+    } catch (error) {
+      console.error("❌ Failed to toggle like:", error);
+    }
   }
 
-  static markWishlistItemCompleted(itemId: string, journalEntryId?: string): void {
-    // This will need to be handled by getting the item, updating it, and saving it back
-    console.warn("markWishlistItemCompleted not implemented yet - need to fetch, update, and save item");
+  static async markWishlistItemCompleted(itemId: string, journalEntryId?: string): Promise<void> {
+    try {
+      const items = await this.getWishlistItems();
+      const item = items.find(i => i.id === itemId);
+      if (item) {
+        const updatedItem = {
+          ...item,
+          isCompleted: true,
+          completedDate: new Date().toISOString(),
+          journalEntryId: journalEntryId || item.journalEntryId,
+          updatedAt: new Date().toISOString(),
+        };
+        await this.saveWishlistItem(updatedItem);
+      }
+    } catch (error) {
+      console.error("❌ Failed to mark wishlist item completed:", error);
+    }
   }
 
   // Event listeners
