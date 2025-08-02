@@ -211,7 +211,7 @@ export class HybridStorage {
         }, 2000); // 2 second delay
       } catch (error) {
         console.error(
-          "❌ DELETE: Failed to delete entry from Supabase:",
+          "��� DELETE: Failed to delete entry from Supabase:",
           error,
         );
         // Still remove from pending deletions after some time
@@ -352,7 +352,7 @@ export class HybridStorage {
   static async deleteWishlistItem(id: string): Promise<void> {
     console.log("🗑️ DELETE WISHLIST: Starting delete process for item:", id);
     console.log(
-      "��� DELETE WISHLIST: Supabase enabled status:",
+      "🔍 DELETE WISHLIST: Supabase enabled status:",
       this.supabaseEnabled,
     );
 
@@ -827,35 +827,47 @@ export class HybridStorage {
           SupabaseDatabase.getCharlieData(),
         ]);
 
-        // Sync journal entries (handle deletions)
+        // Sync journal entries (handle deletions but respect pending deletions)
         const localEntries = LocalStorage.getJournalEntries();
         const entryIds = new Set(entries.map((e) => e.id));
         localEntries.forEach((local) => {
-          if (!entryIds.has(local.id)) {
+          if (!entryIds.has(local.id) && !this.pendingDeletions.has(local.id)) {
             LocalStorage.deleteJournalEntry(local.id);
           }
         });
-        entries.forEach((entry) => LocalStorage.saveJournalEntry(entry));
+        entries.forEach((entry) => {
+          if (!this.pendingDeletions.has(entry.id)) {
+            LocalStorage.saveJournalEntry(entry);
+          }
+        });
 
-        // Sync map pins (handle deletions)
+        // Sync map pins (handle deletions but respect pending deletions)
         const localPins = LocalStorage.getMapPins();
         const pinIds = new Set(pins.map((p) => p.id));
         localPins.forEach((local) => {
-          if (!pinIds.has(local.id)) {
+          if (!pinIds.has(local.id) && !this.pendingDeletions.has(local.id)) {
             LocalStorage.deleteMapPin(local.id);
           }
         });
-        pins.forEach((pin) => LocalStorage.saveMapPin(pin));
+        pins.forEach((pin) => {
+          if (!this.pendingDeletions.has(pin.id)) {
+            LocalStorage.saveMapPin(pin);
+          }
+        });
 
-        // Sync wishlist (handle deletions)
+        // Sync wishlist (handle deletions but respect pending deletions)
         const localWishlist = LocalStorage.getWishlistItems();
         const wishlistIds = new Set(wishlist.map((i) => i.id));
         localWishlist.forEach((local) => {
-          if (!wishlistIds.has(local.id)) {
+          if (!wishlistIds.has(local.id) && !this.pendingDeletions.has(local.id)) {
             LocalStorage.deleteWishlistItem(local.id);
           }
         });
-        wishlist.forEach((item) => LocalStorage.saveWishlistItem(item));
+        wishlist.forEach((item) => {
+          if (!this.pendingDeletions.has(item.id)) {
+            LocalStorage.saveWishlistItem(item);
+          }
+        });
 
         // Update Charlie data
         LocalStorage.setCharlieData(charlie);
