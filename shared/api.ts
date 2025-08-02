@@ -33,6 +33,7 @@ export interface JournalEntry {
     | "forest"
     | "village"
     | "other";
+  customAreaType?: string;
   wouldReturnReason: string;
   wouldReturn: boolean;
   hasFreeParkingAvailable: boolean;
@@ -112,7 +113,7 @@ export const FAMILY_MEMBERS: FamilyMember[] = [
 
 export const AREA_TYPES = [
   { value: "town", label: "🏘️ Town", emoji: "🏘️" },
-  { value: "city", label: "🏙️ City", emoji: "��️" },
+  { value: "city", label: "��️ City", emoji: "��️" },
   { value: "loch", label: "🌊 Loch", emoji: "🌊" },
   { value: "mountain", label: "⛰️ Mountain", emoji: "⛰️" },
   { value: "hike", label: "🥾 Hiking Trail", emoji: "🥾" },
