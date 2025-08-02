@@ -193,6 +193,44 @@ export class SupabaseStorage {
     console.log("✅ SupabaseStorage cleanup completed");
   }
 
+  // Sync verification
+  static async verifySyncStatus(): Promise<{
+    isConnected: boolean;
+    listenerCount: number;
+    lastUpdate: string;
+    tables: { name: string; count: number }[];
+  }> {
+    try {
+      const [entries, pins, wishlist] = await Promise.all([
+        this.getJournalEntries(),
+        this.getMapPins(),
+        this.getWishlistItems()
+      ]);
+
+      const syncStatus = {
+        isConnected: true,
+        listenerCount: this.listeners.length,
+        lastUpdate: new Date().toISOString(),
+        tables: [
+          { name: 'journal_entries', count: entries.length },
+          { name: 'map_pins', count: pins.length },
+          { name: 'wishlist_items', count: wishlist.length }
+        ]
+      };
+
+      console.log("🔍 Sync Status:", syncStatus);
+      return syncStatus;
+    } catch (error) {
+      console.error("❌ Sync verification failed:", error);
+      return {
+        isConnected: false,
+        listenerCount: this.listeners.length,
+        lastUpdate: new Date().toISOString(),
+        tables: []
+      };
+    }
+  }
+
   // Export functionality
   static async exportData(): Promise<string> {
     const [entries, pins, wishlist, charlie] = await Promise.all([
