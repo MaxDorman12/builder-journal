@@ -32,6 +32,13 @@ const StorageInitializer = () => {
     SupabaseStorage.setupSubscriptions();
     console.log("✅ SupabaseStorage initialized successfully");
 
+    // Initialize photo storage bucket
+    PhotoStorage.initializeBucket().then(() => {
+      console.log("📸 Photo storage initialized");
+    }).catch((error) => {
+      console.warn("⚠️ Photo storage initialization failed:", error);
+    });
+
     return () => {
       SupabaseStorage.cleanup();
     };
