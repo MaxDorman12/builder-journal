@@ -145,6 +145,8 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
       setIsPublic(true);
       setHasFreeParkingAvailable(false);
       setParkingCost("");
+      setIsPaidActivity(false);
+      setActivityCost("");
       
     } catch (error) {
       console.error("❌ Failed to save journal entry:", error);
