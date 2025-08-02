@@ -138,10 +138,14 @@ export function CreateEntryForm({ onEntryCreated, onCancel }: CreateEntryFormPro
       });
 
       await SupabaseStorage.saveJournalEntry(entry);
-      
+
       console.log("✅ Journal entry saved successfully");
       onEntryCreated(entry);
-      
+
+      // Store the created entry and show map pin dialog
+      setCreatedEntry(entry);
+      setShowMapPinDialog(true);
+
       // Reset form
       setTitle("");
       setContent("");
