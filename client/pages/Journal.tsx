@@ -100,16 +100,7 @@ export default function Journal() {
     }
   };
 
-  if (!isAuthenticated) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Journal</h1>
-          <p className="text-gray-600">Please log in to view journal entries.</p>
-        </div>
-      </div>
-    );
-  }
+  // Allow guest access to view journal entries
 
   return (
     <div className="container mx-auto px-4 py-8">
