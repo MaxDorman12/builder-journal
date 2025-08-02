@@ -294,13 +294,15 @@ export default function Index() {
         setYoutubeVideo(video);
         setYoutubeUrl(video.url);
       } else {
-        // Set default URL if no video data exists
+        // Clear video state and set default URL if no video data exists
+        setYoutubeVideo(null);
         const defaultUrl = "https://www.youtube.com/@AWeeAdventures";
         setYoutubeUrl(defaultUrl);
       }
     } catch (error) {
       console.error("Failed to load YouTube data:", error);
-      // Set default URL on error
+      // Clear video state and set default URL on error
+      setYoutubeVideo(null);
       const defaultUrl = "https://www.youtube.com/@AWeeAdventures";
       setYoutubeUrl(defaultUrl);
     }
