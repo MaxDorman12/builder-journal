@@ -352,7 +352,7 @@ export class HybridStorage {
   static async deleteWishlistItem(id: string): Promise<void> {
     console.log("🗑️ DELETE WISHLIST: Starting delete process for item:", id);
     console.log(
-      "🔍 DELETE WISHLIST: Supabase enabled status:",
+      "��� DELETE WISHLIST: Supabase enabled status:",
       this.supabaseEnabled,
     );
 
@@ -883,4 +883,14 @@ export class HybridStorage {
     this.listeners = [];
     console.log("🧹 HybridStorage cleanup completed");
   }
+
+  // Global debugging methods (accessible from browser console as HybridStorage.debug)
+  static debug = {
+    getPendingDeletions: () => this.getPendingDeletions(),
+    clearPendingDeletion: (id: string) => this.clearPendingDeletion(id),
+    clearAllPendingDeletions: () => this.clearAllPendingDeletions(),
+    getMapPins: () => LocalStorage.getMapPins(),
+    getSupabaseStatus: () => this.getSupabaseStatus(),
+    getSupabaseMapPins: async () => await SupabaseDatabase.getMapPins(),
+  };
 }
