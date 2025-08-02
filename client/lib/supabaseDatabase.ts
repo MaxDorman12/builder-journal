@@ -548,7 +548,7 @@ export class SupabaseDatabase {
     try {
       // Add timeout for network issues
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
 
       const { error } = await supabase
         .from("map_pins")
@@ -749,7 +749,7 @@ export class SupabaseDatabase {
           error.code === "PGRST301"
         ) {
           console.error("🌐 Network connectivity issue during wishlist fetch");
-          console.log("⚠️ Returning empty wishlist due to network issue");
+          console.log("���️ Returning empty wishlist due to network issue");
           return [];
         }
 
